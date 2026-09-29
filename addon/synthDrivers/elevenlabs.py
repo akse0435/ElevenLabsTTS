@@ -49,7 +49,9 @@ from synthDriverHandler import (
 
 API_BASE = "https://api.elevenlabs.io"
 CHUNK_SIZE = 4096
+# Seconds without audio before giving up. Measured worst: ~1 s real-time, ~2.3 s others.
 REQUEST_TIMEOUT = 15
+REALTIME_REQUEST_TIMEOUT = 8
 # Timeout for the checks run while NVDA waits for the synthesizer to load. If
 # they fail, NVDA falls back to another synthesizer.
 INIT_TIMEOUT = 8
@@ -85,6 +87,13 @@ PREVIOUS_REQUEST_GRACE = 0.5
 # How often the speech thread looks up while waiting, to notice a cancel.
 POLL_INTERVAL = 0.05
 
+# Non-real-time models get long text in parts; the next is fetched while one plays.
+FIRST_PART_CHARS = 150
+PART_CHARS = 400
+_SENTENCE_END = re.compile(r"(?<=[.!?\u2026])\s+|\n+")
+_CLAUSE_END = re.compile(r"(?<=[,;:])\s+")
+_WHITESPACE = re.compile(r"\s+")
+
 # Audio formats, best first, as (output_format, sample rate). The plan decides
 # which are allowed (PCM at 44.1 kHz needs Pro, the lower PCM rates Creator), so
 # on HTTP 403 the driver steps down the list. ulaw_8000 works on every plan.
@@ -118,21 +127,25 @@ STABILITY_PRESETS = (0.0, 0.5, 1.0)
 
 # What a model accepts: whether it takes language_code, and which voice_settings.
 # Turbo takes the same as Flash, which ElevenLabs calls its functional equivalent.
-ModelInfo = namedtuple("ModelInfo", ("name", "languageCode", "settings"))
+# realtime: shorter timeout, no splitting. maxSpeed: measured speed it keeps up with.
+ModelInfo = namedtuple(
+	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed"),
+	defaults=(True, None),
+)
 _MULTILINGUAL_SETTINGS = ("stability", "similarity_boost", "style", "use_speaker_boost", "speed")
 _FLASH_SETTINGS = ("stability", "similarity_boost", "speed")
 _V3_SETTINGS = ("stability",)
 _V4_SETTINGS = ("stability", "similarity_boost")
 # Text to speech models in the order they were released, as shown in the model box.
 MODELS = OrderedDict((
-	("eleven_multilingual_v2", ModelInfo("Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS)),
+	("eleven_multilingual_v2", ModelInfo("Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, False)),
 	("eleven_turbo_v2", ModelInfo("Eleven Turbo v2 (English only)", False, _FLASH_SETTINGS)),
 	("eleven_turbo_v2_5", ModelInfo("Eleven Turbo v2.5", True, _FLASH_SETTINGS)),
 	("eleven_flash_v2", ModelInfo("Eleven Flash v2 (English only)", False, _FLASH_SETTINGS)),
 	("eleven_flash_v2_5", ModelInfo("Eleven Flash v2.5", True, _FLASH_SETTINGS)),
-	("eleven_v3", ModelInfo("Eleven v3", True, _V3_SETTINGS)),
+	("eleven_v3", ModelInfo("Eleven v3", True, _V3_SETTINGS, False, 1.4)),
 	("eleven_v3_conversational", ModelInfo("Eleven v3 Conversational", True, _V3_SETTINGS)),
-	("eleven_v4", ModelInfo("Eleven v4", True, _V4_SETTINGS)),
+	("eleven_v4", ModelInfo("Eleven v4", True, _V4_SETTINGS, False)),
 	("eleven_v4_turbo", ModelInfo("Eleven v4 Turbo", True, _V4_SETTINGS)),
 ))
 # The default. Every plan has it, so voices and audio formats are checked with
@@ -484,6 +497,52 @@ def _modelInfo(modelId):
 	return MODELS.get(modelId) or MODELS[DEFAULT_MODEL]
 
 
+def _requestTimeout(modelId):
+	return REALTIME_REQUEST_TIMEOUT if _modelInfo(modelId).realtime else REQUEST_TIMEOUT
+
+
+def _group(pieces, limit, firstLimit=None):
+	"""Joins pieces with spaces into parts of at most limit characters."""
+	parts, current = [], ""
+	for piece in pieces:
+		piece = piece.strip()
+		if not piece:
+			continue
+		cap = firstLimit if firstLimit and not parts else limit
+		if current and len(current) + 1 + len(piece) > cap:
+			parts.append(current)
+			current = piece
+		else:
+			current = f"{current} {piece}" if current else piece
+	if current:
+		parts.append(current)
+	return parts
+
+
+def _splitLong(text, limit):
+	"""Splits text longer than limit at clauses, then words, then anywhere."""
+	if len(text) <= limit:
+		return [text]
+	for pattern in (_CLAUSE_END, _WHITESPACE):
+		pieces = pattern.split(text)
+		if len(pieces) > 1:
+			return [p for piece in _group(pieces, limit) for p in _splitLong(piece, limit)]
+	return [text[i:i + limit] for i in range(0, len(text), limit)]
+
+
+def _splitText(text):
+	"""Splits text into a short first part and longer later ones."""
+	if len(text) <= FIRST_PART_CHARS:
+		return [text]
+	pieces = []
+	for sentence in _SENTENCE_END.split(text):
+		pieces.extend(_splitLong(sentence.strip(), PART_CHARS))
+	pieces = [p for p in pieces if p]
+	if pieces and len(pieces[0]) > FIRST_PART_CHARS:
+		pieces[:1] = _splitLong(pieces[0], FIRST_PART_CHARS)
+	return _group(pieces, PART_CHARS, FIRST_PART_CHARS) or [text]
+
+
 def _languageSetting():
 	"""The language box, labelled with NVDA's own translated strings."""
 	nvdaSetting = BaseSynthDriver.LanguageSetting()
@@ -569,26 +628,58 @@ class _Download(threading.Thread):
 		super().__init__(name="ElevenLabsDownload")
 		self._req = req
 		self._timeout = timeout
+		self._onDone = None
+		self._done = False
+		self._doneLock = threading.Lock()
 		self._wanted = True
+		# Matches a prefetched download to its request.
+		self.key = (req.full_url, req.data)
 		# Audio chunks as they arrive, b"" at the end, or the exception that stopped it.
 		self.chunks = queue.Queue()
 		self.started = time.time()
+		self.firstAudio = None
 		self.start()
 
 	def abandon(self):
 		"""Stops passing audio on; the connection closes when the server next answers."""
 		self._wanted = False
 
+	def whenDone(self, callback):
+		"""Calls callback once all audio has arrived, now if it already has."""
+		with self._doneLock:
+			if not self._done:
+				self._onDone = callback
+				return
+		callback()
+
+	def _finish(self):
+		with self._doneLock:
+			self._done = True
+			callback = self._onDone
+		if callback is not None:
+			try:
+				callback()
+			except Exception:
+				log.error("ElevenLabs: could not fetch the next part", exc_info=True)
+
 	def run(self):
 		try:
 			with urlrequest.urlopen(self._req, timeout=self._timeout) as resp:
 				while self._wanted:
 					chunk = resp.read(CHUNK_SIZE)
-					self.chunks.put(chunk)
 					if not chunk:
-						return
+						break
+					if self.firstAudio is None:
+						self.firstAudio = time.time()
+					self.chunks.put(chunk)
+				else:
+					return
 		except Exception as e:
 			self.chunks.put(e)
+			return
+		# Before b"", so the next part starts before this one ends.
+		self._finish()
+		self.chunks.put(b"")
 
 
 class _SpeechWorker(threading.Thread):
@@ -608,6 +699,8 @@ class _SpeechWorker(threading.Thread):
 		# The last download, and the last one for each (voice, model) pair.
 		self._download = None
 		self._pending = {}
+		# The next part's download.
+		self._prefetch = None
 		self.start()
 
 	def enqueue(self, text, indexes, langOverride=None):
@@ -618,6 +711,7 @@ class _SpeechWorker(threading.Thread):
 	def cancelAll(self):
 		with self._lock:
 			self.generation += 1
+		self._dropPrefetch()
 		# Empty the queue.
 		try:
 			while True:
@@ -644,7 +738,7 @@ class _SpeechWorker(threading.Thread):
 				continue
 			completed = False
 			try:
-				completed = self._synthesize(gen, text, langOverride)
+				completed = self._speakParts(gen, text, langOverride)
 			except Exception:
 				log.error("Unexpected error in the ElevenLabs driver", exc_info=True)
 			if self._isCurrent(gen):
@@ -661,7 +755,78 @@ class _SpeechWorker(threading.Thread):
 							pass
 					synthDoneSpeaking.notify(synth=self.driver)
 
-	def _synthesize(self, gen, text, langOverride=None):
+	def _speakParts(self, gen, text, langOverride):
+		"""Speaks text, in parts for models that aren't real-time."""
+		modelId = self.driver.model
+		self.driver._warnIfTooFast(modelId)
+		parts = [text] if _modelInfo(modelId).realtime else _splitText(text)
+		try:
+			for i, part in enumerate(parts):
+				if not self._synthesize(gen, part, langOverride, parts[i + 1:]):
+					return False
+			return True
+		finally:
+			self._dropPrefetch()
+
+	def _buildRequest(self, key, text, langOverride, modelId):
+		"""The speech request for text, and its (voice, model) pair."""
+		driver = self.driver
+		# Language priority: NVDA's language markup > the language setting > auto.
+		lang = langOverride or driver._language
+		voiceId = driver.synthesisVoice
+		body = driver._requestBody(text, lang, modelId)
+		req = urlrequest.Request(
+			f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
+			f"?output_format={driver.outputFormat}",
+			data=json.dumps(body).encode("utf-8"),
+			headers={
+				"xi-api-key": key,
+				"Content-Type": "application/json",
+				"Accept": "*/*",
+			},
+			method="POST",
+		)
+		return req, (voiceId, modelId)
+
+	def _startDownload(self, req, pair):
+		firstUse = pair[1] != DEFAULT_MODEL and pair not in self._usedVoices
+		download = _Download(req, FIRST_USE_TIMEOUT if firstUse else _requestTimeout(pair[1]))
+		self._download = self._pending[pair] = download
+		return download
+
+	def _prefetchNext(self, gen, text, langOverride):
+		"""Starts the next part's download while the current part plays."""
+		key = self.driver._getApiKey()
+		if not key:
+			return
+		req, pair = self._buildRequest(key, text, langOverride, self.driver.model)
+		with self._lock:
+			if gen != self.generation or not self._running:
+				return
+			old = self._prefetch
+			self._prefetch = self._startDownload(req, pair)
+		if old is not None:
+			old.abandon()
+
+	def _takePrefetch(self, req):
+		"""The prefetched download for req, or None."""
+		with self._lock:
+			download, self._prefetch = self._prefetch, None
+		if download is None:
+			return None
+		if download.key == (req.full_url, req.data):
+			return download
+		# Settings changed since it started.
+		download.abandon()
+		return None
+
+	def _dropPrefetch(self):
+		with self._lock:
+			download, self._prefetch = self._prefetch, None
+		if download is not None:
+			download.abandon()
+
+	def _synthesize(self, gen, text, langOverride=None, following=()):
 		driver = self.driver
 		key = driver._getApiKey()
 		if not key:
@@ -671,35 +836,23 @@ class _SpeechWorker(threading.Thread):
 				f"{SETTINGS_FILENAME} in NVDA's configuration folder.",
 			)
 			return False
-		# Language priority: NVDA's language markup > the language setting > auto.
-		lang = langOverride or driver._language
 		modelId = driver.model
 		retries = 0
 		while True:
 			# A cancelled utterance is dropped rather than retried or passed on.
 			if not self._isCurrent(gen):
 				return False
-			outputFormat = driver.outputFormat
-			isUlaw = outputFormat.startswith("ulaw")
-			voiceId = driver.synthesisVoice
-			body = driver._requestBody(text, lang, modelId)
-			req = urlrequest.Request(
-				f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
-				f"?output_format={outputFormat}",
-				data=json.dumps(body).encode("utf-8"),
-				headers={
-					"xi-api-key": key,
-					"Content-Type": "application/json",
-					"Accept": "*/*",
-				},
-				method="POST",
-			)
-			pair = (voiceId, modelId)
+			isUlaw = driver.outputFormat.startswith("ulaw")
+			req, pair = self._buildRequest(key, text, langOverride, modelId)
+			voiceId = pair[0]
 			firstUse = modelId != DEFAULT_MODEL and pair not in self._usedVoices
-			if not self._waitForPrevious(gen, pair):
-				return False
-			download = _Download(req, FIRST_USE_TIMEOUT if firstUse else REQUEST_TIMEOUT)
-			self._download = self._pending[pair] = download
+			download = self._takePrefetch(req)
+			if download is None:
+				if not self._waitForPrevious(gen, pair):
+					return False
+				download = self._startDownload(req, pair)
+			if following:
+				download.whenDone(lambda: self._prefetchNext(gen, following[0], langOverride))
 			player = sonic = None
 			fedAudio = False
 			carry = b""  # odd trailing byte held back so samples stay aligned
@@ -716,9 +869,11 @@ class _SpeechWorker(threading.Thread):
 					if player is None:
 						if firstUse:
 							self._usedVoices.add(pair)
+						if download.firstAudio is not None:
 							log.debug(
-								f"ElevenLabs: {_modelInfo(modelId).name} started with voice {voiceId} "
-								f"after {time.time() - download.started:.1f} s."
+								f"ElevenLabs: {_modelInfo(modelId).name} first audio after "
+								f"{download.firstAudio - download.started:.2f} s, {len(text)} chars"
+								f"{', first use of voice ' + voiceId if firstUse else ''}."
 							)
 						player = driver._getPlayer()
 						# None when the API delivers the whole speed on its own.
@@ -910,6 +1065,8 @@ class SynthDriver(BaseSynthDriver):
 		self._unusableModels = set()
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
 		self._modelFailures = {}
+		# Models already warned as too slow for the speed.
+		self._speedWarned = set()
 		self._tier = ""
 		self._formatIndex = 0
 		self._apiKey = None
@@ -1100,6 +1257,21 @@ class SynthDriver(BaseSynthDriver):
 	def _sonicSpeed(self, modelId):
 		"""The rest of the speed, left for sonic to stretch locally."""
 		return round(self.speechSpeed / self._apiSpeed(modelId), 3)
+
+	def _warnIfTooFast(self, modelId):
+		"""Logs once when the speed goes beyond what the model can generate."""
+		maxSpeed = _modelInfo(modelId).maxSpeed
+		speed = self._sonicSpeed(modelId)
+		if maxSpeed is None or speed <= maxSpeed:
+			self._speedWarned.discard(modelId)
+			return
+		if modelId in self._speedWarned:
+			return
+		self._speedWarned.add(modelId)
+		log.warning(
+			f"ElevenLabs: {_modelInfo(modelId).name} generates speech at about {maxSpeed}x "
+			f"real time, so at speed {speed:g}x longer text may pause while it catches up."
+		)
 
 	def _get_softwareGain(self):
 		"""The gain the worker must apply when the player can't do it itself."""

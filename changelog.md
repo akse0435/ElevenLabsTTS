@@ -1,3 +1,7 @@
+V1.1.2 (09/30/2026):
+Longer text strings are now split up into shorter chunks.
+Maximum waiting time for faster models is now much shorter, so NVDA doesn't hang for too long.
+
 V1.1.1 (09/29/2026):
 Selecting a new voice with one of the V4 models should now work more smoothly.
 

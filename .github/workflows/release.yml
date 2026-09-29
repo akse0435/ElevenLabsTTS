@@ -1,0 +1,84 @@
+name: Release add-on
+on:
+  push:
+    branches: [main]
+    paths:
+      - addon/manifest.ini
+      - .github/workflows/release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hent koden
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Læs navn og version fra manifestet
+        id: meta
+        run: |
+          get() {
+            grep -E "^[[:space:]]*$1[[:space:]]*=" addon/manifest.ini | head -n1 \
+              | cut -d= -f2- | tr -d '\r"' | xargs
+          }
+          NAME="$(get name)"
+          VERSION="$(get version)"
+          if [ -z "$NAME" ] || [ -z "$VERSION" ]; then
+            echo "::error::Kunne ikke læse name/version fra addon/manifest.ini"
+            exit 1
+          fi
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Add-on: $NAME, version: $VERSION"
+
+      - name: Tjek om versionen allerede er udgivet
+        id: check
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ steps.meta.outputs.tag }}" >/dev/null; then
+            echo "Tagget ${{ steps.meta.outputs.tag }} findes allerede – ingen ny release."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Byg .nvda-addon
+        if: steps.check.outputs.exists == 'false'
+        id: build
+        run: |
+          FILE="${{ steps.meta.outputs.name }}-${{ steps.meta.outputs.version }}.nvda-addon"
+          cd addon
+          zip -r -X "../$FILE" . -x '*__pycache__*' -x '*.pyc'
+          cd ..
+          unzip -l "$FILE"
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Hent release-noter fra changelog.txt
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          awk -v v="V${{ steps.meta.outputs.version }}" '
+            { sub(/\r$/, "") }
+            found && /^[[:space:]]*$/ { exit }
+            found { print }
+            index($0, v " ") == 1 || $0 == v { found = 1 }
+          ' changelog.txt > release_notes.md
+          if [ ! -s release_notes.md ]; then
+            echo "Ingen changelog-tekst fundet for version ${{ steps.meta.outputs.version }}." > release_notes.md
+          fi
+          cat release_notes.md
+
+      - name: Opret release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.meta.outputs.tag }}" \
+            "${{ steps.build.outputs.file }}" \
+            --target "${{ github.sha }}" \
+            --title "${{ steps.meta.outputs.name }} ${{ steps.meta.outputs.version }}" \
+            --notes-file release_notes.md

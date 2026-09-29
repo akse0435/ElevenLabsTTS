@@ -4,6 +4,7 @@ Selecting a new voice with one of the V4 models should now work more smoothly.
 V1.1 (09/29/2026):
 Added option to select any ElevenLabs model.
 The language box is now read in NVDA's own language.
+Any parameter unavailable in the model currently being used is now hidden.
 
 V1.0 (08/31/2026):
 Initial release

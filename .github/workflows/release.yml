@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hent koden
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -58,15 +58,25 @@ jobs:
           unzip -l "$FILE"
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Hent release-noter fra changelog.txt
+      - name: Hent release-noter fra changelog.md
         if: steps.check.outputs.exists == 'false'
         run: |
-          awk -v v="V${{ steps.meta.outputs.version }}" '
-            { sub(/\r$/, "") }
-            found && /^[[:space:]]*$/ { exit }
-            found { print }
-            index($0, v " ") == 1 || $0 == v { found = 1 }
-          ' changelog.txt > release_notes.md
+          : > release_notes.md
+          if [ -f changelog.md ]; then
+            awk -v v="V${{ steps.meta.outputs.version }}" '
+              { sub(/\r$/, ""); line = $0; sub(/^[[:space:]#*_]+/, "", line) }
+              found && line ~ /^[Vv][0-9]/ { exit }
+              found { buf[++n] = $0 }
+              index(line, v " ") == 1 || index(line, v "*") == 1 || index(line, v ":") == 1 || line == v { found = 1 }
+              END {
+                s = 1; while (s <= n && buf[s] ~ /^[[:space:]]*$/) s++
+                e = n; while (e >= s && buf[e] ~ /^[[:space:]]*$/) e--
+                for (i = s; i <= e; i++) print buf[i]
+              }
+            ' changelog.md > release_notes.md
+          else
+            echo "::warning::changelog.md blev ikke fundet"
+          fi
           if [ ! -s release_notes.md ]; then
             echo "Ingen changelog-tekst fundet for version ${{ steps.meta.outputs.version }}." > release_notes.md
           fi

@@ -75,6 +75,15 @@ MODEL_PROBE_WORKERS = 2
 MAX_RETRIES = 1
 RETRY_DELAY = 0.5
 RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
+# v4 trains a voice the first time it is used with it, which can take well over
+# REQUEST_TIMEOUT, so a chosen model's first request with a voice may wait this long.
+FIRST_USE_TIMEOUT = 60
+# How long new speech waits for a cancelled request for another voice or model to
+# end before sending its own, so a burst of cancelled utterances can't pile up. One
+# for the same voice and model is waited out, as it may be training that voice.
+PREVIOUS_REQUEST_GRACE = 0.5
+# How often the speech thread looks up while waiting, to notice a cancel.
+POLL_INTERVAL = 0.05
 
 # Audio formats, best first, as (output_format, sample rate). The plan decides
 # which are allowed (PCM at 44.1 kHz needs Pro, the lower PCM rates Creator), so
@@ -551,6 +560,37 @@ def _makePlayer(sampleRate):
 	return nvwave.WavePlayer(**kwargs)
 
 
+class _Download(threading.Thread):
+	"""One request on a thread of its own, so speech can move on without waiting for it."""
+
+	daemon = True
+
+	def __init__(self, req, timeout):
+		super().__init__(name="ElevenLabsDownload")
+		self._req = req
+		self._timeout = timeout
+		self._wanted = True
+		# Audio chunks as they arrive, b"" at the end, or the exception that stopped it.
+		self.chunks = queue.Queue()
+		self.started = time.time()
+		self.start()
+
+	def abandon(self):
+		"""Stops passing audio on; the connection closes when the server next answers."""
+		self._wanted = False
+
+	def run(self):
+		try:
+			with urlrequest.urlopen(self._req, timeout=self._timeout) as resp:
+				while self._wanted:
+					chunk = resp.read(CHUNK_SIZE)
+					self.chunks.put(chunk)
+					if not chunk:
+						return
+		except Exception as e:
+			self.chunks.put(e)
+
+
 class _SpeechWorker(threading.Thread):
 	"""Background thread: fetches audio from the API and feeds the player."""
 
@@ -563,6 +603,11 @@ class _SpeechWorker(threading.Thread):
 		self.generation = 0  # incremented on cancel so stale jobs are dropped
 		self._lock = threading.Lock()
 		self._running = True
+		# (voice, model) pairs a chosen model has spoken with this session.
+		self._usedVoices = set()
+		# The last download, and the last one for each (voice, model) pair.
+		self._download = None
+		self._pending = {}
 		self.start()
 
 	def enqueue(self, text, indexes, langOverride=None):
@@ -631,11 +676,15 @@ class _SpeechWorker(threading.Thread):
 		modelId = driver.model
 		retries = 0
 		while True:
+			# A cancelled utterance is dropped rather than retried or passed on.
+			if not self._isCurrent(gen):
+				return False
 			outputFormat = driver.outputFormat
 			isUlaw = outputFormat.startswith("ulaw")
+			voiceId = driver.synthesisVoice
 			body = driver._requestBody(text, lang, modelId)
 			req = urlrequest.Request(
-				f"{API_BASE}/v1/text-to-speech/{driver.synthesisVoice}/stream"
+				f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
 				f"?output_format={outputFormat}",
 				data=json.dumps(body).encode("utf-8"),
 				headers={
@@ -645,43 +694,61 @@ class _SpeechWorker(threading.Thread):
 				},
 				method="POST",
 			)
+			pair = (voiceId, modelId)
+			firstUse = modelId != DEFAULT_MODEL and pair not in self._usedVoices
+			if not self._waitForPrevious(gen, pair):
+				return False
+			download = _Download(req, FIRST_USE_TIMEOUT if firstUse else REQUEST_TIMEOUT)
+			self._download = self._pending[pair] = download
+			player = sonic = None
 			fedAudio = False
 			carry = b""  # odd trailing byte held back so samples stay aligned
 			try:
-				with urlrequest.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
-					player = driver._getPlayer()
-					# None when the API delivers the whole speed on its own.
-					sonic = driver._prepareSonic(modelId)
-					while True:
-						if not self._isCurrent(gen):
-							return False
-						chunk = resp.read(CHUNK_SIZE)
-						if not chunk:
-							break
-						if isUlaw:
-							chunk = _decodeUlaw(chunk)
-						chunk = carry + chunk
-						if len(chunk) % 2:
-							carry, chunk = chunk[-1:], chunk[:-1]
-						else:
-							carry = b""
-						gain = driver.softwareGain
-						if sonic is not None:
-							# Sonic scales the volume too, in C rather than Python.
-							sonic.volume = gain
-							chunk = _sonicWrite(sonic, chunk)
-						elif gain < 1.0:
-							chunk = _scaleVolume(chunk, gain)
-						if not chunk:
-							continue
-						# feed blocks until there is room in the playback buffer
+				while True:
+					if not self._isCurrent(gen):
+						return False
+					try:
+						chunk = download.chunks.get(timeout=POLL_INTERVAL)
+					except queue.Empty:
+						continue
+					if isinstance(chunk, Exception):
+						raise chunk
+					if player is None:
+						if firstUse:
+							self._usedVoices.add(pair)
+							log.debug(
+								f"ElevenLabs: {_modelInfo(modelId).name} started with voice {voiceId} "
+								f"after {time.time() - download.started:.1f} s."
+							)
+						player = driver._getPlayer()
+						# None when the API delivers the whole speed on its own.
+						sonic = driver._prepareSonic(modelId)
+					if not chunk:
+						break
+					if isUlaw:
+						chunk = _decodeUlaw(chunk)
+					chunk = carry + chunk
+					if len(chunk) % 2:
+						carry, chunk = chunk[-1:], chunk[:-1]
+					else:
+						carry = b""
+					gain = driver.softwareGain
+					if sonic is not None:
+						# Sonic scales the volume too, in C rather than Python.
+						sonic.volume = gain
+						chunk = _sonicWrite(sonic, chunk)
+					elif gain < 1.0:
+						chunk = _scaleVolume(chunk, gain)
+					if not chunk:
+						continue
+					# feed blocks until there is room in the playback buffer
+					player.feed(chunk)
+					fedAudio = True
+				if sonic is not None:
+					chunk = _sonicDrain(sonic)
+					if chunk:
 						player.feed(chunk)
 						fedAudio = True
-					if sonic is not None:
-						chunk = _sonicDrain(sonic)
-						if chunk:
-							player.feed(chunk)
-							fedAudio = True
 			except HTTPError as e:
 				detail = _REQUEST_ID_PATTERN.sub("", self._readErrorDetail(e))
 				# A format the default model rejects is one the plan doesn't allow,
@@ -704,21 +771,25 @@ class _SpeechWorker(threading.Thread):
 				# Anything else the chosen model can't do is spoken with the
 				# default model, so NVDA never falls silent over a model.
 				if not fedAudio and modelId != DEFAULT_MODEL and e.code != 401:
-					driver._reportModelRefusal(modelId, e.code, detail)
+					driver._reportModelFailure(modelId, f"HTTP {e.code}: {detail.strip()}")
 					modelId = DEFAULT_MODEL
 					continue
 				# A voice that stops working mid-session, e.g. after a downgrade,
 				# is taken out of the list and another voice is tried.
 				if not fedAudio and _classifyRefusal(e.code, detail) == PROBE_UNUSABLE:
-					voiceId = driver.synthesisVoice
 					driver._markVoiceUnusable(voiceId, detail.strip())
 					if driver.synthesisVoice != voiceId:
 						continue
 				driver.reportError(f"http{e.code}", f"ElevenLabs API error {e.code}: {detail}")
 				return False
 			except (URLError, OSError) as e:
-				# Timeouts and dropped connections; only safe to retry while no
-				# audio of this utterance has been played yet.
+				# Timeouts and dropped connections. A chosen model gives way to the
+				# default one; otherwise a retry is only safe while no audio of this
+				# utterance has been played yet.
+				if not fedAudio and modelId != DEFAULT_MODEL:
+					driver._reportModelFailure(modelId, str(e))
+					modelId = DEFAULT_MODEL
+					continue
 				if not fedAudio and retries < MAX_RETRIES:
 					retries += 1
 					if self._waitBeforeRetry(gen):
@@ -726,12 +797,32 @@ class _SpeechWorker(threading.Thread):
 					return False
 				driver.reportError("network", f"ElevenLabs network error: {e}")
 				return False
+			finally:
+				download.abandon()
 			driver._onSynthesisSucceeded()
 			return True
 
 	def _waitBeforeRetry(self, gen):
 		time.sleep(RETRY_DELAY)
 		return self._isCurrent(gen)
+
+	def _waitForPrevious(self, gen, pair):
+		"""Holds a new request back while an abandoned one is still waiting for its
+		answer; see PREVIOUS_REQUEST_GRACE. False if this utterance is cancelled."""
+		same = self._pending.get(pair)
+		while same is not None and same.is_alive():
+			if not self._isCurrent(gen):
+				return False
+			same.join(POLL_INTERVAL)
+		previous = self._download
+		while previous is not None and previous.is_alive():
+			remaining = previous.started + PREVIOUS_REQUEST_GRACE - time.time()
+			if remaining <= 0:
+				break
+			if not self._isCurrent(gen):
+				return False
+			previous.join(min(remaining, POLL_INTERVAL))
+		return True
 
 	@staticmethod
 	def _readErrorDetail(error):
@@ -818,7 +909,7 @@ class SynthDriver(BaseSynthDriver):
 		self._voicesChecked = False
 		self._unusableModels = set()
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
-		self._modelRefusals = {}
+		self._modelFailures = {}
 		self._tier = ""
 		self._formatIndex = 0
 		self._apiKey = None
@@ -1603,14 +1694,14 @@ class SynthDriver(BaseSynthDriver):
 		log.debug(f"ElevenLabs: {modelId} refused the stability value; using presets.")
 		return True
 
-	def _reportModelRefusal(self, modelId, code, detail):
+	def _reportModelFailure(self, modelId, reason):
 		"""Logs that a model failed and the default one spoke, once per reason."""
 		message = (
-			f"ElevenLabs: {_modelInfo(modelId).name} could not speak (HTTP {code}), so "
-			f"{MODELS[DEFAULT_MODEL].name} was used instead. {detail.strip()}"
+			f"ElevenLabs: {_modelInfo(modelId).name} could not speak, so "
+			f"{MODELS[DEFAULT_MODEL].name} was used instead. {reason}"
 		)
-		if self._modelRefusals.get(modelId) != message:
-			self._modelRefusals[modelId] = message
+		if self._modelFailures.get(modelId) != message:
+			self._modelFailures[modelId] = message
 			log.warning(message)
 
 	def _get_availableModels(self):

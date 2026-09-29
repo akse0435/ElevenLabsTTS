@@ -1,3 +1,8 @@
+V1.1.3 (09/30/2026):
+Speech no longer pauses suddenly in the middle of a sentence.
+Splitting of long text can now be turned off in voice settings.
+Long text now only splits between whole sentence, unless the sentence is longer than alowed.
+
 V1.1.2 (09/30/2026):
 Longer text strings are now split up into shorter chunks.
 Maximum waiting time for faster models is now much shorter, so NVDA doesn't hang for too long.

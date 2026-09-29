@@ -86,10 +86,10 @@ FIRST_USE_TIMEOUT = 60
 PREVIOUS_REQUEST_GRACE = 0.5
 # How often the speech thread looks up while waiting, to notice a cancel.
 POLL_INTERVAL = 0.05
+# Silence mid-utterance, in seconds, long enough to log.
+GAP_TO_LOG = 0.3
 
-# Non-real-time models get long text in parts; the next is fetched while one plays.
-FIRST_PART_CHARS = 150
-PART_CHARS = 400
+# Long text is split between sentences; see ModelInfo.parts.
 _SENTENCE_END = re.compile(r"(?<=[.!?\u2026])\s+|\n+")
 _CLAUSE_END = re.compile(r"(?<=[,;:])\s+")
 _WHITESPACE = re.compile(r"\s+")
@@ -122,15 +122,18 @@ DEFAULT_STABILITY = 50  # stability 0.5
 DEFAULT_CLARITY = 75  # similarity_boost 0.75
 DEFAULT_STYLE = 0  # style 0.0
 DEFAULT_SPEAKER_BOOST = True
+DEFAULT_SPLIT_TEXT = True
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
 
 # What a model accepts: whether it takes language_code, and which voice_settings.
 # Turbo takes the same as Flash, which ElevenLabs calls its functional equivalent.
-# realtime: shorter timeout, no splitting. maxSpeed: measured speed it keeps up with.
+# realtime: shorter timeout. maxSpeed: measured speed it keeps up with.
+# parts: (first, later) part sizes in characters. Only Multilingual v2's wait
+# grows much with length; the others split for the limit.
 ModelInfo = namedtuple(
-	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed"),
-	defaults=(True, None),
+	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed", "parts"),
+	defaults=(True, None, (1000, 1000)),
 )
 _MULTILINGUAL_SETTINGS = ("stability", "similarity_boost", "style", "use_speaker_boost", "speed")
 _FLASH_SETTINGS = ("stability", "similarity_boost", "speed")
@@ -138,7 +141,8 @@ _V3_SETTINGS = ("stability",)
 _V4_SETTINGS = ("stability", "similarity_boost")
 # Text to speech models in the order they were released, as shown in the model box.
 MODELS = OrderedDict((
-	("eleven_multilingual_v2", ModelInfo("Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, False)),
+	("eleven_multilingual_v2", ModelInfo(
+		"Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, False, None, (150, 400))),
 	("eleven_turbo_v2", ModelInfo("Eleven Turbo v2 (English only)", False, _FLASH_SETTINGS)),
 	("eleven_turbo_v2_5", ModelInfo("Eleven Turbo v2.5", True, _FLASH_SETTINGS)),
 	("eleven_flash_v2", ModelInfo("Eleven Flash v2 (English only)", False, _FLASH_SETTINGS)),
@@ -530,17 +534,14 @@ def _splitLong(text, limit):
 	return [text[i:i + limit] for i in range(0, len(text), limit)]
 
 
-def _splitText(text):
-	"""Splits text into a short first part and longer later ones."""
-	if len(text) <= FIRST_PART_CHARS:
+def _splitText(text, first, later):
+	"""Splits text between sentences; only a sentence over later is split inside."""
+	if len(text) <= first:
 		return [text]
 	pieces = []
 	for sentence in _SENTENCE_END.split(text):
-		pieces.extend(_splitLong(sentence.strip(), PART_CHARS))
-	pieces = [p for p in pieces if p]
-	if pieces and len(pieces[0]) > FIRST_PART_CHARS:
-		pieces[:1] = _splitLong(pieces[0], FIRST_PART_CHARS)
-	return _group(pieces, PART_CHARS, FIRST_PART_CHARS) or [text]
+		pieces.extend(_splitLong(sentence.strip(), later))
+	return _group(pieces, later, first) or [text]
 
 
 def _languageSetting():
@@ -701,6 +702,8 @@ class _SpeechWorker(threading.Thread):
 		self._pending = {}
 		# The next part's download.
 		self._prefetch = None
+		# When the audio fed so far should end playing; None before the first feed.
+		self._playEnd = None
 		self.start()
 
 	def enqueue(self, text, indexes, langOverride=None):
@@ -756,10 +759,13 @@ class _SpeechWorker(threading.Thread):
 					synthDoneSpeaking.notify(synth=self.driver)
 
 	def _speakParts(self, gen, text, langOverride):
-		"""Speaks text, in parts for models that aren't real-time."""
+		"""Speaks text, in parts when splitting is on."""
 		modelId = self.driver.model
 		self.driver._warnIfTooFast(modelId)
-		parts = [text] if _modelInfo(modelId).realtime else _splitText(text)
+		parts = _splitText(text, *_modelInfo(modelId).parts) if self.driver.splitText else [text]
+		# Joined screen lines can hold double spaces, which v3 may speak as a breath.
+		parts = [p for p in (" ".join(p.split()) for p in parts) if p]
+		self._playEnd = None
 		try:
 			for i, part in enumerate(parts):
 				if not self._synthesize(gen, part, langOverride, parts[i + 1:]):
@@ -819,6 +825,17 @@ class _SpeechWorker(threading.Thread):
 		# Settings changed since it started.
 		download.abandon()
 		return None
+
+	def _trackPlayback(self, nbytes, modelId, text):
+		"""Logs when the player must have run dry before this chunk arrived."""
+		now = time.time()
+		seconds = nbytes / (2.0 * OUTPUT_FORMATS[self.driver._formatIndex][1])
+		if self._playEnd is not None and now - self._playEnd >= GAP_TO_LOG:
+			log.info(
+				f"ElevenLabs: {_modelInfo(modelId).name} ran out of audio for "
+				f"{now - self._playEnd:.1f} s in: {text[:60]!r}"
+			)
+		self._playEnd = max(self._playEnd or now, now) + seconds
 
 	def _dropPrefetch(self):
 		with self._lock:
@@ -896,12 +913,14 @@ class _SpeechWorker(threading.Thread):
 						chunk = _scaleVolume(chunk, gain)
 					if not chunk:
 						continue
+					self._trackPlayback(len(chunk), modelId, text)
 					# feed blocks until there is room in the playback buffer
 					player.feed(chunk)
 					fedAudio = True
 				if sonic is not None:
 					chunk = _sonicDrain(sonic)
 					if chunk:
+						self._trackPlayback(len(chunk), modelId, text)
 						player.feed(chunk)
 						fedAudio = True
 			except HTTPError as e:
@@ -1033,6 +1052,13 @@ class SynthDriver(BaseSynthDriver):
 			defaultVal=DEFAULT_SPEAKER_BOOST,
 			displayName="Speaker boost",
 		),
+		BooleanDriverSetting(
+			"splitText",
+			"Split long te&xt",
+			availableInSettingsRing=True,
+			defaultVal=DEFAULT_SPLIT_TEXT,
+			displayName="Split long text",
+		),
 	)
 	supportedCommands = {IndexCommand, LangChangeCommand}
 	supportedNotifications = {synthIndexReached, synthDoneSpeaking}
@@ -1057,6 +1083,7 @@ class SynthDriver(BaseSynthDriver):
 		self._clarity = DEFAULT_CLARITY
 		self._style = DEFAULT_STYLE
 		self._speakerBoost = DEFAULT_SPEAKER_BOOST
+		self._splitText = DEFAULT_SPLIT_TEXT
 		self._allVoices = OrderedDict()
 		self._voiceCategories = {}
 		self._voicesCache = OrderedDict()
@@ -1124,11 +1151,10 @@ class SynthDriver(BaseSynthDriver):
 			elif isinstance(item, IndexCommand):
 				indexes.append(item.index)
 			elif isinstance(item, LangChangeCommand):
-				# NVDA sends e.g. "en_US"; only the language part is used.
-				if item.lang:
-					code = item.lang.split("_")[0].lower()
-					if code in LANGUAGES and code != "auto":
-						langOverride = code
+				# NVDA sends e.g. "en_US"; only the language part is used. None,
+				# or a language the API lacks, means the language setting.
+				code = (item.lang or "").split("_")[0].lower()
+				langOverride = code if code in LANGUAGES and code != "auto" else None
 		text = " ".join(textParts).strip()
 		if not text:
 			# No text, but indexes must still be reported as reached.
@@ -1148,6 +1174,9 @@ class SynthDriver(BaseSynthDriver):
 				pass
 
 	def pause(self, switch):
+		if self._worker is not None:
+			# A pause isn't a gap in the audio.
+			self._worker._playEnd = None
 		player = self._player
 		if player is not None:
 			try:
@@ -1969,6 +1998,12 @@ class SynthDriver(BaseSynthDriver):
 
 	def _set_speakerBoost(self, value):
 		self._speakerBoost = bool(value)
+
+	def _get_splitText(self):
+		return self._splitText
+
+	def _set_splitText(self, value):
+		self._splitText = bool(value)
 
 	def _get_rateBoost(self):
 		return self._rateBoost

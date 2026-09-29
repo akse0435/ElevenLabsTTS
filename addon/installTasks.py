@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-# Runs when the add-on is installed, so the file to paste the API key into is
-# there straight away rather than after the next restart.
-#
-# This deliberately duplicates the template from synthDrivers/elevenlabs.py
-# instead of importing it: while the add-on is being installed its own
-# synthDrivers folder is not on NVDA's import path yet, so importing the driver
-# here would fail.
+# Creates the settings file when the add-on is installed, so the API key can be
+# pasted in straight away. The template is copied from synthDrivers/elevenlabs.py
+# because the driver can't be imported while the add-on is being installed.
 
 import os
 
@@ -21,6 +17,7 @@ TEMPLATE = """\
 # output_format: audio format the driver negotiated with your plan.
 # unusable_voices, voice_check: voices this account cannot generate with,
 # and a fingerprint of the account state they were worked out for.
+# unusable_models, model_check: the same for models.
 # check_voices = no turns the voice check off.
 # Remove a line to work that setting out again.
 api_key = 
@@ -30,8 +27,8 @@ api_key =
 def onInstall():
 	path = os.path.join(globalVars.appArgs.configPath, SETTINGS_FILENAME)
 	if os.path.isfile(path):
-		# Left alone: it holds the user's key, and uninstalling the add-on does
-		# not remove it, so an existing file is normal when reinstalling.
+		# Left alone: it holds the user's key and survives uninstalling, so it
+		# is normal to find one when reinstalling.
 		log.info(f"ElevenLabs: {path} already exists and was left as it is.")
 		return
 	try:

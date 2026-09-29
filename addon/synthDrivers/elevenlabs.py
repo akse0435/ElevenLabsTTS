@@ -1,22 +1,15 @@
 # -*- coding: utf-8 -*-
 # ElevenLabs speech synthesizer driver for NVDA.
 #
-# Setup:
-#   1. Installing the add-on creates "elevenlabs_settings.txt" in your NVDA
-#      configuration folder (usually %APPDATA%\nvda). Open it and put your
-#      ElevenLabs API key after the equals sign on the api_key line.
-#   2. Restart NVDA and select "ElevenLabs" as the synthesizer.
+# Setup: installing the add-on creates elevenlabs_settings.txt in NVDA's
+# configuration folder (usually %APPDATA%\nvda). Put your ElevenLabs API key
+# after the equals sign on its api_key line, restart NVDA and select
+# "ElevenLabs" as the synthesizer. The same file holds the driver's other
+# settings, and a key in the older elevenlabs_api_key.txt is moved into it.
 #
-# The same file holds every other setting this driver keeps outside NVDA's own
-# configuration, and the driver writes back to it. A key saved in the older
-# "elevenlabs_api_key.txt" is moved into it automatically.
-#
-# Speeds above what the API itself offers are produced locally with sonic, the
-# time stretcher NVDA ships from 2025.1 onwards, hence the minimum version.
-#
-# Note: all speech is sent to ElevenLabs' servers and every character counts
-# towards your API usage. The streaming endpoint is used for the lowest possible
-# latency, but expect noticeable delay compared to a local synthesizer.
+# All speech is sent to ElevenLabs and counts towards your API usage. Speeds
+# the API can't deliver itself are made locally with sonic, which NVDA ships
+# from 2025.1 onwards, hence the minimum version.
 
 import array
 import hashlib
@@ -27,8 +20,9 @@ import re
 import struct
 import threading
 import time
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from ctypes import c_short
 from urllib import request as urlrequest
 from urllib.error import HTTPError, URLError
@@ -48,50 +42,43 @@ from speech.commands import IndexCommand, LangChangeCommand
 from synthDriverHandler import (
 	SynthDriver as BaseSynthDriver,
 	VoiceInfo,
+	getSynth,
 	synthDoneSpeaking,
 	synthIndexReached,
 )
 
 API_BASE = "https://api.elevenlabs.io"
-# Flash v2.5 is the fastest model and supports Danish.
-MODEL_ID = "eleven_flash_v2_5"
 CHUNK_SIZE = 4096
 REQUEST_TIMEOUT = 15
-# Checks run while the synthesizer loads. NVDA is waiting during these, so the
-# timeout is what bounds how long start up can stall before the driver gives up
-# and reports failure, letting NVDA fall back to another synthesizer.
+# Timeout for the checks run while NVDA waits for the synthesizer to load. If
+# they fail, NVDA falls back to another synthesizer.
 INIT_TIMEOUT = 8
-# Voices are checked by asking for the shortest possible sample. One character
-# costs one credit, and the result is cached, so this is paid once per account
-# state rather than on every start.
+# Voices and models are checked with the shortest possible sample, and the
+# result is cached, so the few credits it costs are paid once per account state.
 PROBE_TEXT = "."
 PROBE_TIMEOUT = 10
 PROBE_WORKERS = 4
-# A guard against accounts with very large voice libraries, where checking every
-# voice would mean a long wait and a lot of requests.
+# Keeps the check short for accounts with very large voice libraries.
 MAX_PROBED_VOICES = 100
-# Bumped whenever the check itself changes, so results recorded by an older
-# version are worked out again rather than trusted.
+# Bumped whenever a check changes, so results cached by an older version are redone.
 VOICE_CHECK_VERSION = 2
-# How many voices are tried at start up before giving up. Each one is a request,
-# so this bounds how long NVDA can be held back by an account whose voices have
-# stopped working.
+MODEL_CHECK_VERSION = 1
+# Voices tried at start up before giving up, which bounds how long NVDA waits.
 MAX_STARTUP_TRIES = 8
-# An upper bound on the whole voice check, so an account with many voices or a
-# slow connection can never hold NVDA back indefinitely.
+# Upper bounds on each check, so NVDA is never held back indefinitely.
 VOICE_CHECK_DEADLINE = 20
+MODEL_CHECK_DEADLINE = 15
+# Kept low, since the free plan allows few concurrent requests per model.
+MODEL_PROBE_WORKERS = 2
 
-# One retry is enough for a dropped connection or a busy server; more would
-# stack up delay on speech the user is waiting for.
+# One retry covers a dropped connection or a busy server without much delay.
 MAX_RETRIES = 1
 RETRY_DELAY = 0.5
 RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
 
-# Audio formats tried in order, best first, as (output_format, sample rate).
-# The account's plan decides which are allowed: PCM at 44.1 kHz needs the Pro
-# plan and the lower PCM rates need Creator, so a request for a format above the
-# plan is rejected with HTTP 403. The driver then steps down this list until one
-# is accepted; ulaw_8000 is available on every plan but sounds noticeably worse.
+# Audio formats, best first, as (output_format, sample rate). The plan decides
+# which are allowed (PCM at 44.1 kHz needs Pro, the lower PCM rates Creator), so
+# on HTTP 403 the driver steps down the list. ulaw_8000 works on every plan.
 OUTPUT_FORMATS = (
 	("pcm_44100", 44100),
 	("pcm_24000", 24000),
@@ -100,27 +87,58 @@ OUTPUT_FORMATS = (
 	("ulaw_8000", 8000),
 )
 
-# Speech rate. The API's own speed parameter only covers 0.7 to 1.2, which is
-# far too slow for practised screen reader users, so the rate is split in two:
-# the API is asked for as much of it as it accepts and sonic stretches the audio
-# for the rest. Normal speed sits at rate 50 so the slider still behaves.
+# Speech rate. The API's speed only covers 0.7 to 1.2, so the API is asked for
+# what it can do and sonic stretches the rest. Normal speed sits at rate 50.
 API_SPEED_RANGE = (0.7, 1.2)
 SPEED_AT_MIN_RATE = 0.5
 SPEED_AT_RATE_50 = 1.0
 SPEED_AT_MAX_RATE = 3.0
 # Rate boost stretches the top of the slider further, as NVDA's own drivers do.
 SPEED_AT_MAX_RATE_BOOSTED = 6.0
+# Below this much stretching sonic is skipped, since it can only add artefacts.
+SONIC_THRESHOLD = 0.01
 
-# The model's own voice settings, each exposed as a slider. NVDA works in whole
-# numbers from 0 to 100 while the API takes 0.0 to 1.0, so the values are simply
-# divided by 100. The defaults are the ones ElevenLabs recommends, and are what
-# this driver has always sent, so speech sounds the same until they are changed.
+# Voice setting sliders run from 0 to 100 and the API from 0.0 to 1.0. The
+# defaults are the values ElevenLabs recommends.
 DEFAULT_STABILITY = 50  # stability 0.5
 DEFAULT_CLARITY = 75  # similarity_boost 0.75
 DEFAULT_STYLE = 0  # style 0.0
 DEFAULT_SPEAKER_BOOST = True
-# Below this much stretching sonic is skipped, since it can only add artefacts.
-SONIC_THRESHOLD = 0.01
+# The only stability values v3 accepts. Also used for any model that refuses others.
+STABILITY_PRESETS = (0.0, 0.5, 1.0)
+
+# What a model accepts: whether it takes language_code, and which voice_settings.
+# Turbo takes the same as Flash, which ElevenLabs calls its functional equivalent.
+ModelInfo = namedtuple("ModelInfo", ("name", "languageCode", "settings"))
+_MULTILINGUAL_SETTINGS = ("stability", "similarity_boost", "style", "use_speaker_boost", "speed")
+_FLASH_SETTINGS = ("stability", "similarity_boost", "speed")
+_V3_SETTINGS = ("stability",)
+_V4_SETTINGS = ("stability", "similarity_boost")
+# Text to speech models in the order they were released, as shown in the model box.
+MODELS = OrderedDict((
+	("eleven_multilingual_v2", ModelInfo("Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS)),
+	("eleven_turbo_v2", ModelInfo("Eleven Turbo v2 (English only)", False, _FLASH_SETTINGS)),
+	("eleven_turbo_v2_5", ModelInfo("Eleven Turbo v2.5", True, _FLASH_SETTINGS)),
+	("eleven_flash_v2", ModelInfo("Eleven Flash v2 (English only)", False, _FLASH_SETTINGS)),
+	("eleven_flash_v2_5", ModelInfo("Eleven Flash v2.5", True, _FLASH_SETTINGS)),
+	("eleven_v3", ModelInfo("Eleven v3", True, _V3_SETTINGS)),
+	("eleven_v3_conversational", ModelInfo("Eleven v3 Conversational", True, _V3_SETTINGS)),
+	("eleven_v4", ModelInfo("Eleven v4", True, _V4_SETTINGS)),
+	("eleven_v4_turbo", ModelInfo("Eleven v4 Turbo", True, _V4_SETTINGS)),
+))
+# The default. Every plan has it, so voices and audio formats are checked with
+# it, and it speaks whenever the chosen model refuses to.
+DEFAULT_MODEL = "eleven_flash_v2_5"
+# Models known to take only the stability presets.
+PRESET_STABILITY_MODELS = ("eleven_v3", "eleven_v3_conversational")
+# The voice_settings name behind each slider and checkbox. Only those the chosen
+# model takes are shown in NVDA.
+_SETTING_API_NAMES = {
+	"stability": "stability",
+	"clarity": "similarity_boost",
+	"style": "style",
+	"speakerBoost": "use_speaker_boost",
+}
 
 SETTINGS_FILENAME = "elevenlabs_settings.txt"
 # Files used before the settings file existed; read once and then migrated.
@@ -132,6 +150,7 @@ SETTINGS_HEADER = (
 	"# output_format: audio format the driver negotiated with your plan.",
 	"# unusable_voices, voice_check: voices this account cannot generate with,",
 	"# and a fingerprint of the account state they were worked out for.",
+	"# unusable_models, model_check: the same for models.",
 	"# check_voices = no turns the voice check off.",
 	"# Remove a line to work that setting out again.",
 )
@@ -139,50 +158,50 @@ SETTINGS_HEADER = (
 # Fallback voice (Rachel), used until the real voice list arrives.
 FALLBACK_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
 
-# The id of the language setting shown in the voice settings dialog.
-# NVDA derives the available-values attribute via id.capitalize(), so the id
-# must be a single lowercase word (here: _get_availableElvlanguages).
+# Id of the language box. Not "language", since NVDA uses availableLanguages for
+# a set of codes. NVDA finds the choices via id.capitalize(), so the id must be
+# a single lowercase word (here: _get_availableElvlanguages).
 LANGUAGE_SETTING_ID = "elvlanguage"
 
-# Languages supported by eleven_flash_v2_5 (ISO 639-1).
+# Choices in the language box (ISO 639-1): the languages Flash v2.5 supports.
 # "auto" omits language_code, letting the model detect the language itself.
 LANGUAGES = OrderedDict((
 	("auto", "Automatic (detect language)"),
-	("da", "Danish"),
-	("en", "English"),
-	("de", "German"),
-	("sv", "Swedish"),
-	("no", "Norwegian"),
-	("nl", "Dutch"),
-	("fr", "French"),
-	("es", "Spanish"),
-	("it", "Italian"),
-	("pt", "Portuguese"),
-	("pl", "Polish"),
-	("fi", "Finnish"),
-	("cs", "Czech"),
-	("sk", "Slovak"),
-	("hu", "Hungarian"),
-	("ro", "Romanian"),
-	("bg", "Bulgarian"),
-	("hr", "Croatian"),
-	("el", "Greek"),
-	("uk", "Ukrainian"),
-	("ru", "Russian"),
-	("tr", "Turkish"),
 	("ar", "Arabic"),
-	("hi", "Hindi"),
-	("ta", "Tamil"),
-	("id", "Indonesian"),
-	("ms", "Malay"),
+	("bg", "Bulgarian"),
+	("zh", "Chinese"),
+	("hr", "Croatian"),
+	("cs", "Czech"),
+	("da", "Danish"),
+	("nl", "Dutch"),
+	("en", "English"),
 	("fil", "Filipino"),
-	("vi", "Vietnamese"),
+	("fi", "Finnish"),
+	("fr", "French"),
+	("de", "German"),
+	("el", "Greek"),
+	("hi", "Hindi"),
+	("hu", "Hungarian"),
+	("id", "Indonesian"),
+	("it", "Italian"),
 	("ja", "Japanese"),
 	("ko", "Korean"),
-	("zh", "Chinese"),
+	("ms", "Malay"),
+	("no", "Norwegian"),
+	("pl", "Polish"),
+	("pt", "Portuguese"),
+	("ro", "Romanian"),
+	("ru", "Russian"),
+	("sk", "Slovak"),
+	("es", "Spanish"),
+	("sv", "Swedish"),
+	("ta", "Tamil"),
+	("tr", "Turkish"),
+	("uk", "Ukrainian"),
+	("vi", "Vietnamese"),
 ))
 
-DEFAULT_LANGUAGE = "da"
+DEFAULT_LANGUAGE = "auto"
 
 # Request ids differ on every call, so they are stripped before an error is
 # compared with the last one to decide whether it is worth logging again.
@@ -251,9 +270,8 @@ def _sonicDrain(stream):
 def _scaleVolume(data, gain):
 	"""Quietens 16 bit PCM by the given gain, for players without a volume control.
 
-	NVDA only runs on Windows, so array's native order is the little endian the
-	API sends. The gain is never above 1, so samples cannot clip.
-	"""
+	NVDA only runs on Windows, so array's native order is the API's little endian,
+	and a gain of at most 1 cannot clip."""
 	samples = array.array("h")
 	samples.frombytes(data)
 	for index in range(len(samples)):
@@ -264,8 +282,7 @@ def _scaleVolume(data, gain):
 def _isOutputFormatRejection(detail):
 	"""True if a 403 body complains about the requested audio format.
 
-	The API has used both "output_format" and "output format" in these errors.
-	"""
+	The API has used both "output_format" and "output format" in these errors."""
 	detail = detail.lower()
 	return "output_format" in detail or "output format" in detail
 
@@ -324,11 +341,8 @@ def _writeSetting(name, value):
 def _ensureSettingsFile():
 	"""Makes sure the settings file exists and has a line ready for the key.
 
-	The add-on's install task does this when the add-on is installed, but that
-	only runs once. This is called on every start as well, so the file is also
-	there for an add-on folder copied in by hand, a portable copy, or a file
-	deleted since. An existing file is never overwritten, only added to.
-	"""
+	Runs on every start, so it also covers a copied add-on or a deleted file.
+	An existing file is never overwritten, only added to."""
 	path = _configFilePath(SETTINGS_FILENAME)
 	lines = _readLines(SETTINGS_FILENAME)
 	if lines is None:
@@ -360,13 +374,13 @@ def _readApiKey():
 	return None
 
 
-def invalidateVoiceCheck():
-	"""Forgets the recorded voice check, so the next load works it out again.
+def invalidateChecks():
+	"""Forgets the recorded voice and model checks, so the next load redoes them.
 
-	Used when the synthesizer is not running and there is therefore nothing to
-	check against. Selecting the synthesizer afterwards does the full check.
-	"""
-	return _writeSetting("voice_check", "")
+	For when the synthesizer is not running and there is nothing to check against."""
+	voices = _writeSetting("voice_check", "")
+	models = _writeSetting("model_check", "")
+	return voices and models
 
 
 def _migrateLegacyFiles():
@@ -396,23 +410,20 @@ class ElevenLabsUnavailable(Exception):
 	"""The synthesizer cannot be used, so NVDA should fall back to another one."""
 
 
-# Outcomes of trying a voice: usable, definitely not usable with this account,
-# or no clear answer, in which case the voice is left alone. A voice is only
-# ever hidden on a definite answer, so a network hiccup can't make voices
-# disappear.
+# Outcomes of trying a voice or model: usable, definitely not usable with this
+# account, or no clear answer. Only a definite answer hides anything, so a
+# network hiccup can't make voices or models disappear.
 PROBE_OK = "ok"
 PROBE_UNUSABLE = "unusable"
 PROBE_UNKNOWN = "unknown"
-# Something wrong with the account rather than the voice, e.g. an exhausted
-# quota or a rejected key. Every voice would fail, so checking stops.
+# Something wrong with the account itself, e.g. an exhausted quota or a
+# rejected key. Everything would fail, so checking stops.
 PROBE_ACCOUNT = "account"
 
-# Statuses that mean the request never got a real answer. Nothing is concluded
-# about a voice from these.
+# Statuses that mean the request never got a real answer.
 TRANSIENT_STATUS_CODES = (408, 425, 429)
 
-# Wording that points at the account rather than any one voice. These would make
-# every voice fail, so the check stops instead of emptying the list.
+# Wording that points at the account rather than any one voice or model.
 _ACCOUNT_REJECTION_TERMS = (
 	"quota_exceeded",
 	"quota exceeded",
@@ -428,32 +439,65 @@ _ACCOUNT_REJECTION_TERMS = (
 	"banned",
 	"blocked",
 )
-# Wording that clearly blames the voice, which outranks the account terms above,
-# since these messages often mention the subscription as well.
-_VOICE_REJECTION_TERMS = (
+# Wording that blames the voice or model. It outranks the account terms, since
+# these messages often mention the subscription as well.
+_VOICE_OR_MODEL_TERMS = (
 	"voice",
 	"voice_id",
 	"model",
 )
 
 
-def _classifyVoiceFailure(status, detail):
-	"""Decides whether a failed request means the voice or the account is at fault.
+def _classifyRefusal(status, detail):
+	"""Decides whether a refused check is down to the voice or model tried, or the account.
 
-	By the time a voice is checked the key has already worked, the audio format
-	has been settled and the text is a single character, so a refusal that names
-	the voice, or any other refusal of the request itself, is the voice's doing.
-	Only clearly transient answers are treated as no answer.
-	"""
+	By then the key, audio format and default model are known to work and the text
+	is one character, so any refusal of the request itself counts against what was
+	tried. Only clearly transient answers count as no answer."""
 	detail = detail.lower()
 	if status in TRANSIENT_STATUS_CODES or status >= 500:
 		return PROBE_UNKNOWN
-	blamesVoice = any(term in detail for term in _VOICE_REJECTION_TERMS)
-	if not blamesVoice and any(term in detail for term in _ACCOUNT_REJECTION_TERMS):
+	blamesItem = any(term in detail for term in _VOICE_OR_MODEL_TERMS)
+	if not blamesItem and any(term in detail for term in _ACCOUNT_REJECTION_TERMS):
 		return PROBE_ACCOUNT
 	if 400 <= status < 500:
 		return PROBE_UNUSABLE
 	return PROBE_UNKNOWN
+
+
+def _isRefusal(status):
+	"""True for a 4xx answer that is neither transient nor about the API key."""
+	return 400 <= status < 500 and status != 401 and status not in TRANSIENT_STATUS_CODES
+
+
+def _modelInfo(modelId):
+	"""What a model accepts; unknown ids are treated like the default model."""
+	return MODELS.get(modelId) or MODELS[DEFAULT_MODEL]
+
+
+def _languageSetting():
+	"""The language box, labelled with NVDA's own translated strings."""
+	nvdaSetting = BaseSynthDriver.LanguageSetting()
+	return DriverSetting(
+		LANGUAGE_SETTING_ID,
+		nvdaSetting.displayNameWithAccelerator,
+		availableInSettingsRing=True,
+		displayName=nvdaSetting.displayName,
+	)
+
+
+def _openVoicePanels():
+	"""NVDA's voice settings panels in any open settings dialog."""
+	import wx
+	from gui.settingsDialogs import VoiceSettingsPanel
+
+	pending = [w for w in wx.GetTopLevelWindows() if not w.IsBeingDeleted()]
+	while pending:
+		window = pending.pop()
+		if isinstance(window, VoiceSettingsPanel):
+			yield window
+		else:
+			pending.extend(window.GetChildren())
 
 
 def _fetchJson(url, key, timeout):
@@ -582,16 +626,14 @@ class _SpeechWorker(threading.Thread):
 				f"{SETTINGS_FILENAME} in NVDA's configuration folder.",
 			)
 			return False
-		body = {"text": text, "model_id": MODEL_ID}
 		# Language priority: NVDA's language markup > the language setting > auto.
 		lang = langOverride or driver._language
-		if lang and lang != "auto":
-			body["language_code"] = lang
+		modelId = driver.model
 		retries = 0
 		while True:
 			outputFormat = driver.outputFormat
 			isUlaw = outputFormat.startswith("ulaw")
-			body["voice_settings"] = driver.voiceSettings
+			body = driver._requestBody(text, lang, modelId)
 			req = urlrequest.Request(
 				f"{API_BASE}/v1/text-to-speech/{driver.synthesisVoice}/stream"
 				f"?output_format={outputFormat}",
@@ -608,9 +650,8 @@ class _SpeechWorker(threading.Thread):
 			try:
 				with urlrequest.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
 					player = driver._getPlayer()
-					# None when the audio needs no stretching, which is the case
-					# for any rate the API can deliver on its own.
-					sonic = driver._prepareSonic()
+					# None when the API delivers the whole speed on its own.
+					sonic = driver._prepareSonic(modelId)
 					while True:
 						if not self._isCurrent(gen):
 							return False
@@ -643,9 +684,9 @@ class _SpeechWorker(threading.Thread):
 							fedAudio = True
 			except HTTPError as e:
 				detail = _REQUEST_ID_PATTERN.sub("", self._readErrorDetail(e))
-				# A rejected format means the account doesn't allow it, so the
-				# same utterance is retried with the next one down.
-				if e.code == 403 and _isOutputFormatRejection(detail) \
+				# A format the default model rejects is one the plan doesn't allow,
+				# so the same utterance is retried with the next one down.
+				if modelId == DEFAULT_MODEL and e.code == 403 and _isOutputFormatRejection(detail) \
 						and driver._useNextOutputFormat():
 					continue
 				if e.code == 401:
@@ -656,10 +697,19 @@ class _SpeechWorker(threading.Thread):
 					if self._waitBeforeRetry(gen):
 						continue
 					return False
-				# A voice that stops working mid-session, e.g. after a downgrade
-				# in another window, is taken out of the list and the utterance
-				# is tried once more with a voice that does work.
-				if not fedAudio and _classifyVoiceFailure(e.code, detail) == PROBE_UNUSABLE:
+				# Stability the model won't take is snapped to the presets.
+				if not fedAudio and _isRefusal(e.code) and "stability" in detail.lower() \
+						and driver._usePresetStability(modelId):
+					continue
+				# Anything else the chosen model can't do is spoken with the
+				# default model, so NVDA never falls silent over a model.
+				if not fedAudio and modelId != DEFAULT_MODEL and e.code != 401:
+					driver._reportModelRefusal(modelId, e.code, detail)
+					modelId = DEFAULT_MODEL
+					continue
+				# A voice that stops working mid-session, e.g. after a downgrade,
+				# is taken out of the list and another voice is tried.
+				if not fedAudio and _classifyRefusal(e.code, detail) == PROBE_UNUSABLE:
 					voiceId = driver.synthesisVoice
 					driver._markVoiceUnusable(voiceId, detail.strip())
 					if driver.synthesisVoice != voiceId:
@@ -695,12 +745,20 @@ class SynthDriver(BaseSynthDriver):
 	name = "elevenlabs"
 	description = "ElevenLabs"
 
-	supportedSettings = (
+	# Every setting; supportedSettings leaves out those the chosen model doesn't take.
+	_allSettings = (
 		BaseSynthDriver.VoiceSetting(),
-		DriverSetting(LANGUAGE_SETTING_ID, "&Language", availableInSettingsRing=True),
+		_languageSetting(),
 		BaseSynthDriver.RateSetting(),
 		BaseSynthDriver.RateBoostSetting(),
 		BaseSynthDriver.VolumeSetting(),
+		DriverSetting(
+			"model",
+			"&Model",
+			availableInSettingsRing=True,
+			defaultVal=DEFAULT_MODEL,
+			displayName="Model",
+		),
 		NumericDriverSetting(
 			"stability",
 			"&Stability",
@@ -732,6 +790,8 @@ class SynthDriver(BaseSynthDriver):
 	)
 	supportedCommands = {IndexCommand, LangChangeCommand}
 	supportedNotifications = {synthIndexReached, synthDoneSpeaking}
+	# Above zero while NVDA sets up, loads or saves settings; see _allSettingsVisible.
+	_configuring = 0
 
 	@classmethod
 	def check(cls):
@@ -743,6 +803,7 @@ class SynthDriver(BaseSynthDriver):
 		super().__init__()
 		self._voiceId = None
 		self._language = DEFAULT_LANGUAGE
+		self._modelId = DEFAULT_MODEL
 		self._rate = 50
 		self._rateBoost = False
 		self._volume = 100
@@ -755,6 +816,9 @@ class SynthDriver(BaseSynthDriver):
 		self._voicesCache = OrderedDict()
 		self._unusableVoices = set()
 		self._voicesChecked = False
+		self._unusableModels = set()
+		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
+		self._modelRefusals = {}
 		self._tier = ""
 		self._formatIndex = 0
 		self._apiKey = None
@@ -774,15 +838,13 @@ class SynthDriver(BaseSynthDriver):
 		_migrateLegacyFiles()
 		self._loadOutputFormat()
 		self._migrateLegacyVariantSetting()
-		# Everything below can fail, and failing here is the point: NVDA catches
-		# it, tells the user and falls back to a working synthesizer instead of
-		# leaving them with a synthesizer that is silently mute.
-		# Nothing has been started yet, so there is nothing to clean up on the
-		# way out; terminate() is never called when a driver raises here.
+		# Everything below may raise on purpose: NVDA then tells the user and falls
+		# back to a working synthesizer. terminate() is not called in that case.
 		self._loadAccountState()
 		self._worker = _SpeechWorker(self)
 		try:
 			self._checkVoicesAtStartup()
+			self._checkModelsAtStartup()
 		except Exception:
 			# Started above, so it has to be stopped before the exception leaves.
 			self._worker.stop()
@@ -791,6 +853,7 @@ class SynthDriver(BaseSynthDriver):
 		log.info(
 			f"ElevenLabs ready: {len(self._voicesCache)} voice(s)"
 			f"{f', {hidden} unusable' if hidden else ''}, "
+			f"{len(MODELS) - len(self._unusableModels)} model(s), "
 			f"plan {self._tier or 'unknown'}, audio {self.outputFormat}."
 		)
 
@@ -813,7 +876,7 @@ class SynthDriver(BaseSynthDriver):
 			elif isinstance(item, IndexCommand):
 				indexes.append(item.index)
 			elif isinstance(item, LangChangeCommand):
-				# NVDA sends e.g. "en_US" or "da_DK"; keep only the language part.
+				# NVDA sends e.g. "en_US"; only the language part is used.
 				if item.lang:
 					code = item.lang.split("_")[0].lower()
 					if code in LANGUAGES and code != "auto":
@@ -843,6 +906,64 @@ class SynthDriver(BaseSynthDriver):
 				player.pause(switch)
 			except Exception:
 				pass
+
+	# --- Settings shown in NVDA ---
+
+	def _get_supportedSettings(self):
+		if self._configuring:
+			return self._allSettings
+		accepted = _modelInfo(self._modelId).settings
+		return tuple(
+			s for s in self._allSettings
+			if s.id not in _SETTING_API_NAMES or _SETTING_API_NAMES[s.id] in accepted
+		)
+
+	@contextmanager
+	def _allSettingsVisible(self):
+		"""Lets NVDA's own loading and saving see every setting, so the values of
+		those the chosen model hides are kept."""
+		self._configuring += 1
+		try:
+			yield
+		finally:
+			self._configuring -= 1
+
+	def initSettings(self):
+		with self._allSettingsVisible():
+			super().initSettings()
+		# NVDA may have built the settings ring from the full list meanwhile.
+		self._refreshGui(changedSetting="model")
+
+	def loadSettings(self, onlyChanged=False):
+		with self._allSettingsVisible():
+			super().loadSettings(onlyChanged)
+		if not self._configuring:
+			self._refreshGui(changedSetting="model")
+
+	def saveSettings(self):
+		with self._allSettingsVisible():
+			super().saveSettings()
+
+	def _refreshGui(self, changedSetting=None):
+		"""Brings NVDA's settings ring up to date after a list or the model changed.
+
+		With changedSetting, an open voice settings panel also shows or hides the
+		settings that depend on it, as NVDA does itself when the voice changes."""
+		def refresh():
+			if getSynth() is not self:
+				return
+			try:
+				ring = getattr(globalVars, "settingsRing", None)
+				if ring is not None:
+					ring.updateSupportedSettings(self)
+				if changedSetting:
+					for panel in _openVoicePanels():
+						panel.updateDriverSettings(changedSetting=changedSetting)
+			except Exception:
+				log.debugWarning("ElevenLabs: could not refresh NVDA's settings", exc_info=True)
+
+		# Touches NVDA's interface, so it has to happen on the main thread.
+		queueHandler.queueFunction(queueHandler.eventQueue, refresh)
 
 	# --- API key ---
 
@@ -878,14 +999,16 @@ class SynthDriver(BaseSynthDriver):
 			speed = SPEED_AT_RATE_50 + ((self._rate - 50) / 50.0) * (fastest - SPEED_AT_RATE_50)
 		return round(speed, 2)
 
-	def _get_apiSpeed(self):
-		"""The part of the speed the API can deliver on its own."""
+	def _apiSpeed(self, modelId):
+		"""The part of the speed the API delivers; 1.0 for models without speed."""
+		if "speed" not in _modelInfo(modelId).settings:
+			return 1.0
 		lowest, highest = API_SPEED_RANGE
 		return round(min(max(self.speechSpeed, lowest), highest), 2)
 
-	def _get_sonicSpeed(self):
+	def _sonicSpeed(self, modelId):
 		"""The rest of the speed, left for sonic to stretch locally."""
-		return round(self.speechSpeed / self.apiSpeed, 3)
+		return round(self.speechSpeed / self._apiSpeed(modelId), 3)
 
 	def _get_softwareGain(self):
 		"""The gain the worker must apply when the player can't do it itself."""
@@ -920,9 +1043,9 @@ class SynthDriver(BaseSynthDriver):
 			log.debugWarning("ElevenLabs: player volume unavailable", exc_info=True)
 			return False
 
-	def _prepareSonic(self):
+	def _prepareSonic(self, modelId):
 		"""Returns a sonic stream set up for this utterance, or None if unneeded."""
-		speed = self.sonicSpeed
+		speed = self._sonicSpeed(modelId)
 		if abs(speed - 1.0) <= SONIC_THRESHOLD:
 			return None
 		with self._playerLock:
@@ -986,11 +1109,9 @@ class SynthDriver(BaseSynthDriver):
 				log.warning(f"ElevenLabs: ignoring unknown output_format {savedFormat!r} in {SETTINGS_FILENAME}")
 
 	# --- Voices ---
-	# The list NVDA shows must only hold voices this account can actually
-	# generate with. Voices stay on an account after a downgrade but stop
-	# working, and some library voices are barred on the free plan, and neither
-	# is visible in the voice list, so each voice is tried once and the result
-	# is cached against a fingerprint of the account state.
+	# Only voices this account can generate with are listed. Voices stay on an
+	# account after a downgrade but stop working, so each is tried once and the
+	# result is cached against a fingerprint of the account state.
 
 	def _loadAccountState(self):
 		"""Checks the account and builds the voice list; raises if unusable."""
@@ -1016,7 +1137,7 @@ class SynthDriver(BaseSynthDriver):
 			)
 		self._allVoices = voices
 		self._voiceCategories = categories
-		# The plan decides which voices work, so it is part of the fingerprint.
+		# The plan decides which voices and models work, so it is in the fingerprints.
 		try:
 			subscription = _fetchJson(f"{API_BASE}/v1/user/subscription", key, INIT_TIMEOUT)
 			self._tier = str(subscription.get("tier") or "")
@@ -1043,8 +1164,8 @@ class SynthDriver(BaseSynthDriver):
 			return
 		saved = settings.get("unusable_voices", "")
 		self._unusableVoices = {v.strip() for v in saved.split(",") if v.strip()}
-		# The result is only recorded once every voice has an answer, so a
-		# matching fingerprint means the whole list is already known good.
+		# A result is only recorded once every voice has an answer, so a matching
+		# fingerprint means the whole list is already known good.
 		self._voicesChecked = True
 
 	def _saveUnusableVoices(self):
@@ -1065,12 +1186,8 @@ class SynthDriver(BaseSynthDriver):
 	def _checkVoicesAtStartup(self):
 		"""Settles the voice list before NVDA reads it.
 
-		This runs while NVDA waits, on purpose. NVDA builds the voice list in the
-		settings dialog once per session and keeps it, so a voice removed later
-		would stay on screen and simply not work when picked. Doing it here means
-		the list NVDA sees is right from the start. The answer is cached, so the
-		wait is paid once per plan and voice list rather than on every start.
-		"""
+		NVDA waits for this on purpose: the settings dialog keeps the list it first
+		reads, so it has to be right from the start. The result is cached."""
 		if not self._voicesCache:
 			raise ElevenLabsUnavailable(
 				"None of the voices on this ElevenLabs account can be used with the current "
@@ -1098,34 +1215,21 @@ class SynthDriver(BaseSynthDriver):
 			)
 			pending = pending[:MAX_PROBED_VOICES]
 		started = time.time()
-		deadline = started + VOICE_CHECK_DEADLINE
-		unusable, unanswered, succeeded, lastReason, accountFailure = self._runProbes(
-			pending, deadline
+		unusable, unanswered, succeeded, lastReason, accountFailure = self._probeAll(
+			pending, started + VOICE_CHECK_DEADLINE, self._probeVoice, PROBE_WORKERS
 		)
-		# One more try for the ones that gave no answer, one at a time, so a
-		# burst of rate limiting doesn't cost the whole cached result.
-		if unanswered and not accountFailure and time.time() < deadline:
-			retryUnusable, unanswered, retryOk, retryReason, accountFailure = self._runProbes(
-				unanswered, deadline, workers=1
-			)
-			unusable += retryUnusable
-			succeeded += retryOk
-			lastReason = retryReason or lastReason
 		if self._probeStop.is_set():
 			return
 		if accountFailure:
-			# The account stopped answering part way through, so what was learned
-			# is unreliable. Nothing is hidden and nothing is cached; the check
-			# simply runs again next time.
+			# What was learned is unreliable, so nothing is hidden or cached and
+			# the check simply runs again next time.
 			log.warning(
 				"ElevenLabs: the voice check could not finish because the account stopped "
 				f"accepting requests, so the voice list is unchanged. Reason: {lastReason or 'see above'}"
 			)
 			return
-		# A voice that already spoke proves the key, plan, model and format are
-		# fine, so the rest failing really is about those voices. Without such
-		# proof, everything failing points at the account instead, and hiding the
-		# whole list would be the wrong conclusion.
+		# Without a voice that has already spoken, every voice failing points at
+		# the account, so hiding the whole list would be the wrong conclusion.
 		provenVoice = self._voiceId is not None and self._voiceId not in pending
 		if not provenVoice and not succeeded and len(pending) > 1 and unusable:
 			log.error(
@@ -1145,8 +1249,8 @@ class SynthDriver(BaseSynthDriver):
 				f"have been left out of the voice list: {names}"
 			)
 		if unanswered:
-			# Nothing is cached while any voice is still unaccounted for, so it
-			# gets another chance next time rather than being wrongly trusted.
+			# Nothing is cached while any voice is unaccounted for, so it gets
+			# another chance next time rather than being wrongly trusted.
 			log.warning(
 				f"ElevenLabs: {len(unanswered)} voice(s) gave no answer, so the check will "
 				"run again next time the synthesizer is loaded."
@@ -1158,17 +1262,31 @@ class SynthDriver(BaseSynthDriver):
 			f"ElevenLabs: checked {len(pending)} voices in {time.time() - started:.1f} s."
 		)
 
-	def _runProbes(self, pending, deadline, workers=PROBE_WORKERS):
-		"""Tries a batch of voices, returning what was learned about each."""
+	def _probeAll(self, pending, deadline, probeOne, workers):
+		"""Tries every voice or model, then once more, one at a time, those that gave
+		no answer, so a burst of rate limiting doesn't cost the whole result."""
+		unusable, unanswered, succeeded, lastReason, accountFailure = self._runProbes(
+			pending, deadline, probeOne, workers
+		)
+		if unanswered and not accountFailure and time.time() < deadline:
+			more, unanswered, ok, reason, accountFailure = self._runProbes(
+				unanswered, deadline, probeOne, 1
+			)
+			unusable += more
+			succeeded += ok
+			lastReason = reason or lastReason
+		return unusable, unanswered, succeeded, lastReason, accountFailure
+
+	def _runProbes(self, pending, deadline, probeOne, workers):
+		"""Tries a batch of voices or models, returning what was learned about each."""
 		unusable, unanswered, succeeded, lastReason = [], [], 0, ""
-		# Set as soon as the account itself refuses, so the voices still queued
-		# give up instead of hammering an account that cannot answer.
+		# Set as soon as the account itself refuses, so the rest give up.
 		accountFailure = []
 
-		def probe(voiceId):
+		def probe(item):
 			if accountFailure or self._probeStop.is_set() or time.time() > deadline:
 				return PROBE_UNKNOWN, "check abandoned"
-			result, detail = self._probeVoice(voiceId)
+			result, detail = probeOne(item)
 			if result == PROBE_ACCOUNT:
 				accountFailure.append(detail)
 			return result, detail
@@ -1177,63 +1295,64 @@ class SynthDriver(BaseSynthDriver):
 			with ThreadPoolExecutor(max_workers=workers) as pool:
 				results = list(zip(pending, pool.map(probe, pending)))
 		except Exception:
-			log.error("ElevenLabs: the voice check failed", exc_info=True)
+			log.error("ElevenLabs: the check failed", exc_info=True)
 			return unusable, list(pending), succeeded, lastReason, True
-		for voiceId, (result, detail) in results:
+		for item, (result, detail) in results:
 			if result == PROBE_UNUSABLE:
-				unusable.append(voiceId)
+				unusable.append(item)
 				lastReason = detail
-				log.debug(f"ElevenLabs: voice {voiceId} refused: {detail}")
+				log.debug(f"ElevenLabs: {item} refused: {detail}")
 			elif result == PROBE_OK:
 				succeeded += 1
 			else:
-				# Includes the voice that hit the account error itself, so it is
-				# never silently treated as answered.
-				unanswered.append(voiceId)
+				# Includes the one that hit the account error, so it is never
+				# taken as answered.
+				unanswered.append(item)
 		return unusable, unanswered, succeeded, lastReason, bool(accountFailure)
 
-	def recheckVoices(self, onFinished=None):
-		"""Runs the voice check again from scratch, e.g. after a plan change.
+	def recheck(self, onFinished=None):
+		"""Checks voices and models again from scratch, e.g. after a plan change.
 
-		@param onFinished: called with the number of usable and unusable voices
-			once the check is done. It runs on the checking thread, so anything
-			touching NVDA's interface must be queued onto the main thread.
+		@param onFinished: called on the checking thread with the numbers of usable
+			and unusable voices and models; interface work must go to the main thread.
 		"""
 		if self._probeThread is not None and self._probeThread.is_alive():
 			return False
-		# Off the main thread this time: NVDA is already running, so it must not
-		# be frozen for a check the user asked for while working.
+		# Off the main thread, so NVDA doesn't freeze while the user works.
 		self._probeThread = threading.Thread(
-			target=self._recheckVoicesNow,
+			target=self._recheckNow,
 			args=(onFinished,),
-			name="ElevenLabsVoiceCheck",
+			name="ElevenLabsCheck",
 			daemon=True,
 		)
 		self._probeThread.start()
 		return True
 
-	def _recheckVoicesNow(self, onFinished=None):
+	def _recheckNow(self, onFinished=None):
 		self._unusableVoices = set()
 		self._voicesChecked = False
 		self._rebuildVoiceList()
 		try:
 			self._checkVoices(list(self._allVoices))
-			self.refreshVoiceListInGui()
+			self._checkModels()
+			self._refreshGui()
 		finally:
 			if onFinished is not None and not self._probeStop.is_set():
 				try:
-					onFinished(len(self._voicesCache), len(self._unusableVoices))
+					onFinished(
+						len(self._voicesCache),
+						len(self._unusableVoices),
+						len(MODELS) - len(self._unusableModels),
+						len(self._unusableModels),
+					)
 				except Exception:
-					log.error("ElevenLabs: could not report the voice check result", exc_info=True)
+					log.error("ElevenLabs: could not report the check result", exc_info=True)
 
 	def _startupCandidates(self):
 		"""Voices to try at start up, likeliest to work first.
 
-		The saved choice comes first. After that come the voices ElevenLabs
-		supplies with every plan, since cloned voices are exactly the ones that
-		stop working after a downgrade, and trying those first would mean a slow
-		start up for an account with many of them.
-		"""
+		The saved choice comes first, then ElevenLabs' own voices, which every plan
+		has. Cloned voices are the ones that stop working after a downgrade."""
 		with self._voicesLock:
 			usable = list(self._voicesCache)
 		ordered = [v for v in (self._voiceId,) if v in usable]
@@ -1278,22 +1397,14 @@ class SynthDriver(BaseSynthDriver):
 			"ElevenLabs account."
 		)
 
-	def _probeVoice(self, voiceId):
-		"""Asks for the shortest possible sample to see whether a voice works."""
+	def _probe(self, voiceId, modelId=DEFAULT_MODEL, settleFormat=True):
+		"""Asks for the shortest possible sample to see whether a voice or model works."""
 		key = self._getApiKey()
 		if not key:
 			return PROBE_ACCOUNT, "no API key"
 		while True:
-			body = {
-				"text": PROBE_TEXT,
-				"model_id": MODEL_ID,
-				# Deliberately plain rather than the user's settings: this only
-				# checks whether the voice may be used at all, and style in
-				# particular costs extra latency that would slow start up.
-				"voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
-			}
-			if self._language and self._language != "auto":
-				body["language_code"] = self._language
+			# Plain voice settings, since this only checks the request is allowed.
+			body = self._requestBody(PROBE_TEXT, self._language, modelId, plain=True)
 			req = urlrequest.Request(
 				f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
 				f"?output_format={self.outputFormat}",
@@ -1311,14 +1422,17 @@ class SynthDriver(BaseSynthDriver):
 				return PROBE_OK, ""
 			except HTTPError as e:
 				detail = _REQUEST_ID_PATTERN.sub("", self._readProbeDetail(e))
-				# The audio format is settled here too, on the first request of
-				# the session, so speech never has to discover it later.
-				if e.code == 403 and _isOutputFormatRejection(detail) \
+				# The first request of the session also settles the audio format.
+				if settleFormat and e.code == 403 and _isOutputFormatRejection(detail) \
 						and self._useNextOutputFormat():
 					continue
-				return _classifyVoiceFailure(e.code, detail), detail.strip()
+				return _classifyRefusal(e.code, detail), detail.strip()
 			except (URLError, OSError) as e:
 				return PROBE_UNKNOWN, str(e)
+
+	def _probeVoice(self, voiceId):
+		"""Checks a voice with the default model."""
+		return self._probe(voiceId)
 
 	@staticmethod
 	def _readProbeDetail(error):
@@ -1326,25 +1440,6 @@ class SynthDriver(BaseSynthDriver):
 			return error.read().decode("utf-8", "replace")[:300]
 		except Exception:
 			return ""
-
-	def refreshVoiceListInGui(self):
-		"""Tells NVDA the voice list has changed, without a restart.
-
-		The settings ring holds a SynthSetting object per setting, built when the
-		voice last changed, so it is rebuilt through NVDA's own hook. The voice
-		settings panel needs nothing: it is destroyed when the dialog closes, so
-		reopening it reads the list afresh.
-		"""
-		def refresh():
-			try:
-				ring = getattr(globalVars, "settingsRing", None)
-				if ring is not None:
-					ring.updateSupportedSettings(self)
-			except Exception:
-				log.debugWarning("ElevenLabs: could not refresh the settings ring", exc_info=True)
-
-		# Touches NVDA's interface, so it has to happen on the main thread.
-		queueHandler.queueFunction(queueHandler.eventQueue, refresh)
 
 	def _markVoiceUnusable(self, voiceId, detail):
 		"""Drops a voice that fails during use, so it can't be chosen again."""
@@ -1359,12 +1454,11 @@ class SynthDriver(BaseSynthDriver):
 		if self._voiceId == voiceId:
 			self._voiceId = None
 		self._saveUnusableVoices()
-		self.refreshVoiceListInGui()
+		self._refreshGui()
 
 	def _get_availableVoices(self):
 		# Overrides the property rather than NVDA's _getAvailableVoices hook, so
-		# the list is never cached. Anything that reads it, including a settings
-		# panel built after a re-check, sees the current voices.
+		# the list is never cached and always current.
 		with self._voicesLock:
 			return OrderedDict(self._voicesCache)
 
@@ -1395,10 +1489,158 @@ class SynthDriver(BaseSynthDriver):
 		"""The voice id to actually send."""
 		return self._get_voice()
 
+	# --- Models ---
+	# Which models an account may use has differed by plan, so each is tried once,
+	# like the voices, and the result is cached against the plan.
+
+	def _modelFingerprint(self):
+		"""Identifies the plan and model list the model check was done for."""
+		digest = hashlib.md5("\n".join(MODELS).encode("utf-8")).hexdigest()[:12]
+		return f"v{MODEL_CHECK_VERSION}:{self._tier or 'unknown'}:{digest}"
+
+	def _checkModelsAtStartup(self):
+		"""Settles the model list before NVDA reads it, reusing a cached result."""
+		settings = _readSettings()
+		if settings.get("model_check") == self._modelFingerprint():
+			saved = (m.strip() for m in settings.get("unusable_models", "").split(","))
+			self._unusableModels = {m for m in saved if m in MODELS and m != DEFAULT_MODEL}
+			return
+		try:
+			self._checkModels()
+		except Exception:
+			# Never fatal, since the default model is known to work.
+			log.error("ElevenLabs: the model check failed", exc_info=True)
+
+	def _checkModels(self):
+		"""Tries each model once and leaves out those this account can't use."""
+		# The default model has already spoken, so it needs no check.
+		pending = [m for m in MODELS if m != DEFAULT_MODEL]
+		voiceId = self._modelProbeVoice()
+		unusable, unanswered, succeeded, lastReason, accountFailure = self._probeAll(
+			pending,
+			time.time() + MODEL_CHECK_DEADLINE,
+			lambda modelId: self._probe(voiceId, modelId, settleFormat=False),
+			MODEL_PROBE_WORKERS,
+		)
+		if self._probeStop.is_set():
+			return
+		if accountFailure:
+			log.warning(
+				"ElevenLabs: the model check could not finish because the account stopped "
+				f"accepting requests, so the model list is unchanged. Reason: {lastReason or 'see above'}"
+			)
+			return
+		if unusable and not succeeded and len(pending) > 1:
+			# Every model refused points at the account or voice, not the models.
+			log.error(
+				"ElevenLabs: every model was refused, so the model list is left alone. "
+				f"The last reason given was: {lastReason}"
+			)
+			return
+		self._unusableModels = set(unusable)
+		if self._modelId in self._unusableModels:
+			self._changeModel(DEFAULT_MODEL)
+		if unusable:
+			names = ", ".join(MODELS[m].name for m in pending if m in self._unusableModels)
+			log.warning(
+				f"ElevenLabs: {len(unusable)} model(s) cannot be used with this account and "
+				f"have been left out of the model list: {names}"
+			)
+		if unanswered:
+			log.warning(
+				f"ElevenLabs: {len(unanswered)} model(s) gave no answer, so the check will "
+				"run again next time the synthesizer is loaded."
+			)
+			return
+		_writeSetting("unusable_models", ",".join(sorted(self._unusableModels)))
+		_writeSetting("model_check", self._modelFingerprint())
+
+	def _modelProbeVoice(self):
+		"""A usable voice to check models with, preferring ElevenLabs' own."""
+		with self._voicesLock:
+			usable = list(self._voicesCache)
+		premade = [v for v in usable if self._voiceCategories.get(v) == "premade"]
+		if self._voiceId in premade:
+			return self._voiceId
+		return premade[0] if premade else self.synthesisVoice
+
+	def _requestBody(self, text, lang, modelId, plain=False):
+		"""The JSON body of a speech request, shaped for the given model."""
+		body = {"text": text, "model_id": modelId}
+		if lang and lang != "auto" and _modelInfo(modelId).languageCode:
+			body["language_code"] = lang
+		body["voice_settings"] = self._voiceSettings(modelId, plain)
+		return body
+
+	def _voiceSettings(self, modelId, plain=False):
+		"""The voice_settings block, limited to what the model accepts.
+
+		plain gives ElevenLabs' defaults for checks, without style's extra latency."""
+		if plain:
+			values = {"stability": 0.5, "similarity_boost": 0.75}
+		else:
+			values = {
+				# Lower stability gives a wider emotional range, higher a flatter voice.
+				"stability": round(self._stability / 100.0, 2),
+				"similarity_boost": round(self._clarity / 100.0, 2),
+				"style": round(self._style / 100.0, 2),
+				"use_speaker_boost": self._speakerBoost,
+				"speed": self._apiSpeed(modelId),
+			}
+		if modelId in self._presetStabilityModels:
+			stability = values["stability"]
+			values["stability"] = min(STABILITY_PRESETS, key=lambda preset: abs(preset - stability))
+		accepted = _modelInfo(modelId).settings
+		return {name: value for name, value in values.items() if name in accepted}
+
+	def _usePresetStability(self, modelId):
+		"""Switches a model that refused the stability value to the presets.
+
+		False if it already uses them, so the refusal is handled like any other."""
+		if modelId in self._presetStabilityModels:
+			return False
+		self._presetStabilityModels.add(modelId)
+		log.debug(f"ElevenLabs: {modelId} refused the stability value; using presets.")
+		return True
+
+	def _reportModelRefusal(self, modelId, code, detail):
+		"""Logs that a model failed and the default one spoke, once per reason."""
+		message = (
+			f"ElevenLabs: {_modelInfo(modelId).name} could not speak (HTTP {code}), so "
+			f"{MODELS[DEFAULT_MODEL].name} was used instead. {detail.strip()}"
+		)
+		if self._modelRefusals.get(modelId) != message:
+			self._modelRefusals[modelId] = message
+			log.warning(message)
+
+	def _get_availableModels(self):
+		return OrderedDict(
+			(modelId, StringParameterInfo(modelId, info.name))
+			for modelId, info in MODELS.items()
+			if modelId not in self._unusableModels
+		)
+
+	def _get_model(self):
+		return self._modelId
+
+	def _set_model(self, value):
+		if value in MODELS and value not in self._unusableModels:
+			self._changeModel(value)
+			return
+		reason = "cannot be used with this account" if value in self._unusableModels else "is unknown"
+		log.warning(f"ElevenLabs: the model {value!r} {reason}; using {MODELS[DEFAULT_MODEL].name}.")
+		self._changeModel(DEFAULT_MODEL)
+
+	def _changeModel(self, modelId):
+		"""Switches model, and has NVDA show only the settings the new one takes."""
+		changed = _modelInfo(modelId).settings != _modelInfo(self._modelId).settings
+		self._modelId = modelId
+		# While NVDA loads settings it is refreshed once afterwards instead.
+		if changed and not self._configuring:
+			self._refreshGui(changedSetting="model")
+
 	# --- Language ---
-	# Shown as the "Language" combo box in NVDA's voice settings and in the
-	# settings ring. The setting id is elvlanguage, so NVDA looks up the choices
-	# in _get_availableElvlanguages.
+	# The language box; see LANGUAGE_SETTING_ID for why its id is elvlanguage.
 
 	def _get_availableElvlanguages(self):
 		return OrderedDict(
@@ -1433,25 +1675,13 @@ class SynthDriver(BaseSynthDriver):
 		if legacy in LANGUAGES:
 			self._language = legacy
 
-	# --- Rate and volume ---
+	# --- Rate, volume and voice settings ---
 
 	def _get_rate(self):
 		return self._rate
 
 	def _set_rate(self, value):
 		self._rate = max(0, min(100, int(value)))
-
-	def _get_voiceSettings(self):
-		"""The voice_settings block sent with each utterance."""
-		return {
-			# Lower stability gives a wider emotional range, higher stability a
-			# flatter, more repeatable voice.
-			"stability": round(self._stability / 100.0, 2),
-			"similarity_boost": round(self._clarity / 100.0, 2),
-			"style": round(self._style / 100.0, 2),
-			"use_speaker_boost": self._speakerBoost,
-			"speed": self.apiSpeed,
-		}
 
 	def _get_stability(self):
 		return self._stability

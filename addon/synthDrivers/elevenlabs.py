@@ -123,6 +123,16 @@ DEFAULT_CLARITY = 75  # similarity_boost 0.75
 DEFAULT_STYLE = 0  # style 0.0
 DEFAULT_SPEAKER_BOOST = True
 DEFAULT_SPLIT_TEXT = True
+DEFAULT_AUDIO_TAGS = False
+
+# Audio tags. NVDA drops square brackets before speech reaches a driver, so while
+# tags are on, those of a tag are swapped for private use characters, which NVDA
+# leaves alone, and swapped back in speak.
+_TAG_OPEN = "\ue000"
+_TAG_CLOSE = "\ue001"
+# A tag, or either half of one that a line break split in two.
+_TAG_IN_NVDA_TEXT = re.compile(r"\[[^\[\]\n]{1,100}\]|\[[^\[\]\n]{1,100}$|^[^\[\]\n]{1,100}\]")
+_TAG = re.compile(r"\[[^\[\]]*\]")
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
 
@@ -131,9 +141,10 @@ STABILITY_PRESETS = (0.0, 0.5, 1.0)
 # realtime: shorter timeout. maxSpeed: measured speed it keeps up with.
 # parts: (first, later) part sizes in characters. Only Multilingual v2's wait
 # grows much with length; the others split for the limit.
+# tags: takes audio tags such as [whispers].
 ModelInfo = namedtuple(
-	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed", "parts"),
-	defaults=(True, None, (1000, 1000)),
+	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed", "parts", "tags"),
+	defaults=(True, None, (1000, 1000), False),
 )
 _MULTILINGUAL_SETTINGS = ("stability", "similarity_boost", "style", "use_speaker_boost", "speed")
 _FLASH_SETTINGS = ("stability", "similarity_boost", "speed")
@@ -142,15 +153,15 @@ _V4_SETTINGS = ("stability", "similarity_boost")
 # Text to speech models in the order they were released, as shown in the model box.
 MODELS = OrderedDict((
 	("eleven_multilingual_v2", ModelInfo(
-		"Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, False, None, (150, 400))),
+		"Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, realtime=False, parts=(150, 400))),
 	("eleven_turbo_v2", ModelInfo("Eleven Turbo v2 (English only)", False, _FLASH_SETTINGS)),
 	("eleven_turbo_v2_5", ModelInfo("Eleven Turbo v2.5", True, _FLASH_SETTINGS)),
 	("eleven_flash_v2", ModelInfo("Eleven Flash v2 (English only)", False, _FLASH_SETTINGS)),
 	("eleven_flash_v2_5", ModelInfo("Eleven Flash v2.5", True, _FLASH_SETTINGS)),
-	("eleven_v3", ModelInfo("Eleven v3", True, _V3_SETTINGS, False, 1.4)),
-	("eleven_v3_conversational", ModelInfo("Eleven v3 Conversational", True, _V3_SETTINGS)),
-	("eleven_v4", ModelInfo("Eleven v4", True, _V4_SETTINGS, False)),
-	("eleven_v4_turbo", ModelInfo("Eleven v4 Turbo", True, _V4_SETTINGS)),
+	("eleven_v3", ModelInfo("Eleven v3", True, _V3_SETTINGS, realtime=False, maxSpeed=1.4, tags=True)),
+	("eleven_v3_conversational", ModelInfo("Eleven v3 Conversational", True, _V3_SETTINGS, tags=True)),
+	("eleven_v4", ModelInfo("Eleven v4", True, _V4_SETTINGS, realtime=False, tags=True)),
+	("eleven_v4_turbo", ModelInfo("Eleven v4 Turbo", True, _V4_SETTINGS, tags=True)),
 ))
 # The default. Every plan has it, so voices and audio formats are checked with
 # it, and it speaks whenever the chosen model refuses to.
@@ -544,6 +555,42 @@ def _splitText(text, first, later):
 	return _group(pieces, later, first) or [text]
 
 
+def _hideTags(text):
+	"""Swaps the brackets of audio tags in text for characters NVDA keeps."""
+	def hide(match):
+		tag = match.group()
+		# A lone bracket, e.g. read as a character, isn't a tag.
+		if not any(c.isalpha() for c in tag):
+			return tag
+		return tag.replace("[", _TAG_OPEN).replace("]", _TAG_CLOSE)
+	return _TAG_IN_NVDA_TEXT.sub(hide, text)
+
+
+def _installTagFilter():
+	"""Wraps NVDA's processText so audio tags reach the driver when they're on."""
+	try:
+		import speech.speech as nvdaSpeech
+		original = nvdaSpeech.processText
+	except (ImportError, AttributeError):
+		log.warning("ElevenLabs: audio tags are unavailable in this NVDA version.")
+		return
+	if getattr(original, "_elevenLabsTags", False):
+		return
+
+	def processText(locale, text, *args, **kwargs):
+		try:
+			synth = getSynth()
+			if getattr(synth, "name", None) == "elevenlabs" and synth.audioTags \
+					and ("[" in text or "]" in text):
+				text = _hideTags(text)
+		except Exception:
+			log.debugWarning("ElevenLabs: could not look for audio tags", exc_info=True)
+		return original(locale, text, *args, **kwargs)
+
+	processText._elevenLabsTags = True
+	nvdaSpeech.processText = processText
+
+
 def _languageSetting():
 	"""The language box, labelled with NVDA's own translated strings."""
 	nvdaSetting = BaseSynthDriver.LanguageSetting()
@@ -780,7 +827,7 @@ class _SpeechWorker(threading.Thread):
 		# Language priority: NVDA's language markup > the language setting > auto.
 		lang = langOverride or driver._language
 		voiceId = driver.synthesisVoice
-		body = driver._requestBody(text, lang, modelId)
+		body = driver._requestBody(self._textFor(text, modelId), lang, modelId)
 		req = urlrequest.Request(
 			f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
 			f"?output_format={driver.outputFormat}",
@@ -793,6 +840,12 @@ class _SpeechWorker(threading.Thread):
 			method="POST",
 		)
 		return req, (voiceId, modelId)
+
+	def _textFor(self, text, modelId):
+		"""text as sent to modelId: audio tags are left out where they'd be read."""
+		if self.driver.audioTags and not _modelInfo(modelId).tags:
+			text = " ".join(_TAG.sub(" ", text).split())
+		return text
 
 	def _startDownload(self, req, pair):
 		firstUse = pair[1] != DEFAULT_MODEL and pair not in self._usedVoices
@@ -859,6 +912,9 @@ class _SpeechWorker(threading.Thread):
 			# A cancelled utterance is dropped rather than retried or passed on.
 			if not self._isCurrent(gen):
 				return False
+			if not self._textFor(text, modelId):
+				# Only audio tags, which this model would read aloud.
+				return True
 			isUlaw = driver.outputFormat.startswith("ulaw")
 			req, pair = self._buildRequest(key, text, langOverride, modelId)
 			voiceId = pair[0]
@@ -1059,6 +1115,13 @@ class SynthDriver(BaseSynthDriver):
 			defaultVal=DEFAULT_SPLIT_TEXT,
 			displayName="Split long text",
 		),
+		BooleanDriverSetting(
+			"audioTags",
+			"Enable audio ta&gs",
+			availableInSettingsRing=True,
+			defaultVal=DEFAULT_AUDIO_TAGS,
+			displayName="Audio tags",
+		),
 	)
 	supportedCommands = {IndexCommand, LangChangeCommand}
 	supportedNotifications = {synthIndexReached, synthDoneSpeaking}
@@ -1084,6 +1147,7 @@ class SynthDriver(BaseSynthDriver):
 		self._style = DEFAULT_STYLE
 		self._speakerBoost = DEFAULT_SPEAKER_BOOST
 		self._splitText = DEFAULT_SPLIT_TEXT
+		self._audioTags = DEFAULT_AUDIO_TAGS
 		self._allVoices = OrderedDict()
 		self._voiceCategories = {}
 		self._voicesCache = OrderedDict()
@@ -1116,6 +1180,7 @@ class SynthDriver(BaseSynthDriver):
 		# Everything below may raise on purpose: NVDA then tells the user and falls
 		# back to a working synthesizer. terminate() is not called in that case.
 		self._loadAccountState()
+		_installTagFilter()
 		self._worker = _SpeechWorker(self)
 		try:
 			self._checkVoicesAtStartup()
@@ -1155,7 +1220,7 @@ class SynthDriver(BaseSynthDriver):
 				# or a language the API lacks, means the language setting.
 				code = (item.lang or "").split("_")[0].lower()
 				langOverride = code if code in LANGUAGES and code != "auto" else None
-		text = " ".join(textParts).strip()
+		text = " ".join(textParts).replace(_TAG_OPEN, "[").replace(_TAG_CLOSE, "]").strip()
 		if not text:
 			# No text, but indexes must still be reported as reached.
 			for index in indexes:
@@ -2004,6 +2069,12 @@ class SynthDriver(BaseSynthDriver):
 
 	def _set_splitText(self, value):
 		self._splitText = bool(value)
+
+	def _get_audioTags(self):
+		return self._audioTags
+
+	def _set_audioTags(self, value):
+		self._audioTags = bool(value)
 
 	def _get_rateBoost(self):
 		return self._rateBoost

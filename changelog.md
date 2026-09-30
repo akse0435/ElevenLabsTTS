@@ -1,3 +1,6 @@
+V1.1.4 (09/30/2026):
+Audio tags are now supported, and can be enabled in voice settings.
+
 V1.1.3 (09/30/2026):
 Speech no longer pauses suddenly in the middle of a sentence.
 Splitting of long text can now be turned off in voice settings.

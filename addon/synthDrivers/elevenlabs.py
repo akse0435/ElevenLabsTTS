@@ -133,6 +133,7 @@ _TAG_CLOSE = "\ue001"
 # A tag, or either half of one that a line break split in two.
 _TAG_IN_NVDA_TEXT = re.compile(r"\[[^\[\]\n]{1,100}\]|\[[^\[\]\n]{1,100}$|^[^\[\]\n]{1,100}\]")
 _TAG = re.compile(r"\[[^\[\]]*\]")
+_LEADING_TAG = re.compile(r"\s*\[[^\[\]]*\]")
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
 
@@ -749,6 +750,8 @@ class _SpeechWorker(threading.Thread):
 		self._pending = {}
 		# The next part's download.
 		self._prefetch = None
+		# (generation, tag): the last audio tag spoken, until speech is cancelled.
+		self._carriedTag = (None, None)
 		# When the audio fed so far should end playing; None before the first feed.
 		self._playEnd = None
 		self.start()
@@ -812,6 +815,10 @@ class _SpeechWorker(threading.Thread):
 		parts = _splitText(text, *_modelInfo(modelId).parts) if self.driver.splitText else [text]
 		# Joined screen lines can hold double spaces, which v3 may speak as a breath.
 		parts = [p for p in (" ".join(p.split()) for p in parts) if p]
+		if self.driver.audioTags and _modelInfo(modelId).tags:
+			parts = [self._withTag(gen, p) for p in parts]
+			# Tags alone are refused (HTTP 400), but still carry over to the next text.
+			parts = [p for p in parts if _TAG.sub("", p).strip()]
 		self._playEnd = None
 		try:
 			for i, part in enumerate(parts):
@@ -841,6 +848,19 @@ class _SpeechWorker(threading.Thread):
 		)
 		return req, (voiceId, modelId)
 
+	def _withTag(self, gen, text):
+		"""Starts text with the tag still in effect and remembers text's last tag.
+
+		NVDA's say all sends text in utterances, which may split a tag from the
+		sentences it applies to. Each request stands alone, so the tag is repeated."""
+		carriedGen, tag = self._carriedTag
+		if tag and carriedGen == gen and not _LEADING_TAG.match(text):
+			text = f"{tag} {text}"
+		tags = _TAG.findall(text)
+		if tags:
+			self._carriedTag = (gen, tags[-1])
+		return text
+
 	def _textFor(self, text, modelId):
 		"""text as sent to modelId: audio tags are left out where they'd be read."""
 		if self.driver.audioTags and not _modelInfo(modelId).tags:
@@ -850,6 +870,7 @@ class _SpeechWorker(threading.Thread):
 	def _startDownload(self, req, pair):
 		firstUse = pair[1] != DEFAULT_MODEL and pair not in self._usedVoices
 		download = _Download(req, FIRST_USE_TIMEOUT if firstUse else _requestTimeout(pair[1]))
+		log.debug(f"ElevenLabs: request to {_modelInfo(pair[1]).name}: {json.loads(req.data)['text'][:200]!r}")
 		self._download = self._pending[pair] = download
 		return download
 
@@ -928,6 +949,7 @@ class _SpeechWorker(threading.Thread):
 				download.whenDone(lambda: self._prefetchNext(gen, following[0], langOverride))
 			player = sonic = None
 			fedAudio = False
+			received = 0  # bytes of 16 bit audio, before sonic
 			carry = b""  # odd trailing byte held back so samples stay aligned
 			try:
 				while True:
@@ -955,6 +977,7 @@ class _SpeechWorker(threading.Thread):
 						break
 					if isUlaw:
 						chunk = _decodeUlaw(chunk)
+					received += len(chunk)
 					chunk = carry + chunk
 					if len(chunk) % 2:
 						carry, chunk = chunk[-1:], chunk[:-1]
@@ -1029,6 +1052,10 @@ class _SpeechWorker(threading.Thread):
 				return False
 			finally:
 				download.abandon()
+			log.debug(
+				f"ElevenLabs: {_modelInfo(modelId).name} returned "
+				f"{received / (2.0 * OUTPUT_FORMATS[driver._formatIndex][1]):.2f} s of audio for {len(text)} chars."
+			)
 			driver._onSynthesisSucceeded()
 			return True
 

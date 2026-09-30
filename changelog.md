@@ -1,3 +1,6 @@
+V1.1.5 (09/30/2026):
+Fixed a bug where an audio tag would only apply to the first sentence after it.
+
 V1.1.4 (09/30/2026):
 Audio tags are now supported, and can be enabled in voice settings.
 

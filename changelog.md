@@ -1,3 +1,10 @@
+V1.2 (10/02/2026):
+New setting: Text normalization.
+The list of available models is now checked against the active account.
+If a model doesn't support a particular voice for some reason, the voice is now disabled for this model.
+If a model doesn't support the speed parameter, it is now handled entirely by Sonic.
+A few other small improvements.
+
 V1.1.5 (09/30/2026):
 Fixed a bug where an audio tag would only apply to the first sentence after it.
 

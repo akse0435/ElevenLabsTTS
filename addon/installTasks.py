@@ -17,7 +17,9 @@ TEMPLATE = """\
 # output_format: audio format the driver negotiated with your plan.
 # unusable_voices, voice_check: voices this account cannot generate with,
 # and a fingerprint of the account state they were worked out for.
+# unusable_voices_<model>, voice_check_<model>: the same for other models.
 # unusable_models, model_check: the same for models.
+# refused_<model>: request fields a model has refused.
 # check_voices = no turns the voice check off.
 # Remove a line to work that setting out again.
 api_key = 

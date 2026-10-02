@@ -22,4 +22,4 @@ Paste your API key at the end of that line, then save the file and restart NVDA.
 
 You can use the following keyboard commands in NVDA when the add-on is installed, regardless of whether or not you're using the synth:
 - NVDA+shift+u: Check how many credits you've used on your ElevenLabs account, as well as your plan.
-- NVDA+shift+V: Reload list of usable voices from your ElevenLabs account, good if you've upgraded your subscription while using the add-on.
+- NVDA+shift+V: Reload list of usable voices and models from your ElevenLabs account, good if you've upgraded your subscription while using the add-on.

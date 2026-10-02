@@ -122,6 +122,13 @@ DEFAULT_STABILITY = 50  # stability 0.5
 DEFAULT_CLARITY = 75  # similarity_boost 0.75
 DEFAULT_STYLE = 0  # style 0.0
 DEFAULT_SPEAKER_BOOST = True
+DEFAULT_NORMALIZATION = "auto"
+# Choices for apply_text_normalization; "auto" leaves it out.
+NORMALIZATIONS = OrderedDict((
+	("auto", "Automatic"),
+	("on", "On"),
+	("off", "Off"),
+))
 DEFAULT_SPLIT_TEXT = True
 DEFAULT_AUDIO_TAGS = False
 
@@ -137,8 +144,9 @@ _LEADING_TAG = re.compile(r"\s*\[[^\[\]]*\]")
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
 
-# What a model accepts: whether it takes language_code, and which voice_settings.
-# Turbo takes the same as Flash, which ElevenLabs calls its functional equivalent.
+# What a model accepts: whether it takes language_code, and which voice_settings
+# and apply_text_normalization. Turbo takes the same as Flash, which ElevenLabs
+# calls its functional equivalent. Fields a model refuses are learned; see _refused.
 # realtime: shorter timeout. maxSpeed: measured speed it keeps up with.
 # parts: (first, later) part sizes in characters. Only Multilingual v2's wait
 # grows much with length; the others split for the limit.
@@ -147,11 +155,15 @@ ModelInfo = namedtuple(
 	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed", "parts", "tags"),
 	defaults=(True, None, (1000, 1000), False),
 )
-_MULTILINGUAL_SETTINGS = ("stability", "similarity_boost", "style", "use_speaker_boost", "speed")
-_FLASH_SETTINGS = ("stability", "similarity_boost", "speed")
-_V3_SETTINGS = ("stability",)
-_V4_SETTINGS = ("stability", "similarity_boost")
+_MULTILINGUAL_SETTINGS = (
+	"stability", "similarity_boost", "style", "use_speaker_boost", "speed", "apply_text_normalization")
+_FLASH_SETTINGS = ("stability", "similarity_boost", "speed", "apply_text_normalization")
+_V3_SETTINGS = ("stability", "apply_text_normalization")
+_V4_SETTINGS = ("stability", "similarity_boost", "apply_text_normalization")
+# Models not in MODELS are first assumed to take everything.
+_ALL_SETTINGS = _MULTILINGUAL_SETTINGS
 # Text to speech models in the order they were released, as shown in the model box.
+# The account's own list decides which are offered; see _offeredModels.
 MODELS = OrderedDict((
 	("eleven_multilingual_v2", ModelInfo(
 		"Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, realtime=False, parts=(150, 400))),
@@ -167,6 +179,14 @@ MODELS = OrderedDict((
 # The default. Every plan has it, so voices and audio formats are checked with
 # it, and it speaks whenever the chosen model refuses to.
 DEFAULT_MODEL = "eleven_flash_v2_5"
+# Models older than those in MODELS, so the account's list keeps release order.
+_EARLIER_MODELS = ("eleven_monolingual_v1", "eleven_multilingual_v1")
+# The models the account offers, in release order, or MODELS if its list can't be read.
+_offeredModels = OrderedDict(MODELS)
+# Fields each model has refused, saved as refused_<model> in the settings file.
+_refused = {}
+# Fields a refusal may name; only those a model was sent are recorded.
+_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS
 # Models known to take only the stability presets.
 PRESET_STABILITY_MODELS = ("eleven_v3", "eleven_v3_conversational")
 # The voice_settings name behind each slider and checkbox. Only those the chosen
@@ -176,6 +196,7 @@ _SETTING_API_NAMES = {
 	"clarity": "similarity_boost",
 	"style": "style",
 	"speakerBoost": "use_speaker_boost",
+	"normalization": "apply_text_normalization",
 }
 
 SETTINGS_FILENAME = "elevenlabs_settings.txt"
@@ -188,7 +209,9 @@ SETTINGS_HEADER = (
 	"# output_format: audio format the driver negotiated with your plan.",
 	"# unusable_voices, voice_check: voices this account cannot generate with,",
 	"# and a fingerprint of the account state they were worked out for.",
+	"# unusable_voices_<model>, voice_check_<model>: the same for other models.",
 	"# unusable_models, model_check: the same for models.",
+	"# refused_<model>: request fields a model has refused.",
 	"# check_voices = no turns the voice check off.",
 	"# Remove a line to work that setting out again.",
 )
@@ -354,8 +377,17 @@ def _readSettings():
 	return settings
 
 
+# Checks run on several threads, so writes take turns.
+_settingsLock = threading.Lock()
+
+
 def _writeSetting(name, value):
 	"""Rewrites one line of the settings file, leaving the rest untouched."""
+	with _settingsLock:
+		return _writeSettingNow(name, value)
+
+
+def _writeSettingNow(name, value):
 	lines = _readLines(SETTINGS_FILENAME)
 	if lines is None:
 		lines = list(SETTINGS_HEADER)
@@ -416,9 +448,9 @@ def invalidateChecks():
 	"""Forgets the recorded voice and model checks, so the next load redoes them.
 
 	For when the synthesizer is not running and there is nothing to check against."""
-	voices = _writeSetting("voice_check", "")
-	models = _writeSetting("model_check", "")
-	return voices and models
+	names = {"voice_check", "model_check"}
+	names.update(n for n in _readSettings() if n.startswith("voice_check_"))
+	return all([_writeSetting(name, "") for name in sorted(names)])
 
 
 def _migrateLegacyFiles():
@@ -457,6 +489,8 @@ PROBE_UNKNOWN = "unknown"
 # Something wrong with the account itself, e.g. an exhausted quota or a
 # rejected key. Everything would fail, so checking stops.
 PROBE_ACCOUNT = "account"
+# The model was refused, not the voice, so nothing is concluded about the voice.
+PROBE_MODEL = "model"
 
 # Statuses that mean the request never got a real answer.
 TRANSIENT_STATUS_CODES = (408, 425, 429)
@@ -477,6 +511,8 @@ _ACCOUNT_REJECTION_TERMS = (
 	"banned",
 	"blocked",
 )
+# Account wording that outranks a mention of the model.
+_QUOTA_OR_KEY_TERMS = ("quota", "insufficient", "api_key", "api key", "unusual activity", "unusual_activity")
 # Wording that blames the voice or model. It outranks the account terms, since
 # these messages often mention the subscription as well.
 _VOICE_OR_MODEL_TERMS = (
@@ -495,6 +531,10 @@ def _classifyRefusal(status, detail):
 	detail = detail.lower()
 	if status in TRANSIENT_STATUS_CODES or status >= 500:
 		return PROBE_UNKNOWN
+	# Naming the model and not the voice blames the model; naming both, the voice.
+	if 400 <= status < 500 and "model" in detail and "voice" not in detail \
+			and not any(term in detail for term in _QUOTA_OR_KEY_TERMS):
+		return PROBE_MODEL
 	blamesItem = any(term in detail for term in _VOICE_OR_MODEL_TERMS)
 	if not blamesItem and any(term in detail for term in _ACCOUNT_REJECTION_TERMS):
 		return PROBE_ACCOUNT
@@ -509,8 +549,22 @@ def _isRefusal(status):
 
 
 def _modelInfo(modelId):
-	"""What a model accepts; unknown ids are treated like the default model."""
-	return MODELS.get(modelId) or MODELS[DEFAULT_MODEL]
+	"""What a model accepts, less the fields it refused; unknown ids count as the default."""
+	info = _offeredModels.get(modelId) or MODELS.get(modelId) or MODELS[DEFAULT_MODEL]
+	refused = _refused.get(modelId)
+	if refused:
+		info = info._replace(
+			languageCode=info.languageCode and "language_code" not in refused,
+			settings=tuple(name for name in info.settings if name not in refused),
+		)
+	return info
+
+
+def _voiceCheckKeys(modelId):
+	"""Settings lines with a model's voice check; the default model keeps the old names."""
+	if modelId == DEFAULT_MODEL:
+		return "unusable_voices", "voice_check"
+	return f"unusable_voices_{modelId}", f"voice_check_{modelId}"
 
 
 def _requestTimeout(modelId):
@@ -1021,6 +1075,20 @@ class _SpeechWorker(threading.Thread):
 				if not fedAudio and _isRefusal(e.code) and "stability" in detail.lower() \
 						and driver._usePresetStability(modelId):
 					continue
+				# A field the model won't take is left out from now on.
+				if not fedAudio and _isRefusal(e.code) and driver._refuseFields(modelId, detail):
+					continue
+				refusal = _classifyRefusal(e.code, detail) if not fedAudio else None
+				# A model the account refuses is left out, and the default one speaks.
+				if refusal == PROBE_MODEL and driver._rejectModel(modelId, detail.strip()):
+					modelId = DEFAULT_MODEL
+					continue
+				# A voice the chosen model refuses is left out for that model.
+				if refusal == PROBE_UNUSABLE and modelId != DEFAULT_MODEL \
+						and modelId == driver.model and "voice" in detail.lower():
+					driver._markVoiceUnusable(voiceId, detail.strip())
+					if driver.synthesisVoice != voiceId:
+						continue
 				# Anything else the chosen model can't do is spoken with the
 				# default model, so NVDA never falls silent over a model.
 				if not fedAudio and modelId != DEFAULT_MODEL and e.code != 401:
@@ -1029,7 +1097,7 @@ class _SpeechWorker(threading.Thread):
 					continue
 				# A voice that stops working mid-session, e.g. after a downgrade,
 				# is taken out of the list and another voice is tried.
-				if not fedAudio and _classifyRefusal(e.code, detail) == PROBE_UNUSABLE:
+				if refusal == PROBE_UNUSABLE and modelId == driver.model:
 					driver._markVoiceUnusable(voiceId, detail.strip())
 					if driver.synthesisVoice != voiceId:
 						continue
@@ -1135,6 +1203,13 @@ class SynthDriver(BaseSynthDriver):
 			defaultVal=DEFAULT_SPEAKER_BOOST,
 			displayName="Speaker boost",
 		),
+		DriverSetting(
+			"normalization",
+			"Text &normalization",
+			availableInSettingsRing=True,
+			defaultVal=DEFAULT_NORMALIZATION,
+			displayName="Text normalization",
+		),
 		BooleanDriverSetting(
 			"splitText",
 			"Split long te&xt",
@@ -1166,6 +1241,7 @@ class SynthDriver(BaseSynthDriver):
 		self._voiceId = None
 		self._language = DEFAULT_LANGUAGE
 		self._modelId = DEFAULT_MODEL
+		self._normalization = DEFAULT_NORMALIZATION
 		self._rate = 50
 		self._rateBoost = False
 		self._volume = 100
@@ -1181,6 +1257,9 @@ class SynthDriver(BaseSynthDriver):
 		self._unusableVoices = set()
 		self._voicesChecked = False
 		self._unusableModels = set()
+		# Models refused while in use; only for this session.
+		self._rejectedModels = set()
+		self._modelsChecked = False
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
 		self._modelFailures = {}
 		# Models already warned as too slow for the speed.
@@ -1204,6 +1283,7 @@ class SynthDriver(BaseSynthDriver):
 		_migrateLegacyFiles()
 		self._loadOutputFormat()
 		self._migrateLegacyVariantSetting()
+		self._loadSavedModel()
 		# Everything below may raise on purpose: NVDA then tells the user and falls
 		# back to a working synthesizer. terminate() is not called in that case.
 		self._loadAccountState()
@@ -1220,7 +1300,7 @@ class SynthDriver(BaseSynthDriver):
 		log.info(
 			f"ElevenLabs ready: {len(self._voicesCache)} voice(s)"
 			f"{f', {hidden} unusable' if hidden else ''}, "
-			f"{len(MODELS) - len(self._unusableModels)} model(s), "
+			f"{len(_offeredModels) - len(self._unusableModels)} model(s), "
 			f"plan {self._tier or 'unknown'}, audio {self.outputFormat}."
 		)
 
@@ -1529,6 +1609,15 @@ class SynthDriver(BaseSynthDriver):
 			# Not fatal: the tier only sharpens the cache, it isn't needed to speak.
 			log.debugWarning(f"ElevenLabs: could not read the subscription: {e}")
 			self._tier = ""
+		self._loadModels(key)
+		self._loadRefusedFields()
+		self._loadModelCheck()
+		if self._modelId not in _offeredModels or self._modelId in self._unusableModels:
+			log.warning(
+				f"ElevenLabs: the saved model {self._modelId!r} is not usable with this account; "
+				f"using {MODELS[DEFAULT_MODEL].name}."
+			)
+			self._modelId = DEFAULT_MODEL
 		self._loadUnusableVoices()
 		self._rebuildVoiceList()
 
@@ -1539,22 +1628,30 @@ class SynthDriver(BaseSynthDriver):
 		return f"v{VOICE_CHECK_VERSION}:{self._tier or 'unknown'}:{len(self._allVoices)}:{digest}"
 
 	def _loadUnusableVoices(self):
-		"""Restores the previously checked result, if it still applies."""
+		"""Restores the chosen model's checked result, if it still applies."""
 		settings = _readSettings()
-		if settings.get("voice_check") != self._accountFingerprint():
+		unusableKey, checkKey = _voiceCheckKeys(self._modelId)
+		if settings.get(checkKey) != self._accountFingerprint():
 			# The plan or the voice list changed, so the old result means nothing.
 			self._unusableVoices = set()
 			self._voicesChecked = False
 			return
-		saved = settings.get("unusable_voices", "")
+		saved = settings.get(unusableKey, "")
 		self._unusableVoices = {v.strip() for v in saved.split(",") if v.strip()}
 		# A result is only recorded once every voice has an answer, so a matching
 		# fingerprint means the whole list is already known good.
 		self._voicesChecked = True
 
 	def _saveUnusableVoices(self):
-		_writeSetting("unusable_voices", ",".join(sorted(self._unusableVoices)))
-		_writeSetting("voice_check", self._accountFingerprint())
+		unusableKey, checkKey = _voiceCheckKeys(self._modelId)
+		_writeSetting(unusableKey, ",".join(sorted(self._unusableVoices)))
+		# The fingerprint says every voice is known, so only then is it written.
+		if self._voicesChecked or self._voiceCheckDisabled():
+			_writeSetting(checkKey, self._accountFingerprint())
+
+	@staticmethod
+	def _voiceCheckDisabled():
+		return _readSettings().get("check_voices", "").lower() in ("no", "false", "0", "off")
 
 	def _rebuildVoiceList(self):
 		"""Rebuilds the list NVDA sees, leaving out voices known to be unusable."""
@@ -1583,7 +1680,7 @@ class SynthDriver(BaseSynthDriver):
 		self._validateStartupVoice()
 		if self._voicesChecked:
 			return
-		if _readSettings().get("check_voices", "").lower() in ("no", "false", "0", "off"):
+		if self._voiceCheckDisabled():
 			log.debug(f"ElevenLabs: the voice check is switched off in {SETTINGS_FILENAME}.")
 			return
 		pending = [v for v in self._voicesCache if v != self._voiceId]
@@ -1671,7 +1768,7 @@ class SynthDriver(BaseSynthDriver):
 			if accountFailure or self._probeStop.is_set() or time.time() > deadline:
 				return PROBE_UNKNOWN, "check abandoned"
 			result, detail = probeOne(item)
-			if result == PROBE_ACCOUNT:
+			if result in (PROBE_ACCOUNT, PROBE_MODEL):
 				accountFailure.append(detail)
 			return result, detail
 
@@ -1726,7 +1823,7 @@ class SynthDriver(BaseSynthDriver):
 					onFinished(
 						len(self._voicesCache),
 						len(self._unusableVoices),
-						len(MODELS) - len(self._unusableModels),
+						len(_offeredModels) - len(self._unusableModels),
 						len(self._unusableModels),
 					)
 				except Exception:
@@ -1747,10 +1844,19 @@ class SynthDriver(BaseSynthDriver):
 	def _validateStartupVoice(self):
 		"""Tries voices until one speaks, or gives up so NVDA can fall back."""
 		removed = []
-		for voiceId in self._startupCandidates():
+		candidates = self._startupCandidates()
+		while candidates:
+			voiceId = candidates.pop(0)
 			if voiceId in self._unusableVoices:
 				continue
 			result, detail = self._probeVoice(voiceId)
+			if result == PROBE_MODEL:
+				# The chosen model is refused, so the default one is tried instead.
+				if self._rejectModel(self._modelId, detail):
+					removed = []
+					candidates = self._startupCandidates()
+					continue
+				raise ElevenLabsUnavailable(f"The model {self._modelId} cannot be used: {detail}")
 			if result == PROBE_OK:
 				self._voiceId = voiceId
 				if removed:
@@ -1781,14 +1887,16 @@ class SynthDriver(BaseSynthDriver):
 			"ElevenLabs account."
 		)
 
-	def _probe(self, voiceId, modelId=DEFAULT_MODEL, settleFormat=True):
-		"""Asks for the shortest possible sample to see whether a voice or model works."""
+	def _probe(self, voiceId, modelId=DEFAULT_MODEL, settleFormat=True, allFields=False):
+		"""Asks for the shortest possible sample to see whether a voice or model works.
+
+		allFields sends every field the model may take; refused ones are learned."""
 		key = self._getApiKey()
 		if not key:
 			return PROBE_ACCOUNT, "no API key"
 		while True:
-			# Plain voice settings, since this only checks the request is allowed.
-			body = self._requestBody(PROBE_TEXT, self._language, modelId, plain=True)
+			# Neutral values, since this only checks the request is allowed.
+			body = self._requestBody(PROBE_TEXT, self._language, modelId, plain=not allFields, probe=allFields)
 			req = urlrequest.Request(
 				f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
 				f"?output_format={self.outputFormat}",
@@ -1810,13 +1918,15 @@ class SynthDriver(BaseSynthDriver):
 				if settleFormat and e.code == 403 and _isOutputFormatRejection(detail) \
 						and self._useNextOutputFormat():
 					continue
+				if _isRefusal(e.code) and self._refuseFields(modelId, detail):
+					continue
 				return _classifyRefusal(e.code, detail), detail.strip()
 			except (URLError, OSError) as e:
 				return PROBE_UNKNOWN, str(e)
 
 	def _probeVoice(self, voiceId):
-		"""Checks a voice with the default model."""
-		return self._probe(voiceId)
+		"""Checks a voice with the chosen model."""
+		return self._probe(voiceId, self._modelId)
 
 	@staticmethod
 	def _readProbeDetail(error):
@@ -1874,20 +1984,99 @@ class SynthDriver(BaseSynthDriver):
 		return self._get_voice()
 
 	# --- Models ---
-	# Which models an account may use has differed by plan, so each is tried once,
+	# The account's own model list is offered, in release order. Which models and
+	# fields an account may use has differed by plan, so each model is tried once,
 	# like the voices, and the result is cached against the plan.
+
+	def _loadSavedModel(self):
+		"""Reads the saved model early, so the start up voice check uses it."""
+		# From the profiles, not config.conf: NVDA hasn't registered the setting
+		# yet, and asking now would cache it as missing. Newest profile first.
+		try:
+			profiles = list(config.conf.profiles)
+		except Exception:
+			return
+		for profile in reversed(profiles):
+			try:
+				saved = profile.get("speech", {}).get(self.name, {}).get("model")
+			except Exception:
+				continue
+			if saved:
+				self._modelId = str(saved)
+				return
+
+	def _loadModels(self, key):
+		"""Fetches the account's text to speech models; MODELS if that fails."""
+		try:
+			data = _fetchJson(f"{API_BASE}/v1/models", key, INIT_TIMEOUT)
+		except ElevenLabsUnavailable as e:
+			log.debugWarning(f"ElevenLabs: could not read the model list; using the built-in one. {e}")
+			data = None
+		names = OrderedDict()
+		for model in data if isinstance(data, list) else ():
+			if isinstance(model, dict) and model.get("can_do_text_to_speech") and model.get("model_id"):
+				names[model["model_id"]] = model.get("name") or model["model_id"]
+		_offeredModels.clear()
+		if not names:
+			_offeredModels.update(MODELS)
+			return
+		# Release order: older unknown ones, MODELS, then new ones, likely newer.
+		known = list(_EARLIER_MODELS) + list(MODELS)
+		order = [m for m in known if m in names or m == DEFAULT_MODEL]
+		order += [m for m in names if m not in known]
+		for modelId in order:
+			_offeredModels[modelId] = MODELS.get(modelId) or ModelInfo(
+				names[modelId], True, _ALL_SETTINGS, realtime=False
+			)
+
+	def _loadRefusedFields(self):
+		"""Restores the fields each model has refused."""
+		_refused.clear()
+		for name, value in _readSettings().items():
+			if name.startswith("refused_"):
+				fields = {f.strip() for f in value.split(",") if f.strip() in _LEARNABLE_FIELDS}
+				if fields:
+					_refused[name[len("refused_"):]] = fields
+
+	def _refuseFields(self, modelId, detail):
+		"""Records fields a refusal names for a model; True if any are new.
+
+		They are left out of later requests, and their settings hidden."""
+		info = _modelInfo(modelId)
+		sent = set(info.settings) | ({"language_code"} if info.languageCode else set())
+		new = {f for f in sent if re.search(rf"\b{f}\b", detail.lower())}
+		if not new:
+			return False
+		fields = _refused.setdefault(modelId, set())
+		fields.update(new)
+		_writeSetting(f"refused_{modelId}", ",".join(sorted(fields)))
+		log.warning(
+			f"ElevenLabs: {info.name} does not take {', '.join(sorted(new))}, so it is left out "
+			f"from now on. {detail.strip()[:300]}"
+		)
+		if modelId == self._modelId:
+			self._refreshGui(changedSetting="model")
+		return True
 
 	def _modelFingerprint(self):
 		"""Identifies the plan and model list the model check was done for."""
-		digest = hashlib.md5("\n".join(MODELS).encode("utf-8")).hexdigest()[:12]
+		digest = hashlib.md5("\n".join(_offeredModels).encode("utf-8")).hexdigest()[:12]
 		return f"v{MODEL_CHECK_VERSION}:{self._tier or 'unknown'}:{digest}"
 
-	def _checkModelsAtStartup(self):
-		"""Settles the model list before NVDA reads it, reusing a cached result."""
+	def _loadModelCheck(self):
+		"""Restores the cached model check; False if there is none for this account state."""
 		settings = _readSettings()
-		if settings.get("model_check") == self._modelFingerprint():
-			saved = (m.strip() for m in settings.get("unusable_models", "").split(","))
-			self._unusableModels = {m for m in saved if m in MODELS and m != DEFAULT_MODEL}
+		if settings.get("model_check") != self._modelFingerprint():
+			self._modelsChecked = False
+			return False
+		saved = (m.strip() for m in settings.get("unusable_models", "").split(","))
+		self._unusableModels = {m for m in saved if m in _offeredModels and m != DEFAULT_MODEL}
+		self._modelsChecked = True
+		return True
+
+	def _checkModelsAtStartup(self):
+		"""Settles the model list before NVDA reads it, unless a cached result applies."""
+		if self._modelsChecked:
 			return
 		try:
 			self._checkModels()
@@ -1896,14 +2085,20 @@ class SynthDriver(BaseSynthDriver):
 			log.error("ElevenLabs: the model check failed", exc_info=True)
 
 	def _checkModels(self):
-		"""Tries each model once and leaves out those this account can't use."""
+		"""Tries each model once and leaves out those this account can't use.
+
+		Every field a model may take is sent, so those it refuses are learned."""
 		# The default model has already spoken, so it needs no check.
-		pending = [m for m in MODELS if m != DEFAULT_MODEL]
+		pending = [m for m in _offeredModels if m != DEFAULT_MODEL]
+		# Learned again from scratch; the default model's on first refusal.
+		for modelId in list(_refused):
+			_writeSetting(f"refused_{modelId}", "")
+		_refused.clear()
 		voiceId = self._modelProbeVoice()
 		unusable, unanswered, succeeded, lastReason, accountFailure = self._probeAll(
 			pending,
 			time.time() + MODEL_CHECK_DEADLINE,
-			lambda modelId: self._probe(voiceId, modelId, settleFormat=False),
+			lambda modelId: self._probeModel(voiceId, modelId),
 			MODEL_PROBE_WORKERS,
 		)
 		if self._probeStop.is_set():
@@ -1925,7 +2120,7 @@ class SynthDriver(BaseSynthDriver):
 		if self._modelId in self._unusableModels:
 			self._changeModel(DEFAULT_MODEL)
 		if unusable:
-			names = ", ".join(MODELS[m].name for m in pending if m in self._unusableModels)
+			names = ", ".join(_modelInfo(m).name for m in pending if m in self._unusableModels)
 			log.warning(
 				f"ElevenLabs: {len(unusable)} model(s) cannot be used with this account and "
 				f"have been left out of the model list: {names}"
@@ -1938,6 +2133,13 @@ class SynthDriver(BaseSynthDriver):
 			return
 		_writeSetting("unusable_models", ",".join(sorted(self._unusableModels)))
 		_writeSetting("model_check", self._modelFingerprint())
+		self._modelsChecked = True
+
+	def _probeModel(self, voiceId, modelId):
+		"""Checks a model, learning which fields it refuses."""
+		result, detail = self._probe(voiceId, modelId, settleFormat=False, allFields=True)
+		# Here a refused model is simply unusable.
+		return (PROBE_UNUSABLE if result == PROBE_MODEL else result), detail
 
 	def _modelProbeVoice(self):
 		"""A usable voice to check models with, preferring ElevenLabs' own."""
@@ -1948,20 +2150,31 @@ class SynthDriver(BaseSynthDriver):
 			return self._voiceId
 		return premade[0] if premade else self.synthesisVoice
 
-	def _requestBody(self, text, lang, modelId, plain=False):
-		"""The JSON body of a speech request, shaped for the given model."""
+	def _requestBody(self, text, lang, modelId, plain=False, probe=False):
+		"""The JSON body of a speech request, shaped for the given model.
+
+		plain and probe are for checks: probe sends every field the model may take."""
+		info = _modelInfo(modelId)
 		body = {"text": text, "model_id": modelId}
-		if lang and lang != "auto" and _modelInfo(modelId).languageCode:
+		if lang and lang != "auto" and info.languageCode:
 			body["language_code"] = lang
-		body["voice_settings"] = self._voiceSettings(modelId, plain)
+		if "apply_text_normalization" in info.settings:
+			if probe:
+				body["apply_text_normalization"] = "auto"
+			elif not plain and self._normalization != "auto":
+				body["apply_text_normalization"] = self._normalization
+		body["voice_settings"] = self._voiceSettings(modelId, plain, probe)
 		return body
 
-	def _voiceSettings(self, modelId, plain=False):
+	def _voiceSettings(self, modelId, plain=False, probe=False):
 		"""The voice_settings block, limited to what the model accepts.
 
-		plain gives ElevenLabs' defaults for checks, without style's extra latency."""
-		if plain:
+		plain gives ElevenLabs' defaults for checks, without style's extra latency;
+		probe adds neutral values for the rest."""
+		if plain or probe:
 			values = {"stability": 0.5, "similarity_boost": 0.75}
+			if probe:
+				values.update(style=0.0, use_speaker_boost=True, speed=1.0)
 		else:
 			values = {
 				# Lower stability gives a wider emotional range, higher a flatter voice.
@@ -1997,31 +2210,76 @@ class SynthDriver(BaseSynthDriver):
 			self._modelFailures[modelId] = message
 			log.warning(message)
 
+	def _rejectModel(self, modelId, detail):
+		"""Leaves out a refused model for this session and uses the default; False if none to fall to."""
+		if modelId == DEFAULT_MODEL or modelId in self._rejectedModels:
+			return False
+		self._rejectedModels.add(modelId)
+		log.warning(
+			f"ElevenLabs: {_modelInfo(modelId).name} cannot be used with this account, so "
+			f"{MODELS[DEFAULT_MODEL].name} is used instead. {detail}"
+		)
+		if self._modelId == modelId:
+			self._changeModel(DEFAULT_MODEL)
+		return True
+
 	def _get_availableModels(self):
 		return OrderedDict(
 			(modelId, StringParameterInfo(modelId, info.name))
-			for modelId, info in MODELS.items()
-			if modelId not in self._unusableModels
+			for modelId, info in _offeredModels.items()
+			if modelId not in self._unusableModels and modelId not in self._rejectedModels
 		)
 
 	def _get_model(self):
 		return self._modelId
 
 	def _set_model(self, value):
-		if value in MODELS and value not in self._unusableModels:
+		unusable = self._unusableModels | self._rejectedModels
+		if value in _offeredModels and value not in unusable:
 			self._changeModel(value)
 			return
-		reason = "cannot be used with this account" if value in self._unusableModels else "is unknown"
+		reason = "cannot be used with this account" if value in unusable else "is unknown"
 		log.warning(f"ElevenLabs: the model {value!r} {reason}; using {MODELS[DEFAULT_MODEL].name}.")
 		self._changeModel(DEFAULT_MODEL)
 
 	def _changeModel(self, modelId):
-		"""Switches model, and has NVDA show only the settings the new one takes."""
-		changed = _modelInfo(modelId).settings != _modelInfo(self._modelId).settings
+		"""Switches model, with its own voice check, and has NVDA show only the settings it takes."""
+		if modelId == self._modelId:
+			return
 		self._modelId = modelId
+		# Without a voice check for this model the whole list is offered; voices
+		# that fail are removed on first use, and the next start checks them all.
+		self._loadUnusableVoices()
+		if not self._rebuildVoiceList():
+			self._unusableVoices = set()
+			self._voicesChecked = False
+			self._rebuildVoiceList()
+		with self._voicesLock:
+			if self._voiceId not in self._voicesCache:
+				self._voiceId = None
+		log.debug(f"ElevenLabs: now using {_modelInfo(modelId).name}.")
 		# While NVDA loads settings it is refreshed once afterwards instead.
-		if changed and not self._configuring:
+		if not self._configuring:
 			self._refreshGui(changedSetting="model")
+
+	# --- Text normalization ---
+	# The box is hidden for a model that refuses apply_text_normalization.
+
+	def _get_availableNormalizations(self):
+		return OrderedDict(
+			(mode, StringParameterInfo(mode, name))
+			for mode, name in NORMALIZATIONS.items()
+		)
+
+	def _get_normalization(self):
+		return self._normalization
+
+	def _set_normalization(self, value):
+		if value in NORMALIZATIONS:
+			self._normalization = value
+		else:
+			log.warning(f"ElevenLabs: unknown text normalization {value!r}; using automatic.")
+			self._normalization = DEFAULT_NORMALIZATION
 
 	# --- Language ---
 	# The language box; see LANGUAGE_SETTING_ID for why its id is elvlanguage.

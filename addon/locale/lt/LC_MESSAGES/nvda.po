@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "M&odelis"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Stabi&lumas"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Ai&škumas"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Stilius"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Kalb&ėtojo stiprinimas"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Teksto normalizavimas"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Skaid&yti ilgą tekstą"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "&Įjungti garso žymes"
+
+msgid "Model"
+msgstr "Modelis"
+
+msgid "Stability"
+msgstr "Stabilumas"
+
+msgid "Clarity"
+msgstr "Aiškumas"
+
+msgid "Style"
+msgstr "Stilius"
+
+msgid "Speaker boost"
+msgstr "Kalbėtojo stiprinimas"
+
+msgid "Text normalization"
+msgstr "Teksto normalizavimas"
+
+msgid "Automatic"
+msgstr "Automatinis"
+
+msgid "On"
+msgstr "Įjungta"
+
+msgid "Off"
+msgstr "Išjungta"
+
+msgid "Split long text"
+msgstr "Skaidyti ilgą tekstą"
+
+msgid "Audio tags"
+msgstr "Garso žymės"
+
+msgid "Automatic (detect language)"
+msgstr "Automatinis (aptikti kalbą)"
+
+msgid "{name} (English only)"
+msgstr "{name} (tik anglų k.)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs nepasiekiama."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Nepavyko rasti ElevenLabs tvarkyklės"
+
+msgid "No API key found"
+msgstr "API raktas nerastas"
+
+msgid "Fetching usage"
+msgstr "Gaunamas naudojimas"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Nepavyko gauti naudojimo, žr. NVDA žurnalą"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Netikėtas ElevenLabs atsakymas"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Panaudoti kreditai: {used} iš {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Panaudoti kreditai: {used}."
+
+msgid "Resets: {when}."
+msgstr "Atstatoma: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Planas: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Tikrinami balsai ir modeliai"
+
+msgid "A check is already running"
+msgstr "Tikrinimas jau vykdomas"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Balsai ir modeliai bus patikrinti kitą kartą, kai pasirinksite ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Nepavyko atnaujinti ElevenLabs nustatymų failo"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Tikrinimas baigtas. Tinkami balsai: {voices}. Netinkami balsai: "
+"{unusableVoices}. Tinkami modeliai: {models}. Netinkami modeliai: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs kalbos sintezatorius"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Pranešti ElevenLabs kreditų naudojimą dabartiniu laikotarpiu"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Dar kartą patikrinti, kuriuos ElevenLabs balsus ir modelius gali naudoti ši "
+"paskyra"

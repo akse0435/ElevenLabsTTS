@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "M&alli"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Vakaus"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "S&elkeys"
+
+msgctxt "label"
+msgid "Style"
+msgstr "T&yyli"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Puhujan vahvistus"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Tekstin no&rmalisointi"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Jaa pitkä teksti"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Ota äänitunnisteet käytt&öön"
+
+msgid "Model"
+msgstr "Malli"
+
+msgid "Stability"
+msgstr "Vakaus"
+
+msgid "Clarity"
+msgstr "Selkeys"
+
+msgid "Style"
+msgstr "Tyyli"
+
+msgid "Speaker boost"
+msgstr "Puhujan vahvistus"
+
+msgid "Text normalization"
+msgstr "Tekstin normalisointi"
+
+msgid "Automatic"
+msgstr "Automaattinen"
+
+msgid "On"
+msgstr "Päällä"
+
+msgid "Off"
+msgstr "Pois"
+
+msgid "Split long text"
+msgstr "Jaa pitkä teksti"
+
+msgid "Audio tags"
+msgstr "Äänitunnisteet"
+
+msgid "Automatic (detect language)"
+msgstr "Automaattinen (tunnista kieli)"
+
+msgid "{name} (English only)"
+msgstr "{name} (vain englanti)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ei ole käytettävissä."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs-ajuria ei löytynyt"
+
+msgid "No API key found"
+msgstr "API-avainta ei löytynyt"
+
+msgid "Fetching usage"
+msgstr "Haetaan käyttöä"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Käyttöä ei voitu hakea, katso NVDA:n loki"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Odottamaton vastaus ElevenLabsilta"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Käytetyt krediitit: {used}, yhteensä {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Käytetyt krediitit: {used}."
+
+msgid "Resets: {when}."
+msgstr "Nollautuu: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Tilaus: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Tarkistetaan ääniä ja malleja"
+
+msgid "A check is already running"
+msgstr "Tarkistus on jo käynnissä"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Äänet ja mallit tarkistetaan, kun valitset ElevenLabsin seuraavan kerran"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabsin asetustiedostoa ei voitu päivittää"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Tarkistus valmis. Käyttökelpoiset äänet: {voices}. Käyttökelvottomat äänet: "
+"{unusableVoices}. Käyttökelpoiset mallit: {models}. Käyttökelvottomat "
+"mallit: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs-puhesyntetisaattori"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Ilmoita ElevenLabs-krediittien käyttö nykyisellä jaksolla"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Tarkista uudelleen, mitä ElevenLabsin ääniä ja malleja tämä tili voi käyttää"

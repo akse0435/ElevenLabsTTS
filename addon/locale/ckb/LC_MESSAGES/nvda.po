@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ckb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&مۆدێل"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&جێگیری"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "ڕ&وونی"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&شێواز"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "بەهێزکردنی &قسەکەر"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "ئ&اسایکردنەوەی دەق"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "داب&ەشکردنی دەقی درێژ"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "&چالاککردنی تاگە دەنگییەکان"
+
+msgid "Model"
+msgstr "مۆدێل"
+
+msgid "Stability"
+msgstr "جێگیری"
+
+msgid "Clarity"
+msgstr "ڕوونی"
+
+msgid "Style"
+msgstr "شێواز"
+
+msgid "Speaker boost"
+msgstr "بەهێزکردنی قسەکەر"
+
+msgid "Text normalization"
+msgstr "ئاسایکردنەوەی دەق"
+
+msgid "Automatic"
+msgstr "خۆکار"
+
+msgid "On"
+msgstr "چالاک"
+
+msgid "Off"
+msgstr "ناچالاک"
+
+msgid "Split long text"
+msgstr "دابەشکردنی دەقی درێژ"
+
+msgid "Audio tags"
+msgstr "تاگە دەنگییەکان"
+
+msgid "Automatic (detect language)"
+msgstr "خۆکار (دۆزینەوەی زمان)"
+
+msgid "{name} (English only)"
+msgstr "{name} (تەنها ئینگلیزی)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs بەردەست نییە."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "نەتوانرا وەگەڕخەری ElevenLabs بدۆزرێتەوە"
+
+msgid "No API key found"
+msgstr "هیچ کلیلێکی API نەدۆزرایەوە"
+
+msgid "Fetching usage"
+msgstr "هێنانی بەکارهێنان"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "نەتوانرا بەکارهێنان بهێنرێت، سەیری تۆماری NVDA بکە"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "وەڵامێکی چاوەڕواننەکراو لە ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "کرێدیتە بەکارهاتووەکان: {used} لە {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "کرێدیتە بەکارهاتووەکان: {used}."
+
+msgid "Resets: {when}."
+msgstr "ڕێکخستنەوە: {when}."
+
+msgid "Plan: {tier}."
+msgstr "پلان: {tier}."
+
+msgid "Checking voices and models"
+msgstr "پشکنینی دەنگەکان و مۆدێلەکان"
+
+msgid "A check is already running"
+msgstr "پشکنینێک پێشتر لە کاردایە"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "دەنگەکان و مۆدێلەکان جاری داهاتوو کە ElevenLabs هەڵدەبژێریت دەپشکنرێن"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "نەتوانرا فایلی ڕێکخستنەکانی ElevenLabs نوێ بکرێتەوە"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"پشکنین تەواو بوو. دەنگە گونجاوەکان: {voices}. دەنگە نەگونجاوەکان: "
+"{unusableVoices}. مۆدێلە گونجاوەکان: {models}. مۆدێلە نەگونجاوەکان: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "دەنگسازی ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "ڕاپۆرتکردنی بەکارهێنانی کرێدیتی ElevenLabs بۆ ماوەی ئێستا"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"دووبارە پشکنین کە ئەم هەژمارە دەتوانێت کام دەنگ و مۆدێلی ElevenLabs "
+"بەکاربهێنێت"

@@ -1,0 +1,142 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Моде&л"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "С&табилност"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "&Яснота"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Стил"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Усилв&ане на говорителя"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Но&рмализиране на текста"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Разделяне на д&ълъг текст"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Разре&шаване на аудио етикети"
+
+msgid "Model"
+msgstr "Модел"
+
+msgid "Stability"
+msgstr "Стабилност"
+
+msgid "Clarity"
+msgstr "Яснота"
+
+msgid "Style"
+msgstr "Стил"
+
+msgid "Speaker boost"
+msgstr "Усилване на говорителя"
+
+msgid "Text normalization"
+msgstr "Нормализиране на текста"
+
+msgid "Automatic"
+msgstr "Автоматично"
+
+msgid "On"
+msgstr "Вкл."
+
+msgid "Off"
+msgstr "Изкл."
+
+msgid "Split long text"
+msgstr "Разделяне на дълъг текст"
+
+msgid "Audio tags"
+msgstr "Аудио етикети"
+
+msgid "Automatic (detect language)"
+msgstr "Автоматично (откриване на езика)"
+
+msgid "{name} (English only)"
+msgstr "{name} (само английски)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs не е достъпен."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Драйверът на ElevenLabs не е намерен"
+
+msgid "No API key found"
+msgstr "Не е намерен API ключ"
+
+msgid "Fetching usage"
+msgstr "Извличане на използването"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Използването не може да бъде извлечено, вижте журнала на NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Неочакван отговор от ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Използвани кредити: {used} от {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Използвани кредити: {used}."
+
+msgid "Resets: {when}."
+msgstr "Нулиране: {when}."
+
+msgid "Plan: {tier}."
+msgstr "План: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Проверка на гласовете и моделите"
+
+msgid "A check is already running"
+msgstr "Вече се изпълнява проверка"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Гласовете и моделите ще бъдат проверени следващия път, когато изберете "
+"ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Файлът с настройки на ElevenLabs не може да бъде обновен"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Проверката приключи. Използваеми гласове: {voices}. Неизползваеми гласове: "
+"{unusableVoices}. Използваеми модели: {models}. Неизползваеми модели: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Синтезатор на реч ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Докладване на използването на кредити в ElevenLabs за текущия период"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Повторна проверка кои гласове и модели на ElevenLabs може да използва този "
+"акаунт"

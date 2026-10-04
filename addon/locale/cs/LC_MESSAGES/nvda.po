@@ -1,0 +1,139 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&Model"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "St&abilita"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Jasnost"
+
+msgctxt "label"
+msgid "Style"
+msgstr "St&yl"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Zesílení mluv&čího"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Normaliza&ce textu"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Rozd&ělit dlouhý text"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Povolit zvu&kové značky"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Stabilita"
+
+msgid "Clarity"
+msgstr "Jasnost"
+
+msgid "Style"
+msgstr "Styl"
+
+msgid "Speaker boost"
+msgstr "Zesílení mluvčího"
+
+msgid "Text normalization"
+msgstr "Normalizace textu"
+
+msgid "Automatic"
+msgstr "Automaticky"
+
+msgid "On"
+msgstr "Zapnuto"
+
+msgid "Off"
+msgstr "Vypnuto"
+
+msgid "Split long text"
+msgstr "Rozdělit dlouhý text"
+
+msgid "Audio tags"
+msgstr "Zvukové značky"
+
+msgid "Automatic (detect language)"
+msgstr "Automaticky (rozpoznat jazyk)"
+
+msgid "{name} (English only)"
+msgstr "{name} (pouze angličtina)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs není k dispozici."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Ovladač ElevenLabs nebyl nalezen"
+
+msgid "No API key found"
+msgstr "Nebyl nalezen žádný klíč API"
+
+msgid "Fetching usage"
+msgstr "Načítání využití"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Využití se nepodařilo načíst, viz protokol NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Neočekávaná odpověď od ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Využité kredity: {used} z {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Využité kredity: {used}."
+
+msgid "Resets: {when}."
+msgstr "Obnovení: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Tarif: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Kontrola hlasů a modelů"
+
+msgid "A check is already running"
+msgstr "Kontrola již probíhá"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Hlasy a modely budou zkontrolovány při příštím výběru ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Soubor nastavení ElevenLabs se nepodařilo aktualizovat"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Kontrola dokončena. Použitelné hlasy: {voices}. Nepoužitelné hlasy: "
+"{unusableVoices}. Použitelné modely: {models}. Nepoužitelné modely: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Hlasový syntetizér ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Oznámit využití kreditů ElevenLabs v aktuálním období"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Znovu zkontrolovat, které hlasy a modely ElevenLabs může tento účet používat"

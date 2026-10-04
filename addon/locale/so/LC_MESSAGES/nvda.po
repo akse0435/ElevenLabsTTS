@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: so\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Moodal"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Xasillooni"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Caddaan"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&Qaab"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Xoojinta &hadlaha"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Caadi&yeynta qoraalka"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&Kala qaybi qoraalka dheer"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Daar calaamadaha codka"
+
+msgid "Model"
+msgstr "Moodal"
+
+msgid "Stability"
+msgstr "Xasillooni"
+
+msgid "Clarity"
+msgstr "Caddaan"
+
+msgid "Style"
+msgstr "Qaab"
+
+msgid "Speaker boost"
+msgstr "Xoojinta hadlaha"
+
+msgid "Text normalization"
+msgstr "Caadiyeynta qoraalka"
+
+msgid "Automatic"
+msgstr "Toos"
+
+msgid "On"
+msgstr "Shid"
+
+msgid "Off"
+msgstr "Dami"
+
+msgid "Split long text"
+msgstr "Kala qaybi qoraalka dheer"
+
+msgid "Audio tags"
+msgstr "Calaamadaha codka"
+
+msgid "Automatic (detect language)"
+msgstr "Toos (garo luqadda)"
+
+msgid "{name} (English only)"
+msgstr "{name} (Ingiriisi oo keliya)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs lama heli karo."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Darawalka ElevenLabs lama helin"
+
+msgid "No API key found"
+msgstr "Fure API lama helin"
+
+msgid "Fetching usage"
+msgstr "Waxaa la soo qaadayaa isticmaalka"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Isticmaalka lama soo qaadi karin, eeg diiwaanka NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Jawaab aan la filayn oo ka timid ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Dhibcaha la isticmaalay: {used} oo ka mid ah {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Dhibcaha la isticmaalay: {used}."
+
+msgid "Resets: {when}."
+msgstr "Dib u dejin: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Qorshe: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Waxaa la hubinayaa codadka iyo moodallada"
+
+msgid "A check is already running"
+msgstr "Hubin ayaa horay u socota"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Codadka iyo moodallada waa la hubin doonaa marka xigta ee aad doorato "
+"ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Faylka dejinta ElevenLabs lama cusbooneysiin karin"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Hubintii way dhammaatay. Codadka la isticmaali karo: {voices}. Codadka aan "
+"la isticmaali karin: {unusableVoices}. Moodallada la isticmaali karo: "
+"{models}. Moodallada aan la isticmaali karin: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Ku-dhawaaqaha hadalka ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Soo sheeg isticmaalka dhibcaha ElevenLabs ee muddadan"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Mar kale hubi codadka iyo moodallada ElevenLabs ee akoonkani isticmaali karo"

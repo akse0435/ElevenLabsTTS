@@ -1,0 +1,142 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: kn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "ಮಾದ&ರಿ"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&ಸ್ಥಿರತೆ"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "ಸ್&ಪಷ್ಟತೆ"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&ಶೈಲಿ"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&ವಕ್ತಾರ ಬೂಸ್ಟ್"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "ಪಠ್&ಯ ಸಾಮಾನ್ಯೀಕರಣ"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "ದೀರ್&ಘ ಪಠ್ಯವನ್ನು ವಿಭಜಿಸಿ"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "&ಆಡಿಯೋ ಟ್ಯಾಗ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
+
+msgid "Model"
+msgstr "ಮಾದರಿ"
+
+msgid "Stability"
+msgstr "ಸ್ಥಿರತೆ"
+
+msgid "Clarity"
+msgstr "ಸ್ಪಷ್ಟತೆ"
+
+msgid "Style"
+msgstr "ಶೈಲಿ"
+
+msgid "Speaker boost"
+msgstr "ವಕ್ತಾರ ಬೂಸ್ಟ್"
+
+msgid "Text normalization"
+msgstr "ಪಠ್ಯ ಸಾಮಾನ್ಯೀಕರಣ"
+
+msgid "Automatic"
+msgstr "ಸ್ವಯಂಚಾಲಿತ"
+
+msgid "On"
+msgstr "ಆನ್"
+
+msgid "Off"
+msgstr "ಆಫ್"
+
+msgid "Split long text"
+msgstr "ದೀರ್ಘ ಪಠ್ಯವನ್ನು ವಿಭಜಿಸಿ"
+
+msgid "Audio tags"
+msgstr "ಆಡಿಯೋ ಟ್ಯಾಗ್‌ಗಳು"
+
+msgid "Automatic (detect language)"
+msgstr "ಸ್ವಯಂಚಾಲಿತ (ಭಾಷೆ ಪತ್ತೆಹಚ್ಚಿ)"
+
+msgid "{name} (English only)"
+msgstr "{name} (ಇಂಗ್ಲಿಷ್ ಮಾತ್ರ)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ಲಭ್ಯವಿಲ್ಲ."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs ಡ್ರೈವರ್ ಕಂಡುಬಂದಿಲ್ಲ"
+
+msgid "No API key found"
+msgstr "API ಕೀ ಕಂಡುಬಂದಿಲ್ಲ"
+
+msgid "Fetching usage"
+msgstr "ಬಳಕೆಯನ್ನು ಪಡೆಯಲಾಗುತ್ತಿದೆ"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "ಬಳಕೆಯನ್ನು ಪಡೆಯಲಾಗಲಿಲ್ಲ, NVDA ಲಾಗ್ ನೋಡಿ"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs ನಿಂದ ಅನಿರೀಕ್ಷಿತ ಪ್ರತಿಕ್ರಿಯೆ"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "ಬಳಸಿದ ಕ್ರೆಡಿಟ್‌ಗಳು: {limit} ರಲ್ಲಿ {used} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "ಬಳಸಿದ ಕ್ರೆಡಿಟ್‌ಗಳು: {used}."
+
+msgid "Resets: {when}."
+msgstr "ಮರುಹೊಂದಿಕೆ: {when}."
+
+msgid "Plan: {tier}."
+msgstr "ಯೋಜನೆ: {tier}."
+
+msgid "Checking voices and models"
+msgstr "ಧ್ವನಿಗಳು ಮತ್ತು ಮಾದರಿಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ"
+
+msgid "A check is already running"
+msgstr "ಒಂದು ಪರಿಶೀಲನೆ ಈಗಾಗಲೇ ನಡೆಯುತ್ತಿದೆ"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"ಮುಂದಿನ ಬಾರಿ ನೀವು ElevenLabs ಆಯ್ಕೆ ಮಾಡಿದಾಗ ಧ್ವನಿಗಳು ಮತ್ತು ಮಾದರಿಗಳನ್ನು "
+"ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಫೈಲ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಲಿಲ್ಲ"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"ಪರಿಶೀಲನೆ ಪೂರ್ಣಗೊಂಡಿದೆ. ಬಳಸಬಹುದಾದ ಧ್ವನಿಗಳು: {voices}. ಬಳಸಲಾಗದ ಧ್ವನಿಗಳು: "
+"{unusableVoices}. ಬಳಸಬಹುದಾದ ಮಾದರಿಗಳು: {models}. ಬಳಸಲಾಗದ ಮಾದರಿಗಳು: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs ಧ್ವನಿ ಸಂಶ್ಲೇಷಕ"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "ಪ್ರಸ್ತುತ ಅವಧಿಯ ElevenLabs ಕ್ರೆಡಿಟ್ ಬಳಕೆಯನ್ನು ತಿಳಿಸಿ"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"ಈ ಖಾತೆಯು ಯಾವ ElevenLabs ಧ್ವನಿಗಳು ಮತ್ತು ಮಾದರಿಗಳನ್ನು ಬಳಸಬಹುದು ಎಂದು ಮತ್ತೆ "
+"ಪರಿಶೀಲಿಸಿ"

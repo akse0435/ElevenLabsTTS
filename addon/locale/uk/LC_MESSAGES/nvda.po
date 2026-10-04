@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Мод&ель"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "С&табільність"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "&Чіткість"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Ст&иль"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Підси&лення мовця"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Норм&алізація тексту"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Роз&бивати довгий текст"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "&Увімкнути аудіотеги"
+
+msgid "Model"
+msgstr "Модель"
+
+msgid "Stability"
+msgstr "Стабільність"
+
+msgid "Clarity"
+msgstr "Чіткість"
+
+msgid "Style"
+msgstr "Стиль"
+
+msgid "Speaker boost"
+msgstr "Підсилення мовця"
+
+msgid "Text normalization"
+msgstr "Нормалізація тексту"
+
+msgid "Automatic"
+msgstr "Автоматично"
+
+msgid "On"
+msgstr "Увімк."
+
+msgid "Off"
+msgstr "Вимк."
+
+msgid "Split long text"
+msgstr "Розбивати довгий текст"
+
+msgid "Audio tags"
+msgstr "Аудіотеги"
+
+msgid "Automatic (detect language)"
+msgstr "Автоматично (визначати мову)"
+
+msgid "{name} (English only)"
+msgstr "{name} (лише англійська)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs недоступний."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Драйвер ElevenLabs не знайдено"
+
+msgid "No API key found"
+msgstr "Ключ API не знайдено"
+
+msgid "Fetching usage"
+msgstr "Отримання даних про використання"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Не вдалося отримати дані про використання, див. журнал NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Неочікувана відповідь від ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Використано кредитів: {used} з {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Використано кредитів: {used}."
+
+msgid "Resets: {when}."
+msgstr "Скидання: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Тариф: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Перевірка голосів і моделей"
+
+msgid "A check is already running"
+msgstr "Перевірка вже триває"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Голоси й моделі буде перевірено, коли ви наступного разу виберете ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Не вдалося оновити файл налаштувань ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Перевірку завершено. Доступні голоси: {voices}. Недоступні голоси: "
+"{unusableVoices}. Доступні моделі: {models}. Недоступні моделі: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Синтезатор мовлення ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Повідомити про використання кредитів ElevenLabs за поточний період"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Повторно перевірити, які голоси й моделі ElevenLabs може використовувати цей"
+" обліковий запис"

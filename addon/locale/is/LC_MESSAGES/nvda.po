@@ -1,0 +1,138 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: is\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "L&íkan"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "St&öðugleiki"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Sk&ýrleiki"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Stíll"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "M&ælandaefling"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Stö&ðlun texta"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Sk&ipta löngum texta"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "&Virkja hljóðmerki"
+
+msgid "Model"
+msgstr "Líkan"
+
+msgid "Stability"
+msgstr "Stöðugleiki"
+
+msgid "Clarity"
+msgstr "Skýrleiki"
+
+msgid "Style"
+msgstr "Stíll"
+
+msgid "Speaker boost"
+msgstr "Mælandaefling"
+
+msgid "Text normalization"
+msgstr "Stöðlun texta"
+
+msgid "Automatic"
+msgstr "Sjálfvirkt"
+
+msgid "On"
+msgstr "Kveikt"
+
+msgid "Off"
+msgstr "Slökkt"
+
+msgid "Split long text"
+msgstr "Skipta löngum texta"
+
+msgid "Audio tags"
+msgstr "Hljóðmerki"
+
+msgid "Automatic (detect language)"
+msgstr "Sjálfvirkt (greina tungumál)"
+
+msgid "{name} (English only)"
+msgstr "{name} (aðeins enska)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs er ekki tiltækt."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Fann ekki ElevenLabs-rekilinn"
+
+msgid "No API key found"
+msgstr "Enginn API-lykill fannst"
+
+msgid "Fetching usage"
+msgstr "Sæki notkun"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Ekki tókst að sækja notkun, sjá NVDA-annálinn"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Óvænt svar frá ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Notaðar inneignir: {used} af {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Notaðar inneignir: {used}."
+
+msgid "Resets: {when}."
+msgstr "Endurstillist: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Áskrift: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Athuga raddir og líkön"
+
+msgid "A check is already running"
+msgstr "Athugun er þegar í gangi"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Raddir og líkön verða athuguð næst þegar þú velur ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Ekki tókst að uppfæra stillingaskrá ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Athugun lokið. Nothæfar raddir: {voices}. Ónothæfar raddir: "
+"{unusableVoices}. Nothæf líkön: {models}. Ónothæf líkön: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs talgervill"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Tilkynna notkun ElevenLabs-inneignar á yfirstandandi tímabili"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Athuga aftur hvaða raddir og líkön frá ElevenLabs þessi aðgangur getur notað"

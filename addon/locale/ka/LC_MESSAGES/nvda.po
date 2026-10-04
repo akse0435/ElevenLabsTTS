@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "მ&ოდელი"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "სტ&აბილურობა"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "სი&ცხადე"
+
+msgctxt "label"
+msgid "Style"
+msgstr "სტილი"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "მოსაუბრის &გაძლიერება"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "ტე&ქსტის ნორმალიზაცია"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "გ&რძელი ტექსტის დაყოფა"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "აუდიო ტეგების &ჩართვა"
+
+msgid "Model"
+msgstr "მოდელი"
+
+msgid "Stability"
+msgstr "სტაბილურობა"
+
+msgid "Clarity"
+msgstr "სიცხადე"
+
+msgid "Style"
+msgstr "სტილი"
+
+msgid "Speaker boost"
+msgstr "მოსაუბრის გაძლიერება"
+
+msgid "Text normalization"
+msgstr "ტექსტის ნორმალიზაცია"
+
+msgid "Automatic"
+msgstr "ავტომატური"
+
+msgid "On"
+msgstr "ჩართული"
+
+msgid "Off"
+msgstr "გამორთული"
+
+msgid "Split long text"
+msgstr "გრძელი ტექსტის დაყოფა"
+
+msgid "Audio tags"
+msgstr "აუდიო ტეგები"
+
+msgid "Automatic (detect language)"
+msgstr "ავტომატური (ენის ამოცნობა)"
+
+msgid "{name} (English only)"
+msgstr "{name} (მხოლოდ ინგლისური)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs მიუწვდომელია."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs-ის დრაივერი ვერ მოიძებნა"
+
+msgid "No API key found"
+msgstr "API გასაღები ვერ მოიძებნა"
+
+msgid "Fetching usage"
+msgstr "მოხმარების მიღება"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "მოხმარების მიღება ვერ მოხერხდა, იხილეთ NVDA-ს ჟურნალი"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "მოულოდნელი პასუხი ElevenLabs-ისგან"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "გამოყენებული კრედიტები: {used} {limit}-დან ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "გამოყენებული კრედიტები: {used}."
+
+msgid "Resets: {when}."
+msgstr "განულება: {when}."
+
+msgid "Plan: {tier}."
+msgstr "გეგმა: {tier}."
+
+msgid "Checking voices and models"
+msgstr "ხმებისა და მოდელების შემოწმება"
+
+msgid "A check is already running"
+msgstr "შემოწმება უკვე მიმდინარეობს"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "ხმები და მოდელები შემოწმდება, როცა შემდეგ ჯერზე აირჩევთ ElevenLabs-ს"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs-ის პარამეტრების ფაილის განახლება ვერ მოხერხდა"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"შემოწმება დასრულდა. გამოსაყენებელი ხმები: {voices}. გამოუსადეგარი ხმები: "
+"{unusableVoices}. გამოსაყენებელი მოდელები: {models}. გამოუსადეგარი მოდელები:"
+" {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs მეტყველების სინთეზატორი"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr ""
+"ElevenLabs-ის კრედიტების მოხმარების შეტყობინება მიმდინარე პერიოდისთვის"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"ხელახლა შემოწმება, რომელი ElevenLabs ხმები და მოდელები შეუძლია გამოიყენოს ამ"
+" ანგარიშს"

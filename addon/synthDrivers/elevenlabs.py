@@ -47,6 +47,14 @@ from synthDriverHandler import (
 	synthIndexReached,
 )
 
+try:
+	import addonHandler
+
+	# Installs _ and pgettext for the add-on's own translations in locale.
+	addonHandler.initTranslation()
+except Exception:
+	log.debugWarning("ElevenLabs: translations unavailable", exc_info=True)
+
 API_BASE = "https://api.elevenlabs.io"
 CHUNK_SIZE = 4096
 # Seconds without audio before giving up. Measured worst: ~1 s real-time, ~2.3 s others.
@@ -125,9 +133,12 @@ DEFAULT_SPEAKER_BOOST = True
 DEFAULT_NORMALIZATION = "auto"
 # Choices for apply_text_normalization; "auto" leaves it out.
 NORMALIZATIONS = OrderedDict((
-	("auto", "Automatic"),
-	("on", "On"),
-	("off", "Off"),
+	# Translators: a choice for text normalization.
+	("auto", _("Automatic")),
+	# Translators: a choice for text normalization.
+	("on", _("On")),
+	# Translators: a choice for text normalization.
+	("off", _("Off")),
 ))
 DEFAULT_SPLIT_TEXT = True
 DEFAULT_AUDIO_TAGS = False
@@ -150,10 +161,11 @@ STABILITY_PRESETS = (0.0, 0.5, 1.0)
 # realtime: shorter timeout. maxSpeed: measured speed it keeps up with.
 # parts: (first, later) part sizes in characters. Only Multilingual v2's wait
 # grows much with length; the others split for the limit.
-# tags: takes audio tags such as [whispers].
+# tags: takes audio tags such as [whispers]. englishOnly: shown as such.
 ModelInfo = namedtuple(
-	"ModelInfo", ("name", "languageCode", "settings", "realtime", "maxSpeed", "parts", "tags"),
-	defaults=(True, None, (1000, 1000), False),
+	"ModelInfo",
+	("name", "languageCode", "settings", "realtime", "maxSpeed", "parts", "tags", "englishOnly"),
+	defaults=(True, None, (1000, 1000), False, False),
 )
 _MULTILINGUAL_SETTINGS = (
 	"stability", "similarity_boost", "style", "use_speaker_boost", "speed", "apply_text_normalization")
@@ -167,9 +179,9 @@ _ALL_SETTINGS = _MULTILINGUAL_SETTINGS
 MODELS = OrderedDict((
 	("eleven_multilingual_v2", ModelInfo(
 		"Eleven Multilingual v2", False, _MULTILINGUAL_SETTINGS, realtime=False, parts=(150, 400))),
-	("eleven_turbo_v2", ModelInfo("Eleven Turbo v2 (English only)", False, _FLASH_SETTINGS)),
+	("eleven_turbo_v2", ModelInfo("Eleven Turbo v2", False, _FLASH_SETTINGS, englishOnly=True)),
 	("eleven_turbo_v2_5", ModelInfo("Eleven Turbo v2.5", True, _FLASH_SETTINGS)),
-	("eleven_flash_v2", ModelInfo("Eleven Flash v2 (English only)", False, _FLASH_SETTINGS)),
+	("eleven_flash_v2", ModelInfo("Eleven Flash v2", False, _FLASH_SETTINGS, englishOnly=True)),
 	("eleven_flash_v2_5", ModelInfo("Eleven Flash v2.5", True, _FLASH_SETTINGS)),
 	("eleven_v3", ModelInfo("Eleven v3", True, _V3_SETTINGS, realtime=False, maxSpeed=1.4, tags=True)),
 	("eleven_v3_conversational", ModelInfo("Eleven v3 Conversational", True, _V3_SETTINGS, tags=True)),
@@ -179,6 +191,8 @@ MODELS = OrderedDict((
 # The default. Every plan has it, so voices and audio formats are checked with
 # it, and it speaks whenever the chosen model refuses to.
 DEFAULT_MODEL = "eleven_flash_v2_5"
+# Takes over when ElevenLabs can't speak at all, e.g. offline or out of credits.
+FALLBACK_SYNTH = "espeak"
 # Models older than those in MODELS, so the account's list keeps release order.
 _EARLIER_MODELS = ("eleven_monolingual_v1", "eleven_multilingual_v1")
 # The models the account offers, in release order, or MODELS if its list can't be read.
@@ -558,6 +572,26 @@ def _modelInfo(modelId):
 			settings=tuple(name for name in info.settings if name not in refused),
 		)
 	return info
+
+
+def _modelDisplayName(info):
+	if info.englishOnly:
+		# Translators: a model that only speaks English; {name} is its name.
+		return _("{name} (English only)").format(name=info.name)
+	return info.name
+
+
+def _languageName(langId, englishName):
+	"""A language's name in NVDA's language, as NVDA itself names it."""
+	if langId == "auto":
+		# Translators: the choice that lets ElevenLabs detect the language.
+		return _("Automatic (detect language)")
+	try:
+		import languageHandler
+
+		return languageHandler.getLanguageDescription(langId) or englishName
+	except Exception:
+		return englishName
 
 
 def _voiceCheckKeys(modelId):
@@ -983,6 +1017,8 @@ class _SpeechWorker(threading.Thread):
 			return False
 		modelId = driver.model
 		retries = 0
+		# Set once the network has failed this utterance, so it isn't retried again.
+		offline = False
 		while True:
 			# A cancelled utterance is dropped rather than retried or passed on.
 			if not self._isCurrent(gen):
@@ -1079,6 +1115,10 @@ class _SpeechWorker(threading.Thread):
 				if not fedAudio and _isRefusal(e.code) and driver._refuseFields(modelId, detail):
 					continue
 				refusal = _classifyRefusal(e.code, detail) if not fedAudio else None
+				# Out of credits, or the key no longer works: no model can speak.
+				if not fedAudio and (e.code in (401, 402) or refusal == PROBE_ACCOUNT):
+					driver._fallBack(f"the account refused speech (HTTP {e.code}). {detail.strip()}")
+					return False
 				# A model the account refuses is left out, and the default one speaks.
 				if refusal == PROBE_MODEL and driver._rejectModel(modelId, detail.strip()):
 					modelId = DEFAULT_MODEL
@@ -1101,6 +1141,10 @@ class _SpeechWorker(threading.Thread):
 					driver._markVoiceUnusable(voiceId, detail.strip())
 					if driver.synthesisVoice != voiceId:
 						continue
+				# The service itself keeps failing, even after a retry.
+				if not fedAudio and e.code >= 500:
+					driver._fallBack(f"ElevenLabs keeps failing (HTTP {e.code}). {detail.strip()}")
+					return False
 				driver.reportError(f"http{e.code}", f"ElevenLabs API error {e.code}: {detail}")
 				return False
 			except (URLError, OSError) as e:
@@ -1110,11 +1154,16 @@ class _SpeechWorker(threading.Thread):
 				if not fedAudio and modelId != DEFAULT_MODEL:
 					driver._reportModelFailure(modelId, str(e))
 					modelId = DEFAULT_MODEL
+					offline = True
 					continue
-				if not fedAudio and retries < MAX_RETRIES:
+				if not fedAudio and retries < MAX_RETRIES and not offline:
 					retries += 1
 					if self._waitBeforeRetry(gen):
 						continue
+					return False
+				# Both tries failed, so ElevenLabs can't be reached.
+				if not fedAudio:
+					driver._fallBack(f"ElevenLabs could not be reached: {e}")
 					return False
 				driver.reportError("network", f"ElevenLabs network error: {e}")
 				return False
@@ -1170,59 +1219,75 @@ class SynthDriver(BaseSynthDriver):
 		BaseSynthDriver.VolumeSetting(),
 		DriverSetting(
 			"model",
-			"&Model",
+			# Translators: label of the model box in voice settings.
+			pgettext("label", "Model"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_MODEL,
-			displayName="Model",
+			# Translators: name of the model setting in the settings ring.
+			displayName=_("Model"),
 		),
 		NumericDriverSetting(
 			"stability",
-			"&Stability",
+			# Translators: label of a slider in voice settings.
+			pgettext("label", "Stabilit&y"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_STABILITY,
-			displayName="Stability",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Stability"),
 		),
 		NumericDriverSetting(
 			"clarity",
-			"&Clarity",
+			# Translators: label of a slider in voice settings.
+			pgettext("label", "Clarity"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_CLARITY,
-			displayName="Clarity",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Clarity"),
 		),
 		NumericDriverSetting(
 			"style",
-			"St&yle",
+			# Translators: label of a slider in voice settings.
+			pgettext("label", "Style"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_STYLE,
-			displayName="Style",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Style"),
 		),
 		BooleanDriverSetting(
 			"speakerBoost",
-			"Speaker &boost",
+			# Translators: label of a checkbox in voice settings.
+			pgettext("label", "Spea&ker boost"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_SPEAKER_BOOST,
-			displayName="Speaker boost",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Speaker boost"),
 		),
 		DriverSetting(
 			"normalization",
-			"Text &normalization",
+			# Translators: label of a box in voice settings.
+			pgettext("label", "Text normalization"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_NORMALIZATION,
-			displayName="Text normalization",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Text normalization"),
 		),
 		BooleanDriverSetting(
 			"splitText",
-			"Split long te&xt",
+			# Translators: label of a checkbox in voice settings.
+			pgettext("label", "Split long text"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_SPLIT_TEXT,
-			displayName="Split long text",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Split long text"),
 		),
 		BooleanDriverSetting(
 			"audioTags",
-			"Enable audio ta&gs",
+			# Translators: label of a checkbox in voice settings.
+			pgettext("label", "Enable audio tags"),
 			availableInSettingsRing=True,
 			defaultVal=DEFAULT_AUDIO_TAGS,
-			displayName="Audio tags",
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Audio tags"),
 		),
 	)
 	supportedCommands = {IndexCommand, LangChangeCommand}
@@ -1262,6 +1327,8 @@ class SynthDriver(BaseSynthDriver):
 		self._modelsChecked = False
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
 		self._modelFailures = {}
+		# Set once speech has been handed to FALLBACK_SYNTH.
+		self._fellBack = False
 		# Models already warned as too slow for the speed.
 		self._speedWarned = set()
 		self._tier = ""
@@ -1426,6 +1493,27 @@ class SynthDriver(BaseSynthDriver):
 		self._apiKey = None
 
 	# --- Error reporting ---
+
+	def _fallBack(self, reason):
+		"""Hands speech to eSpeak for this session, so NVDA is never left silent.
+
+		NVDA's saved synthesizer is kept, so ElevenLabs is used again after a restart."""
+		if self._fellBack:
+			return
+		self._fellBack = True
+		log.error(f"ElevenLabs: {reason} Switching to eSpeak until ElevenLabs is selected again.")
+
+		def switch():
+			if getSynth() is not self:
+				return
+			import synthDriverHandler
+			import ui
+			if synthDriverHandler.setSynth(FALLBACK_SYNTH, isFallback=True):
+				# Translators: spoken when NVDA switches to eSpeak.
+				ui.message(_("ElevenLabs is unavailable."))
+
+		# Changing synthesizer has to happen on the main thread.
+		queueHandler.queueFunction(queueHandler.eventQueue, switch)
 
 	def reportError(self, kind, message):
 		"""Logs an error, but not once per utterance while it keeps happening."""
@@ -2225,7 +2313,7 @@ class SynthDriver(BaseSynthDriver):
 
 	def _get_availableModels(self):
 		return OrderedDict(
-			(modelId, StringParameterInfo(modelId, info.name))
+			(modelId, StringParameterInfo(modelId, _modelDisplayName(info)))
 			for modelId, info in _offeredModels.items()
 			if modelId not in self._unusableModels and modelId not in self._rejectedModels
 		)
@@ -2285,10 +2373,13 @@ class SynthDriver(BaseSynthDriver):
 	# The language box; see LANGUAGE_SETTING_ID for why its id is elvlanguage.
 
 	def _get_availableElvlanguages(self):
-		return OrderedDict(
-			(langId, StringParameterInfo(langId, name))
-			for langId, name in LANGUAGES.items()
+		# Named in NVDA's language and sorted by those names, automatic first.
+		names = sorted(
+			((langId, _languageName(langId, name)) for langId, name in LANGUAGES.items() if langId != "auto"),
+			key=lambda item: item[1].lower(),
 		)
+		names.insert(0, ("auto", _languageName("auto", LANGUAGES["auto"])))
+		return OrderedDict((langId, StringParameterInfo(langId, name)) for langId, name in names)
 
 	def _get_elvlanguage(self):
 		return self._language

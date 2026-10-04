@@ -1,0 +1,137 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "מודל"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "יציבות"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "בהירות"
+
+msgctxt "label"
+msgid "Style"
+msgstr "סגנון"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "הגברת דובר"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "נרמול טקסט"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "פיצול טקסט ארוך"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "הפעלת תגיות שמע"
+
+msgid "Model"
+msgstr "מודל"
+
+msgid "Stability"
+msgstr "יציבות"
+
+msgid "Clarity"
+msgstr "בהירות"
+
+msgid "Style"
+msgstr "סגנון"
+
+msgid "Speaker boost"
+msgstr "הגברת דובר"
+
+msgid "Text normalization"
+msgstr "נרמול טקסט"
+
+msgid "Automatic"
+msgstr "אוטומטי"
+
+msgid "On"
+msgstr "מופעל"
+
+msgid "Off"
+msgstr "כבוי"
+
+msgid "Split long text"
+msgstr "פיצול טקסט ארוך"
+
+msgid "Audio tags"
+msgstr "תגיות שמע"
+
+msgid "Automatic (detect language)"
+msgstr "אוטומטי (זיהוי שפה)"
+
+msgid "{name} (English only)"
+msgstr "{name} (אנגלית בלבד)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs אינו זמין."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "מנהל ההתקן של ElevenLabs לא נמצא"
+
+msgid "No API key found"
+msgstr "לא נמצא מפתח API"
+
+msgid "Fetching usage"
+msgstr "מאחזר נתוני שימוש"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "לא ניתן לאחזר את נתוני השימוש, ראה את יומן NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "תגובה לא צפויה מ-ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "קרדיטים שנוצלו: {used} מתוך {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "קרדיטים שנוצלו: {used}."
+
+msgid "Resets: {when}."
+msgstr "איפוס: {when}."
+
+msgid "Plan: {tier}."
+msgstr "תוכנית: {tier}."
+
+msgid "Checking voices and models"
+msgstr "בודק קולות ומודלים"
+
+msgid "A check is already running"
+msgstr "בדיקה כבר פועלת"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "הקולות והמודלים ייבדקו בפעם הבאה שתבחר ב-ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "לא ניתן לעדכן את קובץ ההגדרות של ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"הבדיקה הסתיימה. קולות שמישים: {voices}. קולות לא שמישים: {unusableVoices}. "
+"מודלים שמישים: {models}. מודלים לא שמישים: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "מנוע הדיבור ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "דיווח על השימוש בקרדיטים של ElevenLabs בתקופה הנוכחית"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr "בדיקה חוזרת אילו קולות ומודלים של ElevenLabs חשבון זה יכול להשתמש בהם"

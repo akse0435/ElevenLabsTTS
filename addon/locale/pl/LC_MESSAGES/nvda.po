@@ -1,0 +1,139 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Mod&el"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "St&abilność"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Wy&razistość"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Styl"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Wzmocnienie m&ówcy"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Normalizacja tekstu"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Dziel d&ługi tekst"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Wł&ącz znaczniki audio"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Stabilność"
+
+msgid "Clarity"
+msgstr "Wyrazistość"
+
+msgid "Style"
+msgstr "Styl"
+
+msgid "Speaker boost"
+msgstr "Wzmocnienie mówcy"
+
+msgid "Text normalization"
+msgstr "Normalizacja tekstu"
+
+msgid "Automatic"
+msgstr "Automatycznie"
+
+msgid "On"
+msgstr "Włączone"
+
+msgid "Off"
+msgstr "Wyłączone"
+
+msgid "Split long text"
+msgstr "Dziel długi tekst"
+
+msgid "Audio tags"
+msgstr "Znaczniki audio"
+
+msgid "Automatic (detect language)"
+msgstr "Automatycznie (wykryj język)"
+
+msgid "{name} (English only)"
+msgstr "{name} (tylko angielski)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs jest niedostępny."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Nie znaleziono sterownika ElevenLabs"
+
+msgid "No API key found"
+msgstr "Nie znaleziono klucza API"
+
+msgid "Fetching usage"
+msgstr "Pobieranie zużycia"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Nie udało się pobrać zużycia, sprawdź dziennik NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Nieoczekiwana odpowiedź z ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Zużyte kredyty: {used} z {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Zużyte kredyty: {used}."
+
+msgid "Resets: {when}."
+msgstr "Odnowienie: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Plan: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Sprawdzanie głosów i modeli"
+
+msgid "A check is already running"
+msgstr "Sprawdzanie już trwa"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Głosy i modele zostaną sprawdzone przy następnym wybraniu ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Nie udało się zaktualizować pliku ustawień ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Sprawdzanie zakończone. Głosy do użycia: {voices}. Głosy nie do użycia: "
+"{unusableVoices}. Modele do użycia: {models}. Modele nie do użycia: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Syntezator mowy ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Odczytaj zużycie kredytów ElevenLabs w bieżącym okresie"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Sprawdź ponownie, których głosów i modeli ElevenLabs może używać to konto"

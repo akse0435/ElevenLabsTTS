@@ -1,0 +1,137 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "モデル(&F)"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "安定性(&H)"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "明瞭さ(&J)"
+
+msgctxt "label"
+msgid "Style"
+msgstr "スタイル(&Y)"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "話者ブースト(&K)"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "テキストの正規化(&Q)"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "長いテキストを分割(&W)"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "オーディオタグを有効にする"
+
+msgid "Model"
+msgstr "モデル"
+
+msgid "Stability"
+msgstr "安定性"
+
+msgid "Clarity"
+msgstr "明瞭さ"
+
+msgid "Style"
+msgstr "スタイル"
+
+msgid "Speaker boost"
+msgstr "話者ブースト"
+
+msgid "Text normalization"
+msgstr "テキストの正規化"
+
+msgid "Automatic"
+msgstr "自動"
+
+msgid "On"
+msgstr "オン"
+
+msgid "Off"
+msgstr "オフ"
+
+msgid "Split long text"
+msgstr "長いテキストを分割"
+
+msgid "Audio tags"
+msgstr "オーディオタグ"
+
+msgid "Automatic (detect language)"
+msgstr "自動 (言語を検出)"
+
+msgid "{name} (English only)"
+msgstr "{name} (英語のみ)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs は利用できません。"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs ドライバーが見つかりません"
+
+msgid "No API key found"
+msgstr "API キーが見つかりません"
+
+msgid "Fetching usage"
+msgstr "使用量を取得しています"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "使用量を取得できませんでした。NVDA のログを確認してください"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs から予期しない応答がありました"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "使用済みクレジット: {limit} 中 {used} ({percent}%)。"
+
+msgid "Credits used: {used}."
+msgstr "使用済みクレジット: {used}。"
+
+msgid "Resets: {when}."
+msgstr "リセット: {when}。"
+
+msgid "Plan: {tier}."
+msgstr "プラン: {tier}。"
+
+msgid "Checking voices and models"
+msgstr "音声とモデルを確認しています"
+
+msgid "A check is already running"
+msgstr "確認はすでに実行中です"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "次回 ElevenLabs を選択したときに音声とモデルを確認します"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs の設定ファイルを更新できませんでした"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"確認が完了しました。使用できる音声: {voices}。使用できない音声: {unusableVoices}。使用できるモデル: "
+"{models}。使用できないモデル: {unusableModels}。"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs 音声合成エンジン"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "現在の期間の ElevenLabs クレジット使用量を報告"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr "このアカウントで使用できる ElevenLabs の音声とモデルを再確認"

@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Model"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&Stabilnost"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "J&asnost"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Slog"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Ojači&tev govorca"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Normalizacija &besedila"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&Razdeli dolgo besedilo"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Omogoči zvočne ozna&ke"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Stabilnost"
+
+msgid "Clarity"
+msgstr "Jasnost"
+
+msgid "Style"
+msgstr "Slog"
+
+msgid "Speaker boost"
+msgstr "Ojačitev govorca"
+
+msgid "Text normalization"
+msgstr "Normalizacija besedila"
+
+msgid "Automatic"
+msgstr "Samodejno"
+
+msgid "On"
+msgstr "Vklopljeno"
+
+msgid "Off"
+msgstr "Izklopljeno"
+
+msgid "Split long text"
+msgstr "Razdeli dolgo besedilo"
+
+msgid "Audio tags"
+msgstr "Zvočne oznake"
+
+msgid "Automatic (detect language)"
+msgstr "Samodejno (zaznaj jezik)"
+
+msgid "{name} (English only)"
+msgstr "{name} (samo angleščina)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ni na voljo."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Gonilnika ElevenLabs ni mogoče najti"
+
+msgid "No API key found"
+msgstr "Ključa API ni mogoče najti"
+
+msgid "Fetching usage"
+msgstr "Pridobivanje porabe"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Porabe ni bilo mogoče pridobiti, oglejte si dnevnik NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Nepričakovan odziv storitve ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Porabljeni krediti: {used} od {limit} ({percent} %)."
+
+msgid "Credits used: {used}."
+msgstr "Porabljeni krediti: {used}."
+
+msgid "Resets: {when}."
+msgstr "Ponastavitev: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Paket: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Preverjanje glasov in modelov"
+
+msgid "A check is already running"
+msgstr "Preverjanje že poteka"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Glasovi in modeli bodo preverjeni, ko boste naslednjič izbrali ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Datoteke z nastavitvami ElevenLabs ni bilo mogoče posodobiti"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Preverjanje končano. Uporabni glasovi: {voices}. Neuporabni glasovi: "
+"{unusableVoices}. Uporabni modeli: {models}. Neuporabni modeli: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Sintetizator govora ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Sporoči porabo kreditov ElevenLabs v trenutnem obdobju"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Znova preveri, katere glasove in modele ElevenLabs lahko uporablja ta račun"

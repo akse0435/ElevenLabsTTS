@@ -1,0 +1,143 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&Μοντέλο"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Στ&αθερότητα"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Σαφή&νεια"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&Ύφος"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Ενίσχυση &ομιλητή"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Κανον&ικοποίηση κειμένου"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&Διαίρεση μεγάλου κειμένου"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Ενεργοποίηση &ηχητικών ετικετών"
+
+msgid "Model"
+msgstr "Μοντέλο"
+
+msgid "Stability"
+msgstr "Σταθερότητα"
+
+msgid "Clarity"
+msgstr "Σαφήνεια"
+
+msgid "Style"
+msgstr "Ύφος"
+
+msgid "Speaker boost"
+msgstr "Ενίσχυση ομιλητή"
+
+msgid "Text normalization"
+msgstr "Κανονικοποίηση κειμένου"
+
+msgid "Automatic"
+msgstr "Αυτόματο"
+
+msgid "On"
+msgstr "Ενεργό"
+
+msgid "Off"
+msgstr "Ανενεργό"
+
+msgid "Split long text"
+msgstr "Διαίρεση μεγάλου κειμένου"
+
+msgid "Audio tags"
+msgstr "Ηχητικές ετικέτες"
+
+msgid "Automatic (detect language)"
+msgstr "Αυτόματο (ανίχνευση γλώσσας)"
+
+msgid "{name} (English only)"
+msgstr "{name} (μόνο Αγγλικά)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "Το ElevenLabs δεν είναι διαθέσιμο."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Δεν βρέθηκε το πρόγραμμα οδήγησης του ElevenLabs"
+
+msgid "No API key found"
+msgstr "Δεν βρέθηκε κλειδί API"
+
+msgid "Fetching usage"
+msgstr "Λήψη χρήσης"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr ""
+"Δεν ήταν δυνατή η λήψη της χρήσης, δείτε το αρχείο καταγραφής του NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Μη αναμενόμενη απόκριση από το ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Μονάδες που χρησιμοποιήθηκαν: {used} από {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Μονάδες που χρησιμοποιήθηκαν: {used}."
+
+msgid "Resets: {when}."
+msgstr "Επαναφορά: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Πρόγραμμα: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Έλεγχος φωνών και μοντέλων"
+
+msgid "A check is already running"
+msgstr "Ένας έλεγχος εκτελείται ήδη"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Οι φωνές και τα μοντέλα θα ελεγχθούν την επόμενη φορά που θα επιλέξετε το "
+"ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Δεν ήταν δυνατή η ενημέρωση του αρχείου ρυθμίσεων του ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Ο έλεγχος ολοκληρώθηκε. Χρησιμοποιήσιμες φωνές: {voices}. Μη "
+"χρησιμοποιήσιμες φωνές: {unusableVoices}. Χρησιμοποιήσιμα μοντέλα: {models}."
+" Μη χρησιμοποιήσιμα μοντέλα: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Συνθέτης ομιλίας ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Αναφορά χρήσης μονάδων του ElevenLabs για την τρέχουσα περίοδο"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Επανέλεγχος των φωνών και μοντέλων του ElevenLabs που μπορεί να "
+"χρησιμοποιήσει αυτός ο λογαριασμός"

@@ -1,0 +1,142 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ga\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&Samhail"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "C&obhsaíocht"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Soil&éireacht"
+
+msgctxt "label"
+msgid "Style"
+msgstr "St&íl"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Treisi&ú cainteora"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Nor&malú téacs"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Roinn téacs &fada"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "C&umasaigh clibeanna fuaime"
+
+msgid "Model"
+msgstr "Samhail"
+
+msgid "Stability"
+msgstr "Cobhsaíocht"
+
+msgid "Clarity"
+msgstr "Soiléireacht"
+
+msgid "Style"
+msgstr "Stíl"
+
+msgid "Speaker boost"
+msgstr "Treisiú cainteora"
+
+msgid "Text normalization"
+msgstr "Normalú téacs"
+
+msgid "Automatic"
+msgstr "Uathoibríoch"
+
+msgid "On"
+msgstr "Ar siúl"
+
+msgid "Off"
+msgstr "As"
+
+msgid "Split long text"
+msgstr "Roinn téacs fada"
+
+msgid "Audio tags"
+msgstr "Clibeanna fuaime"
+
+msgid "Automatic (detect language)"
+msgstr "Uathoibríoch (braith teanga)"
+
+msgid "{name} (English only)"
+msgstr "{name} (Béarla amháin)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "Níl ElevenLabs ar fáil."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Níorbh fhéidir tiománaí ElevenLabs a aimsiú"
+
+msgid "No API key found"
+msgstr "Níor aimsíodh eochair API"
+
+msgid "Fetching usage"
+msgstr "Úsáid á fáil"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Níorbh fhéidir an úsáid a fháil, féach ar loga NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Freagra gan choinne ó ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Creidmheasanna úsáidte: {used} as {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Creidmheasanna úsáidte: {used}."
+
+msgid "Resets: {when}."
+msgstr "Athshocrú: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Plean: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Guthanna agus samhlacha á seiceáil"
+
+msgid "A check is already running"
+msgstr "Tá seiceáil ar siúl cheana féin"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Seiceálfar guthanna agus samhlacha an chéad uair eile a roghnaíonn tú "
+"ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Níorbh fhéidir comhad socruithe ElevenLabs a nuashonrú"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Seiceáil críochnaithe. Guthanna inúsáidte: {voices}. Guthanna nach féidir a "
+"úsáid: {unusableVoices}. Samhlacha inúsáidte: {models}. Samhlacha nach "
+"féidir a úsáid: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Sintéiseoir cainte ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Tuairiscigh úsáid creidmheasanna ElevenLabs don tréimhse reatha"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Seiceáil arís cé na guthanna agus na samhlacha ElevenLabs is féidir leis an "
+"gcuntas seo a úsáid"

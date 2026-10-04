@@ -1,0 +1,138 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: pa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&ਮਾਡਲ"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&ਸਥਿਰਤਾ"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "ਸਪਸ਼&ਟਤਾ"
+
+msgctxt "label"
+msgid "Style"
+msgstr "ਸ਼ੈ&ਲੀ"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&ਬੁਲਾਰਾ ਬੂਸਟ"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "ਲਿ&ਖਤ ਸਧਾਰਨੀਕਰਨ"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "ਲੰਮੀ ਲਿਖਤ ਵੰ&ਡੋ"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "ਆਡੀ&ਓ ਟੈਗ ਯੋਗ ਕਰੋ"
+
+msgid "Model"
+msgstr "ਮਾਡਲ"
+
+msgid "Stability"
+msgstr "ਸਥਿਰਤਾ"
+
+msgid "Clarity"
+msgstr "ਸਪਸ਼ਟਤਾ"
+
+msgid "Style"
+msgstr "ਸ਼ੈਲੀ"
+
+msgid "Speaker boost"
+msgstr "ਬੁਲਾਰਾ ਬੂਸਟ"
+
+msgid "Text normalization"
+msgstr "ਲਿਖਤ ਸਧਾਰਨੀਕਰਨ"
+
+msgid "Automatic"
+msgstr "ਸਵੈਚਲਿਤ"
+
+msgid "On"
+msgstr "ਚਾਲੂ"
+
+msgid "Off"
+msgstr "ਬੰਦ"
+
+msgid "Split long text"
+msgstr "ਲੰਮੀ ਲਿਖਤ ਵੰਡੋ"
+
+msgid "Audio tags"
+msgstr "ਆਡੀਓ ਟੈਗ"
+
+msgid "Automatic (detect language)"
+msgstr "ਸਵੈਚਲਿਤ (ਭਾਸ਼ਾ ਖੋਜੋ)"
+
+msgid "{name} (English only)"
+msgstr "{name} (ਸਿਰਫ਼ ਅੰਗਰੇਜ਼ੀ)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs ਡਰਾਈਵਰ ਨਹੀਂ ਲੱਭਿਆ"
+
+msgid "No API key found"
+msgstr "ਕੋਈ API ਕੁੰਜੀ ਨਹੀਂ ਲੱਭੀ"
+
+msgid "Fetching usage"
+msgstr "ਵਰਤੋਂ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "ਵਰਤੋਂ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ, NVDA ਲੌਗ ਵੇਖੋ"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs ਤੋਂ ਅਣਕਿਆਸਿਆ ਜਵਾਬ"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "ਵਰਤੇ ਗਏ ਕ੍ਰੈਡਿਟ: {limit} ਵਿੱਚੋਂ {used} ({percent}%)।"
+
+msgid "Credits used: {used}."
+msgstr "ਵਰਤੇ ਗਏ ਕ੍ਰੈਡਿਟ: {used}।"
+
+msgid "Resets: {when}."
+msgstr "ਰੀਸੈੱਟ: {when}।"
+
+msgid "Plan: {tier}."
+msgstr "ਯੋਜਨਾ: {tier}।"
+
+msgid "Checking voices and models"
+msgstr "ਆਵਾਜ਼ਾਂ ਅਤੇ ਮਾਡਲਾਂ ਦੀ ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+msgid "A check is already running"
+msgstr "ਇੱਕ ਜਾਂਚ ਪਹਿਲਾਂ ਹੀ ਚੱਲ ਰਹੀ ਹੈ"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "ਅਗਲੀ ਵਾਰ ElevenLabs ਚੁਣਨ 'ਤੇ ਆਵਾਜ਼ਾਂ ਅਤੇ ਮਾਡਲਾਂ ਦੀ ਜਾਂਚ ਕੀਤੀ ਜਾਵੇਗੀ"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs ਸੈਟਿੰਗਾਂ ਫ਼ਾਈਲ ਅੱਪਡੇਟ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"ਜਾਂਚ ਪੂਰੀ ਹੋਈ। ਵਰਤਣਯੋਗ ਆਵਾਜ਼ਾਂ: {voices}। ਨਾ ਵਰਤਣਯੋਗ ਆਵਾਜ਼ਾਂ: "
+"{unusableVoices}। ਵਰਤਣਯੋਗ ਮਾਡਲ: {models}। ਨਾ ਵਰਤਣਯੋਗ ਮਾਡਲ: {unusableModels}।"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs ਬੋਲੀ ਸੰਸ਼ਲੇਸ਼ਕ"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "ਮੌਜੂਦਾ ਮਿਆਦ ਲਈ ElevenLabs ਕ੍ਰੈਡਿਟ ਵਰਤੋਂ ਦੱਸੋ"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"ਦੁਬਾਰਾ ਜਾਂਚੋ ਕਿ ਇਹ ਖਾਤਾ ਕਿਹੜੀਆਂ ElevenLabs ਆਵਾਜ਼ਾਂ ਅਤੇ ਮਾਡਲ ਵਰਤ ਸਕਦਾ ਹੈ"

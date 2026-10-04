@@ -1,3 +1,7 @@
+V1.3 (10/04/2026):
+All settings and messages within the add-on are now localized.
+If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent.
+
 V1.2 (10/02/2026):
 New setting: Text normalization.
 The list of available models is now checked against the active account.
@@ -14,7 +18,7 @@ Audio tags are now supported, and can be enabled in voice settings.
 V1.1.3 (09/30/2026):
 Speech no longer pauses suddenly in the middle of a sentence.
 Splitting of long text can now be turned off in voice settings.
-Long text now only splits between whole sentence, unless the sentence is longer than alowed.
+Long text now only splits between whole sentences, unless the sentence is longer than alowed.
 
 V1.1.2 (09/30/2026):
 Longer text strings are now split up into shorter chunks.

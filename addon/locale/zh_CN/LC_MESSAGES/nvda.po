@@ -1,0 +1,136 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "模型(&F)"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "稳定性(&H)"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "清晰度(&J)"
+
+msgctxt "label"
+msgid "Style"
+msgstr "风格(&Y)"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "说话人增强(&K)"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "文本规范化(&Q)"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "拆分长文本(&W)"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "启用音频标签"
+
+msgid "Model"
+msgstr "模型"
+
+msgid "Stability"
+msgstr "稳定性"
+
+msgid "Clarity"
+msgstr "清晰度"
+
+msgid "Style"
+msgstr "风格"
+
+msgid "Speaker boost"
+msgstr "说话人增强"
+
+msgid "Text normalization"
+msgstr "文本规范化"
+
+msgid "Automatic"
+msgstr "自动"
+
+msgid "On"
+msgstr "开"
+
+msgid "Off"
+msgstr "关"
+
+msgid "Split long text"
+msgstr "拆分长文本"
+
+msgid "Audio tags"
+msgstr "音频标签"
+
+msgid "Automatic (detect language)"
+msgstr "自动（检测语言）"
+
+msgid "{name} (English only)"
+msgstr "{name}（仅英语）"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs 不可用。"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "找不到 ElevenLabs 驱动程序"
+
+msgid "No API key found"
+msgstr "未找到 API 密钥"
+
+msgid "Fetching usage"
+msgstr "正在获取用量"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "无法获取用量，请查看 NVDA 日志"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs 返回了意外的响应"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "已用额度：{limit} 中的 {used}（{percent}%）。"
+
+msgid "Credits used: {used}."
+msgstr "已用额度：{used}。"
+
+msgid "Resets: {when}."
+msgstr "重置时间：{when}。"
+
+msgid "Plan: {tier}."
+msgstr "套餐：{tier}。"
+
+msgid "Checking voices and models"
+msgstr "正在检查语音和模型"
+
+msgid "A check is already running"
+msgstr "检查已在进行中"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "下次选择 ElevenLabs 时将检查语音和模型"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "无法更新 ElevenLabs 设置文件"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"检查完成。可用语音：{voices}。不可用语音：{unusableVoices}。可用模型：{models}。不可用模型：{unusableModels}。"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs 语音合成器"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "报告当前周期的 ElevenLabs 额度用量"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr "重新检查此账户可以使用哪些 ElevenLabs 语音和模型"

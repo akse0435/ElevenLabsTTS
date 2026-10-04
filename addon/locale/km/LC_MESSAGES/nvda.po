@@ -1,0 +1,138 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: km\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "ម៉ូដែល (&F)"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "ស្ថេរភាព (&H)"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "ភាពច្បាស់ (&J)"
+
+msgctxt "label"
+msgid "Style"
+msgstr "រចនាប័ទ្ម (&Y)"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "ការពង្រឹងអ្នកនិយាយ (&K)"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "ការធ្វើឲ្យអត្ថបទមានលក្ខណៈស្តង់ដារ (&Q)"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "បំបែកអត្ថបទវែង (&W)"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "បើកស្លាកសំឡេង"
+
+msgid "Model"
+msgstr "ម៉ូដែល"
+
+msgid "Stability"
+msgstr "ស្ថេរភាព"
+
+msgid "Clarity"
+msgstr "ភាពច្បាស់"
+
+msgid "Style"
+msgstr "រចនាប័ទ្ម"
+
+msgid "Speaker boost"
+msgstr "ការពង្រឹងអ្នកនិយាយ"
+
+msgid "Text normalization"
+msgstr "ការធ្វើឲ្យអត្ថបទមានលក្ខណៈស្តង់ដារ"
+
+msgid "Automatic"
+msgstr "ស្វ័យប្រវត្តិ"
+
+msgid "On"
+msgstr "បើក"
+
+msgid "Off"
+msgstr "បិទ"
+
+msgid "Split long text"
+msgstr "បំបែកអត្ថបទវែង"
+
+msgid "Audio tags"
+msgstr "ស្លាកសំឡេង"
+
+msgid "Automatic (detect language)"
+msgstr "ស្វ័យប្រវត្តិ (រកឃើញភាសា)"
+
+msgid "{name} (English only)"
+msgstr "{name} (តែភាសាអង់គ្លេស)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs មិនអាចប្រើបានទេ។"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "រកមិនឃើញកម្មវិធីបញ្ជា ElevenLabs"
+
+msgid "No API key found"
+msgstr "រកមិនឃើញសោ API"
+
+msgid "Fetching usage"
+msgstr "កំពុងទាញយកការប្រើប្រាស់"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "មិនអាចទាញយកការប្រើប្រាស់បានទេ សូមមើលកំណត់ហេតុ NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ការឆ្លើយតបដែលមិនបានរំពឹងទុកពី ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "ក្រេឌីតដែលបានប្រើ៖ {used} ក្នុងចំណោម {limit} ({percent}%)។"
+
+msgid "Credits used: {used}."
+msgstr "ក្រេឌីតដែលបានប្រើ៖ {used}។"
+
+msgid "Resets: {when}."
+msgstr "កំណត់ឡើងវិញ៖ {when}។"
+
+msgid "Plan: {tier}."
+msgstr "គម្រោង៖ {tier}។"
+
+msgid "Checking voices and models"
+msgstr "កំពុងពិនិត្យសំឡេង និងម៉ូដែល"
+
+msgid "A check is already running"
+msgstr "ការពិនិត្យកំពុងដំណើរការរួចហើយ"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "សំឡេង និងម៉ូដែលនឹងត្រូវពិនិត្យនៅពេលអ្នកជ្រើស ElevenLabs លើកក្រោយ"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "មិនអាចធ្វើបច្ចុប្បន្នភាពឯកសារការកំណត់ ElevenLabs បានទេ"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"ការពិនិត្យបានបញ្ចប់។ សំឡេងដែលអាចប្រើបាន៖ {voices}។ សំឡេងដែលមិនអាចប្រើបាន៖ "
+"{unusableVoices}។ ម៉ូដែលដែលអាចប្រើបាន៖ {models}។ ម៉ូដែលដែលមិនអាចប្រើបាន៖ "
+"{unusableModels}។"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "កម្មវិធីសំយោគសំឡេង ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "រាយការណ៍ការប្រើប្រាស់ក្រេឌីត ElevenLabs សម្រាប់រយៈពេលបច្ចុប្បន្ន"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr "ពិនិត្យម្តងទៀតថាតើគណនីនេះអាចប្រើសំឡេង និងម៉ូដែល ElevenLabs មួយណាខ្លះ"

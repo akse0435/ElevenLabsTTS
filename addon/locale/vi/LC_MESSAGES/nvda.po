@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "M&ô hình"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&Độ ổn định"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Độ &rõ"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Ph&ong cách"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "T&ăng cường người nói"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Chu&ẩn hóa văn bản"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Chia nhỏ văn bản &dài"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Bật thẻ &âm thanh"
+
+msgid "Model"
+msgstr "Mô hình"
+
+msgid "Stability"
+msgstr "Độ ổn định"
+
+msgid "Clarity"
+msgstr "Độ rõ"
+
+msgid "Style"
+msgstr "Phong cách"
+
+msgid "Speaker boost"
+msgstr "Tăng cường người nói"
+
+msgid "Text normalization"
+msgstr "Chuẩn hóa văn bản"
+
+msgid "Automatic"
+msgstr "Tự động"
+
+msgid "On"
+msgstr "Bật"
+
+msgid "Off"
+msgstr "Tắt"
+
+msgid "Split long text"
+msgstr "Chia nhỏ văn bản dài"
+
+msgid "Audio tags"
+msgstr "Thẻ âm thanh"
+
+msgid "Automatic (detect language)"
+msgstr "Tự động (phát hiện ngôn ngữ)"
+
+msgid "{name} (English only)"
+msgstr "{name} (chỉ tiếng Anh)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs không khả dụng."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Không tìm thấy trình điều khiển ElevenLabs"
+
+msgid "No API key found"
+msgstr "Không tìm thấy khóa API"
+
+msgid "Fetching usage"
+msgstr "Đang lấy mức sử dụng"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Không thể lấy mức sử dụng, hãy xem nhật ký NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Phản hồi không mong đợi từ ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Tín dụng đã dùng: {used} trên {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Tín dụng đã dùng: {used}."
+
+msgid "Resets: {when}."
+msgstr "Đặt lại: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Gói: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Đang kiểm tra giọng đọc và mô hình"
+
+msgid "A check is already running"
+msgstr "Một lượt kiểm tra đang chạy"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Giọng đọc và mô hình sẽ được kiểm tra vào lần tới bạn chọn ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Không thể cập nhật tệp cài đặt ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Đã kiểm tra xong. Giọng đọc dùng được: {voices}. Giọng đọc không dùng được: "
+"{unusableVoices}. Mô hình dùng được: {models}. Mô hình không dùng được: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Bộ tổng hợp giọng nói ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Thông báo mức sử dụng tín dụng ElevenLabs trong kỳ hiện tại"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Kiểm tra lại những giọng đọc và mô hình ElevenLabs mà tài khoản này có thể "
+"dùng"

@@ -1,0 +1,137 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: am\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&ሞዴል"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&መረጋጋት"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "&ግልጽነት"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&ዘይቤ"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&የተናጋሪ ማጎልበቻ"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "የ&ጽሑፍ መደበኛነት"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&ረጅም ጽሑፍ ከፋፍል"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "የድምጽ መለያዎችን &አንቃ"
+
+msgid "Model"
+msgstr "ሞዴል"
+
+msgid "Stability"
+msgstr "መረጋጋት"
+
+msgid "Clarity"
+msgstr "ግልጽነት"
+
+msgid "Style"
+msgstr "ዘይቤ"
+
+msgid "Speaker boost"
+msgstr "የተናጋሪ ማጎልበቻ"
+
+msgid "Text normalization"
+msgstr "የጽሑፍ መደበኛነት"
+
+msgid "Automatic"
+msgstr "ራስ-ሰር"
+
+msgid "On"
+msgstr "አብራ"
+
+msgid "Off"
+msgstr "አጥፋ"
+
+msgid "Split long text"
+msgstr "ረጅም ጽሑፍ ከፋፍል"
+
+msgid "Audio tags"
+msgstr "የድምጽ መለያዎች"
+
+msgid "Automatic (detect language)"
+msgstr "ራስ-ሰር (ቋንቋ ፈልግ)"
+
+msgid "{name} (English only)"
+msgstr "{name} (እንግሊዝኛ ብቻ)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs አይገኝም።"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "የElevenLabs ሾፌር አልተገኘም"
+
+msgid "No API key found"
+msgstr "የAPI ቁልፍ አልተገኘም"
+
+msgid "Fetching usage"
+msgstr "አጠቃቀም በማምጣት ላይ"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "አጠቃቀም ማምጣት አልተቻለም፣ የNVDA ምዝግብ ማስታወሻን ይመልከቱ"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ከElevenLabs ያልተጠበቀ ምላሽ"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "ጥቅም ላይ የዋሉ ክሬዲቶች፦ {used} ከ{limit} ({percent}%)።"
+
+msgid "Credits used: {used}."
+msgstr "ጥቅም ላይ የዋሉ ክሬዲቶች፦ {used}።"
+
+msgid "Resets: {when}."
+msgstr "ዳግም የሚጀመረው፦ {when}።"
+
+msgid "Plan: {tier}."
+msgstr "ዕቅድ፦ {tier}።"
+
+msgid "Checking voices and models"
+msgstr "ድምጾችን እና ሞዴሎችን በመፈተሽ ላይ"
+
+msgid "A check is already running"
+msgstr "ፍተሻ አስቀድሞ በሂደት ላይ ነው"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "ቀጣዩ ጊዜ ElevenLabsን ሲመርጡ ድምጾች እና ሞዴሎች ይፈተሻሉ"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "የElevenLabs ቅንብሮች ፋይልን ማዘመን አልተቻለም"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"ፍተሻው ተጠናቋል። ጥቅም ላይ የሚውሉ ድምጾች፦ {voices}። ጥቅም ላይ የማይውሉ ድምጾች፦ {unusableVoices}።"
+" ጥቅም ላይ የሚውሉ ሞዴሎች፦ {models}። ጥቅም ላይ የማይውሉ ሞዴሎች፦ {unusableModels}።"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs የንግግር አቀናባሪ"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "ለአሁኑ ጊዜ የElevenLabs ክሬዲት አጠቃቀምን ሪፖርት አድርግ"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr "ይህ መለያ የትኞቹን የElevenLabs ድምጾች እና ሞዴሎች መጠቀም እንደሚችል እንደገና ፈትሽ"

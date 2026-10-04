@@ -1,0 +1,142 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Model"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "E&stabilitat"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "&Claredat"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Estil"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&Reforç del parlant"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Normalitzaci&ó del text"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Dividei&x el text llarg"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Activa les etiquetes d'&àudio"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Estabilitat"
+
+msgid "Clarity"
+msgstr "Claredat"
+
+msgid "Style"
+msgstr "Estil"
+
+msgid "Speaker boost"
+msgstr "Reforç del parlant"
+
+msgid "Text normalization"
+msgstr "Normalització del text"
+
+msgid "Automatic"
+msgstr "Automàtic"
+
+msgid "On"
+msgstr "Activat"
+
+msgid "Off"
+msgstr "Desactivat"
+
+msgid "Split long text"
+msgstr "Divideix el text llarg"
+
+msgid "Audio tags"
+msgstr "Etiquetes d'àudio"
+
+msgid "Automatic (detect language)"
+msgstr "Automàtic (detecta l'idioma)"
+
+msgid "{name} (English only)"
+msgstr "{name} (només anglès)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs no està disponible."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "No s'ha trobat el controlador d'ElevenLabs"
+
+msgid "No API key found"
+msgstr "No s'ha trobat cap clau d'API"
+
+msgid "Fetching usage"
+msgstr "S'està obtenint l'ús"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "No s'ha pogut obtenir l'ús, consulteu el registre de l'NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Resposta inesperada d'ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Crèdits utilitzats: {used} de {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Crèdits utilitzats: {used}."
+
+msgid "Resets: {when}."
+msgstr "Es restableix: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Pla: {tier}."
+
+msgid "Checking voices and models"
+msgstr "S'estan comprovant les veus i els models"
+
+msgid "A check is already running"
+msgstr "Ja hi ha una comprovació en curs"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Les veus i els models es comprovaran la propera vegada que seleccioneu "
+"ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "No s'ha pogut actualitzar el fitxer de configuració d'ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Comprovació acabada. Veus utilitzables: {voices}. Veus no utilitzables: "
+"{unusableVoices}. Models utilitzables: {models}. Models no utilitzables: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Sintetitzador de veu ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Informa de l'ús de crèdits d'ElevenLabs en el període actual"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Torna a comprovar quines veus i models d'ElevenLabs pot utilitzar aquest "
+"compte"

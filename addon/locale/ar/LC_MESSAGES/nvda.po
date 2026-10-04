@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "ال&نموذج"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "ال&ثبات"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "الو&ضوح"
+
+msgctxt "label"
+msgid "Style"
+msgstr "ال&أسلوب"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "ت&عزيز المتحدث"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "ت&طبيع النص"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "ت&قسيم النص الطويل"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "تم&كين الوسوم الصوتية"
+
+msgid "Model"
+msgstr "النموذج"
+
+msgid "Stability"
+msgstr "الثبات"
+
+msgid "Clarity"
+msgstr "الوضوح"
+
+msgid "Style"
+msgstr "الأسلوب"
+
+msgid "Speaker boost"
+msgstr "تعزيز المتحدث"
+
+msgid "Text normalization"
+msgstr "تطبيع النص"
+
+msgid "Automatic"
+msgstr "تلقائي"
+
+msgid "On"
+msgstr "تشغيل"
+
+msgid "Off"
+msgstr "إيقاف"
+
+msgid "Split long text"
+msgstr "تقسيم النص الطويل"
+
+msgid "Audio tags"
+msgstr "الوسوم الصوتية"
+
+msgid "Automatic (detect language)"
+msgstr "تلقائي (اكتشاف اللغة)"
+
+msgid "{name} (English only)"
+msgstr "{name} (الإنجليزية فقط)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs غير متاح."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "تعذر العثور على مشغل ElevenLabs"
+
+msgid "No API key found"
+msgstr "لم يتم العثور على مفتاح API"
+
+msgid "Fetching usage"
+msgstr "جارٍ جلب الاستخدام"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "تعذر جلب الاستخدام، راجع سجل NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "استجابة غير متوقعة من ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "الأرصدة المستخدمة: {used} من {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "الأرصدة المستخدمة: {used}."
+
+msgid "Resets: {when}."
+msgstr "إعادة التعيين: {when}."
+
+msgid "Plan: {tier}."
+msgstr "الخطة: {tier}."
+
+msgid "Checking voices and models"
+msgstr "جارٍ التحقق من الأصوات والنماذج"
+
+msgid "A check is already running"
+msgstr "يوجد تحقق قيد التشغيل بالفعل"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"سيتم التحقق من الأصوات والنماذج في المرة القادمة التي تختار فيها ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "تعذر تحديث ملف إعدادات ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"اكتمل التحقق. الأصوات القابلة للاستخدام: {voices}. الأصوات غير القابلة "
+"للاستخدام: {unusableVoices}. النماذج القابلة للاستخدام: {models}. النماذج "
+"غير القابلة للاستخدام: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "مركّب الكلام ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "الإبلاغ عن استخدام أرصدة ElevenLabs للفترة الحالية"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"التحقق مجددا من أصوات ونماذج ElevenLabs التي يمكن لهذا الحساب استخدامها"

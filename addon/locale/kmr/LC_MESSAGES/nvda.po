@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: kmr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "M&odel"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&Aramî"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Zelal&î"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Ş&êwe"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "X&urtkirina axêver"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "No&rmalkirina nivîsê"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Nivîsa dirêj &parve bike"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Etîketên dengî &çalak bike"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Aramî"
+
+msgid "Clarity"
+msgstr "Zelalî"
+
+msgid "Style"
+msgstr "Şêwe"
+
+msgid "Speaker boost"
+msgstr "Xurtkirina axêver"
+
+msgid "Text normalization"
+msgstr "Normalkirina nivîsê"
+
+msgid "Automatic"
+msgstr "Xweber"
+
+msgid "On"
+msgstr "Vekirî"
+
+msgid "Off"
+msgstr "Girtî"
+
+msgid "Split long text"
+msgstr "Nivîsa dirêj parve bike"
+
+msgid "Audio tags"
+msgstr "Etîketên dengî"
+
+msgid "Automatic (detect language)"
+msgstr "Xweber (zimên nas bike)"
+
+msgid "{name} (English only)"
+msgstr "{name} (tenê Îngilîzî)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ne berdest e."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Ajokarê ElevenLabs nehat dîtin"
+
+msgid "No API key found"
+msgstr "Tu mifteya API nehat dîtin"
+
+msgid "Fetching usage"
+msgstr "Bikaranîn tê anîn"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Bikaranîn nehat anîn, li tomara NVDA binêre"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Bersiveke neçaverêkirî ji ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Krediyên bikarhatî: {used} ji {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Krediyên bikarhatî: {used}."
+
+msgid "Resets: {when}."
+msgstr "Ji nû ve saz dibe: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Plan: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Deng û model têne kontrolkirin"
+
+msgid "A check is already running"
+msgstr "Kontrolek jixwe dixebite"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Deng û model dê cara din a ku tu ElevenLabs hilbijêrî bêne kontrolkirin"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Pela mîhengên ElevenLabs nehat nûkirin"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Kontrol qediya. Dengên ku dikarin bêne bikaranîn: {voices}. Dengên ku "
+"nikarin bêne bikaranîn: {unusableVoices}. Modelên ku dikarin bêne bikaranîn:"
+" {models}. Modelên ku nikarin bêne bikaranîn: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Sentezkera axaftinê ya ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Bikaranîna krediyên ElevenLabs ji bo heyama niha ragihîne"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Dîsa kontrol bike ka ev hesab dikare kîjan deng û modelên ElevenLabs bikar "
+"bîne"

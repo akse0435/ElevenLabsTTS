@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Model"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Stabilitas"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "&Kejelasan"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Ga&ya"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&Penguat pembicara"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "No&rmalisasi teks"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Pisahkan teks pan&jang"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Akti&fkan tag audio"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Stabilitas"
+
+msgid "Clarity"
+msgstr "Kejelasan"
+
+msgid "Style"
+msgstr "Gaya"
+
+msgid "Speaker boost"
+msgstr "Penguat pembicara"
+
+msgid "Text normalization"
+msgstr "Normalisasi teks"
+
+msgid "Automatic"
+msgstr "Otomatis"
+
+msgid "On"
+msgstr "Aktif"
+
+msgid "Off"
+msgstr "Nonaktif"
+
+msgid "Split long text"
+msgstr "Pisahkan teks panjang"
+
+msgid "Audio tags"
+msgstr "Tag audio"
+
+msgid "Automatic (detect language)"
+msgstr "Otomatis (deteksi bahasa)"
+
+msgid "{name} (English only)"
+msgstr "{name} (hanya bahasa Inggris)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs tidak tersedia."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Driver ElevenLabs tidak ditemukan"
+
+msgid "No API key found"
+msgstr "Kunci API tidak ditemukan"
+
+msgid "Fetching usage"
+msgstr "Mengambil penggunaan"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Tidak dapat mengambil penggunaan, lihat log NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Respons tak terduga dari ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Kredit terpakai: {used} dari {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Kredit terpakai: {used}."
+
+msgid "Resets: {when}."
+msgstr "Diatur ulang: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Paket: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Memeriksa suara dan model"
+
+msgid "A check is already running"
+msgstr "Pemeriksaan sudah berjalan"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Suara dan model akan diperiksa saat Anda memilih ElevenLabs berikutnya"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Tidak dapat memperbarui berkas pengaturan ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Pemeriksaan selesai. Suara yang dapat dipakai: {voices}. Suara yang tidak "
+"dapat dipakai: {unusableVoices}. Model yang dapat dipakai: {models}. Model "
+"yang tidak dapat dipakai: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "Synthesizer suara ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Laporkan penggunaan kredit ElevenLabs untuk periode saat ini"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Periksa ulang suara dan model ElevenLabs mana yang dapat digunakan akun ini"

@@ -1,0 +1,138 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&โมเดล"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "ความเสถี&ยร"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "ความชั&ดเจน"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&สไตล์"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&การเพิ่มเสียงผู้พูด"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "การปรับข้&อความให้เป็นมาตรฐาน"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "แบ่&งข้อความยาว"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "เ&ปิดใช้งานแท็กเสียง"
+
+msgid "Model"
+msgstr "โมเดล"
+
+msgid "Stability"
+msgstr "ความเสถียร"
+
+msgid "Clarity"
+msgstr "ความชัดเจน"
+
+msgid "Style"
+msgstr "สไตล์"
+
+msgid "Speaker boost"
+msgstr "การเพิ่มเสียงผู้พูด"
+
+msgid "Text normalization"
+msgstr "การปรับข้อความให้เป็นมาตรฐาน"
+
+msgid "Automatic"
+msgstr "อัตโนมัติ"
+
+msgid "On"
+msgstr "เปิด"
+
+msgid "Off"
+msgstr "ปิด"
+
+msgid "Split long text"
+msgstr "แบ่งข้อความยาว"
+
+msgid "Audio tags"
+msgstr "แท็กเสียง"
+
+msgid "Automatic (detect language)"
+msgstr "อัตโนมัติ (ตรวจหาภาษา)"
+
+msgid "{name} (English only)"
+msgstr "{name} (ภาษาอังกฤษเท่านั้น)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ไม่พร้อมใช้งาน"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ไม่พบไดรเวอร์ ElevenLabs"
+
+msgid "No API key found"
+msgstr "ไม่พบคีย์ API"
+
+msgid "Fetching usage"
+msgstr "กำลังดึงข้อมูลการใช้งาน"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "ไม่สามารถดึงข้อมูลการใช้งานได้ โปรดดูบันทึกของ NVDA"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ได้รับการตอบกลับที่ไม่คาดคิดจาก ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "เครดิตที่ใช้: {used} จาก {limit} ({percent}%)"
+
+msgid "Credits used: {used}."
+msgstr "เครดิตที่ใช้: {used}"
+
+msgid "Resets: {when}."
+msgstr "รีเซ็ต: {when}"
+
+msgid "Plan: {tier}."
+msgstr "แผน: {tier}"
+
+msgid "Checking voices and models"
+msgstr "กำลังตรวจสอบเสียงและโมเดล"
+
+msgid "A check is already running"
+msgstr "มีการตรวจสอบกำลังทำงานอยู่แล้ว"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "เสียงและโมเดลจะได้รับการตรวจสอบในครั้งถัดไปที่คุณเลือก ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ไม่สามารถอัปเดตไฟล์การตั้งค่าของ ElevenLabs ได้"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"ตรวจสอบเสร็จแล้ว เสียงที่ใช้ได้: {voices} เสียงที่ใช้ไม่ได้: "
+"{unusableVoices} โมเดลที่ใช้ได้: {models} โมเดลที่ใช้ไม่ได้: "
+"{unusableModels}"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ตัวสังเคราะห์เสียงพูด ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "รายงานการใช้เครดิต ElevenLabs ในรอบปัจจุบัน"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr "ตรวจสอบอีกครั้งว่าบัญชีนี้ใช้เสียงและโมเดล ElevenLabs ใดได้บ้าง"

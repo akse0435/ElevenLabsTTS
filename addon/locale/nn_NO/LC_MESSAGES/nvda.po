@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: nn_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "Mode&ll"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Stab&ilitet"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Kla&rleik"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Stil"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Talarforsterkin&g"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Tekstnormalisering"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Del o&pp lang tekst"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Sl&å på lydtaggar"
+
+msgid "Model"
+msgstr "Modell"
+
+msgid "Stability"
+msgstr "Stabilitet"
+
+msgid "Clarity"
+msgstr "Klarleik"
+
+msgid "Style"
+msgstr "Stil"
+
+msgid "Speaker boost"
+msgstr "Talarforsterking"
+
+msgid "Text normalization"
+msgstr "Tekstnormalisering"
+
+msgid "Automatic"
+msgstr "Automatisk"
+
+msgid "On"
+msgstr "På"
+
+msgid "Off"
+msgstr "Av"
+
+msgid "Split long text"
+msgstr "Del opp lang tekst"
+
+msgid "Audio tags"
+msgstr "Lydtaggar"
+
+msgid "Automatic (detect language)"
+msgstr "Automatisk (oppdag språk)"
+
+msgid "{name} (English only)"
+msgstr "{name} (berre engelsk)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs er ikkje tilgjengeleg."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Fann ikkje ElevenLabs-drivaren"
+
+msgid "No API key found"
+msgstr "Fann ingen API-nøkkel"
+
+msgid "Fetching usage"
+msgstr "Hentar forbruk"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Kunne ikkje hente forbruket, sjå NVDA-loggen"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Uventa svar frå ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Brukte kredittar: {used} av {limit} ({percent} %)."
+
+msgid "Credits used: {used}."
+msgstr "Brukte kredittar: {used}."
+
+msgid "Resets: {when}."
+msgstr "Blir nullstilt: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Abonnement: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Sjekkar stemmer og modellar"
+
+msgid "A check is already running"
+msgstr "Ei sjekk køyrer allereie"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Stemmer og modellar blir sjekka neste gong du vel ElevenLabs"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Kunne ikkje oppdatere innstillingsfila for ElevenLabs"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Sjekk ferdig. Brukbare stemmer: {voices}. Ubrukelege stemmer: "
+"{unusableVoices}. Brukbare modellar: {models}. Ubrukelege modellar: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs-talesyntese"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Les opp forbruket av ElevenLabs-kredittar i inneverande periode"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Sjekk på nytt kva for stemmer og modellar frå ElevenLabs denne kontoen kan "
+"bruke"

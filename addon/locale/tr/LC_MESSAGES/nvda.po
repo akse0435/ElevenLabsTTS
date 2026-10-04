@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&Model"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "K&ararlılık"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Netlik"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Stil"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Konuşmacı &güçlendirme"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Metin no&rmalleştirme"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&Uzun metni böl"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Ses etiketlerini etkinle&ştir"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Kararlılık"
+
+msgid "Clarity"
+msgstr "Netlik"
+
+msgid "Style"
+msgstr "Stil"
+
+msgid "Speaker boost"
+msgstr "Konuşmacı güçlendirme"
+
+msgid "Text normalization"
+msgstr "Metin normalleştirme"
+
+msgid "Automatic"
+msgstr "Otomatik"
+
+msgid "On"
+msgstr "Açık"
+
+msgid "Off"
+msgstr "Kapalı"
+
+msgid "Split long text"
+msgstr "Uzun metni böl"
+
+msgid "Audio tags"
+msgstr "Ses etiketleri"
+
+msgid "Automatic (detect language)"
+msgstr "Otomatik (dili algıla)"
+
+msgid "{name} (English only)"
+msgstr "{name} (yalnızca İngilizce)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs kullanılamıyor."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs sürücüsü bulunamadı"
+
+msgid "No API key found"
+msgstr "API anahtarı bulunamadı"
+
+msgid "Fetching usage"
+msgstr "Kullanım alınıyor"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Kullanım alınamadı, NVDA günlüğüne bakın"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs'tan beklenmeyen yanıt"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Kullanılan kredi: {limit} krediden {used} (%{percent})."
+
+msgid "Credits used: {used}."
+msgstr "Kullanılan kredi: {used}."
+
+msgid "Resets: {when}."
+msgstr "Sıfırlanma: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Plan: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Sesler ve modeller denetleniyor"
+
+msgid "A check is already running"
+msgstr "Bir denetim zaten çalışıyor"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Sesler ve modeller, ElevenLabs'ı bir sonraki seçişinizde denetlenecek"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs ayar dosyası güncellenemedi"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Denetim tamamlandı. Kullanılabilir sesler: {voices}. Kullanılamayan sesler: "
+"{unusableVoices}. Kullanılabilir modeller: {models}. Kullanılamayan "
+"modeller: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs konuşma sentezleyicisi"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Geçerli dönemdeki ElevenLabs kredi kullanımını bildir"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Bu hesabın hangi ElevenLabs seslerini ve modellerini kullanabileceğini "
+"yeniden denetle"

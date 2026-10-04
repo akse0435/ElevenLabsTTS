@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ur\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "ماڈل"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "استحکام"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "وضاحت"
+
+msgctxt "label"
+msgid "Style"
+msgstr "انداز"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "مقرر بوسٹ"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "متن کی معیار بندی"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "طویل متن تقسیم کریں"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "آڈیو ٹیگز فعال کریں"
+
+msgid "Model"
+msgstr "ماڈل"
+
+msgid "Stability"
+msgstr "استحکام"
+
+msgid "Clarity"
+msgstr "وضاحت"
+
+msgid "Style"
+msgstr "انداز"
+
+msgid "Speaker boost"
+msgstr "مقرر بوسٹ"
+
+msgid "Text normalization"
+msgstr "متن کی معیار بندی"
+
+msgid "Automatic"
+msgstr "خودکار"
+
+msgid "On"
+msgstr "آن"
+
+msgid "Off"
+msgstr "آف"
+
+msgid "Split long text"
+msgstr "طویل متن تقسیم کریں"
+
+msgid "Audio tags"
+msgstr "آڈیو ٹیگز"
+
+msgid "Automatic (detect language)"
+msgstr "خودکار (زبان کی شناخت)"
+
+msgid "{name} (English only)"
+msgstr "{name} (صرف انگریزی)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs دستیاب نہیں ہے۔"
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs ڈرائیور نہیں ملا"
+
+msgid "No API key found"
+msgstr "کوئی API کلید نہیں ملی"
+
+msgid "Fetching usage"
+msgstr "استعمال حاصل کیا جا رہا ہے"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "استعمال حاصل نہیں کیا جا سکا، NVDA لاگ دیکھیں"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs کی طرف سے غیر متوقع جواب"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "استعمال شدہ کریڈٹس: {limit} میں سے {used} ({percent}%)۔"
+
+msgid "Credits used: {used}."
+msgstr "استعمال شدہ کریڈٹس: {used}۔"
+
+msgid "Resets: {when}."
+msgstr "ری سیٹ: {when}۔"
+
+msgid "Plan: {tier}."
+msgstr "پلان: {tier}۔"
+
+msgid "Checking voices and models"
+msgstr "آوازوں اور ماڈلز کی جانچ کی جا رہی ہے"
+
+msgid "A check is already running"
+msgstr "ایک جانچ پہلے سے جاری ہے"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "اگلی بار ElevenLabs منتخب کرنے پر آوازوں اور ماڈلز کی جانچ کی جائے گی"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs کی ترتیبات کی فائل اپ ڈیٹ نہیں کی جا سکی"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"جانچ مکمل ہو گئی۔ قابل استعمال آوازیں: {voices}۔ ناقابل استعمال آوازیں: "
+"{unusableVoices}۔ قابل استعمال ماڈلز: {models}۔ ناقابل استعمال ماڈلز: "
+"{unusableModels}۔"
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs اسپیچ سنتھیسائزر"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "موجودہ مدت کے لیے ElevenLabs کریڈٹ کا استعمال بتائیں"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"دوبارہ جانچیں کہ یہ اکاؤنٹ کون سی ElevenLabs آوازیں اور ماڈلز استعمال کر "
+"سکتا ہے"

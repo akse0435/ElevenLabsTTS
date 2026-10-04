@@ -1,0 +1,140 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: ky\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&Модель"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "&Туруктуулук"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Т&актык"
+
+msgctxt "label"
+msgid "Style"
+msgstr "&Стиль"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Сүйлөөчүнү &күчөтүү"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Текстти &нормалдаштыруу"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&Узун текстти бөлүү"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Ау&дио тегдерди иштетүү"
+
+msgid "Model"
+msgstr "Модель"
+
+msgid "Stability"
+msgstr "Туруктуулук"
+
+msgid "Clarity"
+msgstr "Тактык"
+
+msgid "Style"
+msgstr "Стиль"
+
+msgid "Speaker boost"
+msgstr "Сүйлөөчүнү күчөтүү"
+
+msgid "Text normalization"
+msgstr "Текстти нормалдаштыруу"
+
+msgid "Automatic"
+msgstr "Автоматтык"
+
+msgid "On"
+msgstr "Күйгүзүлгөн"
+
+msgid "Off"
+msgstr "Өчүрүлгөн"
+
+msgid "Split long text"
+msgstr "Узун текстти бөлүү"
+
+msgid "Audio tags"
+msgstr "Аудио тегдер"
+
+msgid "Automatic (detect language)"
+msgstr "Автоматтык (тилди аныктоо)"
+
+msgid "{name} (English only)"
+msgstr "{name} (англисче гана)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs жеткиликсиз."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs драйвери табылган жок"
+
+msgid "No API key found"
+msgstr "API ачкычы табылган жок"
+
+msgid "Fetching usage"
+msgstr "Колдонуу алынууда"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Колдонууну алуу мүмкүн болгон жок, NVDA журналын караңыз"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs'тан күтүлбөгөн жооп"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Колдонулган кредиттер: {limit} ичинен {used} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Колдонулган кредиттер: {used}."
+
+msgid "Resets: {when}."
+msgstr "Баштапкы абалга келтирилет: {when}."
+
+msgid "Plan: {tier}."
+msgstr "План: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Үндөр жана моделдер текшерилүүдө"
+
+msgid "A check is already running"
+msgstr "Текшерүү буга чейин эле жүрүүдө"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "Үндөр жана моделдер кийинки жолу ElevenLabs тандаганыңызда текшерилет"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs жөндөөлөр файлын жаңыртуу мүмкүн болгон жок"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Текшерүү бүттү. Колдонууга жарактуу үндөр: {voices}. Колдонууга жараксыз "
+"үндөр: {unusableVoices}. Колдонууга жарактуу моделдер: {models}. Колдонууга "
+"жараксыз моделдер: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs кеп синтезатору"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Учурдагы мезгил үчүн ElevenLabs кредиттеринин колдонулушун билдирүү"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Бул аккаунт кайсы ElevenLabs үндөрүн жана моделдерин колдоно аларын кайра "
+"текшерүү"

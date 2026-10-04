@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: mn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "З&агвар"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Тогтвортой &байдал"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "Т&одорхой байдал"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Хэв &маяг"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&Илтгэгчийг хүчжүүлэх"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Т&екстийг хэвшүүлэх"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "&Урт текстийг хуваах"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "Аудио &шошгыг идэвхжүүлэх"
+
+msgid "Model"
+msgstr "Загвар"
+
+msgid "Stability"
+msgstr "Тогтвортой байдал"
+
+msgid "Clarity"
+msgstr "Тодорхой байдал"
+
+msgid "Style"
+msgstr "Хэв маяг"
+
+msgid "Speaker boost"
+msgstr "Илтгэгчийг хүчжүүлэх"
+
+msgid "Text normalization"
+msgstr "Текстийг хэвшүүлэх"
+
+msgid "Automatic"
+msgstr "Автомат"
+
+msgid "On"
+msgstr "Асаалттай"
+
+msgid "Off"
+msgstr "Унтраалттай"
+
+msgid "Split long text"
+msgstr "Урт текстийг хуваах"
+
+msgid "Audio tags"
+msgstr "Аудио шошго"
+
+msgid "Automatic (detect language)"
+msgstr "Автомат (хэлийг илрүүлэх)"
+
+msgid "{name} (English only)"
+msgstr "{name} (зөвхөн англи)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs ашиглах боломжгүй байна."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "ElevenLabs драйвер олдсонгүй"
+
+msgid "No API key found"
+msgstr "API түлхүүр олдсонгүй"
+
+msgid "Fetching usage"
+msgstr "Хэрэглээг татаж байна"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Хэрэглээг татаж чадсангүй, NVDA-гийн бүртгэлийг харна уу"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "ElevenLabs-аас ирсэн гэнэтийн хариу"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Ашигласан кредит: {limit}-аас {used} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Ашигласан кредит: {used}."
+
+msgid "Resets: {when}."
+msgstr "Шинэчлэгдэх: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Багц: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Дуу хоолой болон загваруудыг шалгаж байна"
+
+msgid "A check is already running"
+msgstr "Шалгалт аль хэдийн явагдаж байна"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Дараагийн удаа ElevenLabs-ийг сонгоход дуу хоолой болон загваруудыг шалгана"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "ElevenLabs-ийн тохиргооны файлыг шинэчилж чадсангүй"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Шалгалт дууслаа. Ашиглах боломжтой дуу хоолой: {voices}. Ашиглах боломжгүй "
+"дуу хоолой: {unusableVoices}. Ашиглах боломжтой загвар: {models}. Ашиглах "
+"боломжгүй загвар: {unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs яриа нийлэгжүүлэгч"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Одоогийн хугацааны ElevenLabs кредитийн хэрэглээг мэдээлэх"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Энэ бүртгэл ElevenLabs-ийн ямар дуу хоолой, загвар ашиглаж болохыг дахин "
+"шалгах"

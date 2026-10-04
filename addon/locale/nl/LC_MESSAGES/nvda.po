@@ -1,0 +1,142 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&Model"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "Stabi&liteit"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "H&elderheid"
+
+msgctxt "label"
+msgid "Style"
+msgstr "Sti&jl"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "Spre&kerversterking"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "Tekstn&ormalisatie"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "Lange tekst opsplitsen"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "A&udiotags inschakelen"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Stability"
+msgstr "Stabiliteit"
+
+msgid "Clarity"
+msgstr "Helderheid"
+
+msgid "Style"
+msgstr "Stijl"
+
+msgid "Speaker boost"
+msgstr "Sprekerversterking"
+
+msgid "Text normalization"
+msgstr "Tekstnormalisatie"
+
+msgid "Automatic"
+msgstr "Automatisch"
+
+msgid "On"
+msgstr "Aan"
+
+msgid "Off"
+msgstr "Uit"
+
+msgid "Split long text"
+msgstr "Lange tekst opsplitsen"
+
+msgid "Audio tags"
+msgstr "Audiotags"
+
+msgid "Automatic (detect language)"
+msgstr "Automatisch (taal detecteren)"
+
+msgid "{name} (English only)"
+msgstr "{name} (alleen Engels)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs is niet beschikbaar."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "Het ElevenLabs-stuurprogramma is niet gevonden"
+
+msgid "No API key found"
+msgstr "Geen API-sleutel gevonden"
+
+msgid "Fetching usage"
+msgstr "Verbruik ophalen"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "Kan het verbruik niet ophalen, zie het NVDA-logboek"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "Onverwacht antwoord van ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "Verbruikte credits: {used} van {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "Verbruikte credits: {used}."
+
+msgid "Resets: {when}."
+msgstr "Wordt gereset: {when}."
+
+msgid "Plan: {tier}."
+msgstr "Abonnement: {tier}."
+
+msgid "Checking voices and models"
+msgstr "Stemmen en modellen controleren"
+
+msgid "A check is already running"
+msgstr "Er loopt al een controle"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr ""
+"Stemmen en modellen worden gecontroleerd wanneer u ElevenLabs de volgende "
+"keer kiest"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "Kan het instellingenbestand van ElevenLabs niet bijwerken"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"Controle voltooid. Bruikbare stemmen: {voices}. Onbruikbare stemmen: "
+"{unusableVoices}. Bruikbare modellen: {models}. Onbruikbare modellen: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "ElevenLabs-spraaksynthesizer"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "Het verbruik van ElevenLabs-credits in de huidige periode melden"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"Opnieuw controleren welke stemmen en modellen van ElevenLabs dit account kan"
+" gebruiken"

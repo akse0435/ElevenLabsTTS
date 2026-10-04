@@ -1,0 +1,139 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ElevenLabsTTS\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "label"
+msgid "Model"
+msgstr "&مدل"
+
+msgctxt "label"
+msgid "Stabilit&y"
+msgstr "پایدا&ری"
+
+msgctxt "label"
+msgid "Clarity"
+msgstr "وضوح"
+
+msgctxt "label"
+msgid "Style"
+msgstr "سب&ک"
+
+msgctxt "label"
+msgid "Spea&ker boost"
+msgstr "&تقویت گوینده"
+
+msgctxt "label"
+msgid "Text normalization"
+msgstr "نرمال‌سازی متن"
+
+msgctxt "label"
+msgid "Split long text"
+msgstr "تقسیم متن طولانی"
+
+msgctxt "label"
+msgid "Enable audio tags"
+msgstr "&فعال‌سازی برچسب‌های صوتی"
+
+msgid "Model"
+msgstr "مدل"
+
+msgid "Stability"
+msgstr "پایداری"
+
+msgid "Clarity"
+msgstr "وضوح"
+
+msgid "Style"
+msgstr "سبک"
+
+msgid "Speaker boost"
+msgstr "تقویت گوینده"
+
+msgid "Text normalization"
+msgstr "نرمال‌سازی متن"
+
+msgid "Automatic"
+msgstr "خودکار"
+
+msgid "On"
+msgstr "روشن"
+
+msgid "Off"
+msgstr "خاموش"
+
+msgid "Split long text"
+msgstr "تقسیم متن طولانی"
+
+msgid "Audio tags"
+msgstr "برچسب‌های صوتی"
+
+msgid "Automatic (detect language)"
+msgstr "خودکار (تشخیص زبان)"
+
+msgid "{name} (English only)"
+msgstr "{name} (فقط انگلیسی)"
+
+msgid "ElevenLabs is unavailable."
+msgstr "ElevenLabs در دسترس نیست."
+
+msgid "Could not find the ElevenLabs driver"
+msgstr "درایور ElevenLabs پیدا نشد"
+
+msgid "No API key found"
+msgstr "کلید API پیدا نشد"
+
+msgid "Fetching usage"
+msgstr "در حال دریافت میزان مصرف"
+
+msgid "Could not fetch usage, see the NVDA log"
+msgstr "دریافت میزان مصرف ممکن نشد، گزارش NVDA را ببینید"
+
+msgid "Unexpected response from ElevenLabs"
+msgstr "پاسخ غیرمنتظره از ElevenLabs"
+
+msgid "Credits used: {used} of {limit} ({percent}%)."
+msgstr "اعتبار مصرف‌شده: {used} از {limit} ({percent}%)."
+
+msgid "Credits used: {used}."
+msgstr "اعتبار مصرف‌شده: {used}."
+
+msgid "Resets: {when}."
+msgstr "بازنشانی: {when}."
+
+msgid "Plan: {tier}."
+msgstr "طرح: {tier}."
+
+msgid "Checking voices and models"
+msgstr "در حال بررسی صداها و مدل‌ها"
+
+msgid "A check is already running"
+msgstr "یک بررسی در حال اجراست"
+
+msgid "Voices and models will be checked next time you select ElevenLabs"
+msgstr "صداها و مدل‌ها دفعه بعد که ElevenLabs را انتخاب کنید بررسی می‌شوند"
+
+msgid "Could not update the ElevenLabs settings file"
+msgstr "به‌روزرسانی فایل تنظیمات ElevenLabs ممکن نشد"
+
+msgid ""
+"Check finished. Usable voices: {voices}. Unusable voices: {unusableVoices}. "
+"Usable models: {models}. Unusable models: {unusableModels}."
+msgstr ""
+"بررسی تمام شد. صداهای قابل استفاده: {voices}. صداهای غیرقابل استفاده: "
+"{unusableVoices}. مدل‌های قابل استفاده: {models}. مدل‌های غیرقابل استفاده: "
+"{unusableModels}."
+
+msgid "ElevenLabs speech synthesizer"
+msgstr "موتور گفتار ElevenLabs"
+
+msgid "Report ElevenLabs credit usage for the current period"
+msgstr "اعلام میزان مصرف اعتبار ElevenLabs در دوره فعلی"
+
+msgid "Check again which ElevenLabs voices and models this account can use"
+msgstr ""
+"بررسی دوباره صداها و مدل‌های ElevenLabs که این حساب می‌تواند استفاده کند"

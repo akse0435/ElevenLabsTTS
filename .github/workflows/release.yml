@@ -14,12 +14,12 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Hent koden
+      - name: Check out code
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Læs navn og version fra manifestet
+      - name: Read name and version from manifest
         id: meta
         run: |
           get() {
@@ -29,7 +29,7 @@ jobs:
           NAME="$(get name)"
           VERSION="$(get version)"
           if [ -z "$NAME" ] || [ -z "$VERSION" ]; then
-            echo "::error::Kunne ikke læse name/version fra addon/manifest.ini"
+            echo "::error::Could not read name/version from addon/manifest.ini"
             exit 1
           fi
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
@@ -37,17 +37,17 @@ jobs:
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
           echo "Add-on: $NAME, version: $VERSION"
 
-      - name: Tjek om versionen allerede er udgivet
+      - name: Check if version is already released
         id: check
         run: |
           if git rev-parse -q --verify "refs/tags/${{ steps.meta.outputs.tag }}" >/dev/null; then
-            echo "Tagget ${{ steps.meta.outputs.tag }} findes allerede – ingen ny release."
+            echo "Tag ${{ steps.meta.outputs.tag }} already exists - skipping release."
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Byg .nvda-addon
+      - name: Build .nvda-addon
         if: steps.check.outputs.exists == 'false'
         id: build
         run: |
@@ -58,7 +58,7 @@ jobs:
           unzip -l "$FILE"
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Hent release-noter fra changelog.md
+      - name: Extract release notes from changelog.md
         if: steps.check.outputs.exists == 'false'
         run: |
           : > release_notes.md
@@ -75,14 +75,14 @@ jobs:
               }
             ' changelog.md > release_notes.md
           else
-            echo "::warning::changelog.md blev ikke fundet"
+            echo "::warning::changelog.md not found"
           fi
           if [ ! -s release_notes.md ]; then
-            echo "Ingen changelog-tekst fundet for version ${{ steps.meta.outputs.version }}." > release_notes.md
+            echo "No changelog entry found for version ${{ steps.meta.outputs.version }}." > release_notes.md
           fi
           cat release_notes.md
 
-      - name: Opret release
+      - name: Create release
         if: steps.check.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -66,6 +66,15 @@ msgstr "Activat"
 msgid "Off"
 msgstr "Dezactivat"
 
+msgid "Creative"
+msgstr "Creativ"
+
+msgid "Natural"
+msgstr "Natural"
+
+msgid "Robust"
+msgstr "Robust"
+
 msgid "Split long text"
 msgstr "Împarte textul lung"
 
@@ -137,3 +146,116 @@ msgstr "Anunță consumul de credite ElevenLabs pentru perioada curentă"
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "Verifică din nou ce voci și modele ElevenLabs poate folosi acest cont"
+
+msgid "ElevenLabs API Key"
+msgstr "Cheie API ElevenLabs"
+
+msgid "&API key:"
+msgstr "Cheie &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Mai întâi lipiți cheia API ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Se verifică cheia API la ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Cheia API nu a putut fi verificată. Consultați jurnalul NVDA pentru detalii."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Cheia API nu a putut fi salvată. Consultați jurnalul NVDA pentru detalii."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Ștergeți cheia &API"
+
+msgid "Set &API key..."
+msgstr "Setați cheia &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Ștergeți cheia API ElevenLabs? ElevenLabs nu poate vorbi până nu se setează o cheie nouă."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Cheia API nu a putut fi ștearsă. Consultați jurnalul NVDA pentru detalii."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs a respins această cheie API. Verificați dacă a fost copiată integral și dacă are permisiunea de a citi voci."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs nu a putut verifica cheia (HTTP {code}). Încercați din nou mai târziu."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ElevenLabs nu a putut fi contactat pentru verificarea cheii. Verificați conexiunea la internet și încercați din nou."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Driver de sintetizator de voce care transmite audio de la API-ul de text în vorbire ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"Cheia API se setează acum într-o nouă categorie ElevenLabs TTS din setările NVDA. Cheia este verificată la ElevenLabs înainte de a fi salvată și este stocată criptat pentru utilizatorul tău Windows. ElevenLabs apare în lista de sintetizatoare doar după ce este setată o cheie.\n"
+"Dacă actualizezi: elevenlabs_settings.txt nu mai este citit, așa că setează din nou cheia în noua categorie. După aceea poți șterge fișierul vechi, care conține cheia ca text simplu.\n"
+"Opțiune nouă în setările ElevenLabs TTS: un sintetizator pentru navigare. Acesta rostește tot în afară de citirea continuă, astfel încât creditele ElevenLabs se consumă doar pe ce alegi să citești. O comandă pentru activarea și dezactivarea lui poate fi atribuită în Gesturi de intrare.\n"
+"Cât timp un sintetizator pentru navigare este încărcat, inelul de setări conține setările ambelor sintetizatoare, denumite după sintetizatorul lor.\n"
+"Citirea continuă nu mai face pauze între propoziții cât timp următoarea este preluată de la ElevenLabs.\n"
+"În timpul citirii continue, cursorul urmărește acum vorbirea mai îndeaproape.\n"
+"Citirea continuă îi spune acum lui ElevenLabs ce text vine înainte și după fiecare cerere, astfel încât intonația curge de la o propoziție la următoarea.\n"
+"Vorbirea poate începe mai repede, deoarece conexiunea cu ElevenLabs rămâne deschisă între enunțuri.\n"
+"Setările vocii arată acum doar ce suportă modelul ales. Pentru Eleven v3, stabilitatea este o alegere între Creativ, Natural sau Robust."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Nu s-a putut încărca un sintetizator pentru navigare; se folosește ElevenLabs pentru toată vorbirea."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Nu s-a putut încărca {synth}; se folosește {fallback} pentru navigare."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs nu este disponibil; citirea continuă va folosi {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Niciunul (ElevenLabs rostește tot)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Sintetizator pentru navigare:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Comută între un sintetizator separat pentru navigare și ElevenLabs pentru toată vorbirea"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Niciun sintetizator de navigare ales; alegeți unul în setările ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "Se folosește ElevenLabs pentru toată vorbirea."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Se folosește {synth} pentru navigare."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

@@ -66,6 +66,15 @@ msgstr "Bật"
 msgid "Off"
 msgstr "Tắt"
 
+msgid "Creative"
+msgstr "Sáng tạo"
+
+msgid "Natural"
+msgstr "Tự nhiên"
+
+msgid "Robust"
+msgstr "Ổn định"
+
 msgid "Split long text"
 msgstr "Chia nhỏ văn bản dài"
 
@@ -138,3 +147,116 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Kiểm tra lại những giọng đọc và mô hình ElevenLabs mà tài khoản này có thể "
 "dùng"
+
+msgid "ElevenLabs API Key"
+msgstr "Khóa API ElevenLabs"
+
+msgid "&API key:"
+msgstr "Khóa &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Hãy dán khóa API ElevenLabs của bạn trước."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Đang kiểm tra khóa API với ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Không thể kiểm tra khóa API. Hãy xem nhật ký NVDA để biết chi tiết."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Không thể lưu khóa API. Hãy xem nhật ký NVDA để biết chi tiết."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Xóa khóa &API"
+
+msgid "Set &API key..."
+msgstr "Đặt khóa &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Xóa khóa API ElevenLabs? ElevenLabs không thể nói cho đến khi đặt khóa mới."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Không thể xóa khóa API. Hãy xem nhật ký NVDA để biết chi tiết."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs đã từ chối khóa API này. Hãy kiểm tra xem khóa đã được sao chép đầy đủ và có quyền đọc giọng nói hay chưa."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs không thể kiểm tra khóa (HTTP {code}). Hãy thử lại sau."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Không thể kết nối với ElevenLabs để kiểm tra khóa. Hãy kiểm tra kết nối internet và thử lại."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Trình điều khiển bộ tổng hợp giọng nói truyền âm thanh từ API chuyển văn bản thành giọng nói của ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"Khóa API giờ được đặt trong danh mục ElevenLabs TTS mới trong cài đặt của NVDA. Khóa được kiểm tra với ElevenLabs trước khi lưu, và được lưu ở dạng mã hóa cho người dùng Windows của bạn. ElevenLabs chỉ xuất hiện trong danh sách bộ đọc khi đã đặt khóa.\n"
+"Nếu bạn đang nâng cấp: elevenlabs_settings.txt không còn được đọc nữa, vì vậy hãy đặt lại khóa trong danh mục mới. Sau đó bạn có thể xóa tệp cũ, vốn chứa khóa của bạn ở dạng văn bản thường.\n"
+"Tùy chọn mới trong cài đặt ElevenLabs TTS: bộ đọc cho điều hướng. Bộ đọc này đọc mọi thứ trừ đọc tất cả, nên tín dụng ElevenLabs chỉ được dùng cho những gì bạn chọn đọc. Có thể gán lệnh bật và tắt nó trong Thao tác nhập.\n"
+"Khi bộ đọc cho điều hướng đang được tải, vòng cài đặt chứa cài đặt của cả hai bộ đọc, được đặt tên theo bộ đọc của chúng.\n"
+"Đọc tất cả không còn dừng giữa các câu trong khi câu tiếp theo được lấy từ ElevenLabs.\n"
+"Trong khi đọc tất cả, con trỏ giờ bám theo lời đọc sát hơn.\n"
+"Đọc tất cả giờ cho ElevenLabs biết văn bản nào đứng trước và sau mỗi yêu cầu, để ngữ điệu liền mạch từ câu này sang câu tiếp theo.\n"
+"Lời đọc có thể bắt đầu sớm hơn, vì kết nối tới ElevenLabs được giữ mở giữa các lần nói.\n"
+"Cài đặt giọng đọc giờ chỉ hiển thị những gì mô hình đã chọn hỗ trợ. Với Eleven v3, độ ổn định là lựa chọn giữa Sáng tạo, Tự nhiên hoặc Ổn định."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Không thể tải bộ đọc cho điều hướng; đang dùng ElevenLabs cho mọi lời đọc."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Không thể tải {synth}; đang dùng {fallback} cho điều hướng."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs không khả dụng; đọc tất cả sẽ dùng {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Không có (ElevenLabs đọc mọi thứ)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Bộ đọc cho điều hướng:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Chuyển giữa một bộ đọc riêng cho điều hướng và ElevenLabs cho mọi lời đọc"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Chưa chọn bộ đọc cho điều hướng; hãy chọn một bộ trong cài đặt ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "Đang dùng ElevenLabs cho mọi lời đọc."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Đang dùng {synth} cho điều hướng."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

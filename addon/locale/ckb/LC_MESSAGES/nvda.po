@@ -66,6 +66,15 @@ msgstr "چالاک"
 msgid "Off"
 msgstr "ناچالاک"
 
+msgid "Creative"
+msgstr "داهێنەرانە"
+
+msgid "Natural"
+msgstr "سروشتی"
+
+msgid "Robust"
+msgstr "جێگیر"
+
 msgid "Split long text"
 msgstr "دابەشکردنی دەقی درێژ"
 
@@ -138,3 +147,116 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "دووبارە پشکنین کە ئەم هەژمارە دەتوانێت کام دەنگ و مۆدێلی ElevenLabs "
 "بەکاربهێنێت"
+
+msgid "ElevenLabs API Key"
+msgstr "کلیلی API ـی ElevenLabs"
+
+msgid "&API key:"
+msgstr "کلیلی &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "سەرەتا کلیلی API ـی ElevenLabs ـەکەت دابنێ."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "کلیلی API لەگەڵ ElevenLabs پشکنین دەکرێت..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "نەتوانرا کلیلی API بپشکنرێت. بۆ وردەکاری سەیری تۆماری NVDA بکە."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "نەتوانرا کلیلی API پاشەکەوت بکرێت. بۆ وردەکاری سەیری تۆماری NVDA بکە."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "سڕینەوەی کلیلی &API"
+
+msgid "Set &API key..."
+msgstr "دانانی کلیلی &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "کلیلی API ـی ElevenLabs بسڕدرێتەوە؟ ElevenLabs ناتوانێت قسە بکات تا کلیلێکی نوێ دادەنرێت."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "نەتوانرا کلیلی API بسڕدرێتەوە. بۆ وردەکاری سەیری تۆماری NVDA بکە."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ئەم کلیلی API ـیەی ڕەتکردەوە. دڵنیابە کە بە تەواوی کۆپی کراوە و ڕێگەی خوێندنەوەی دەنگەکانی هەیە."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs نەیتوانی کلیلەکە بپشکنێت (HTTP {code}). دواتر دووبارە هەوڵ بدەرەوە."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "نەتوانرا بگەیەنرێتە ElevenLabs بۆ پشکنینی کلیلەکە. پەیوەندی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "دەرایڤەری دروستکەری دەنگ کە دەنگ لە API ی دەق-بۆ-دەنگی ElevenLabs پەخش دەکات."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"کلیلی API ئێستا لە پۆلێکی نوێی ElevenLabs TTS لە ڕێکخستنەکانی NVDA دادەنرێت. کلیلەکە پێش پاشەکەوتکردن لەگەڵ ElevenLabs پشکنینی بۆ دەکرێت و بە شێوەی شفرەکراو بۆ بەکارهێنەری Windowsەکەت هەڵدەگیرێت. ElevenLabs تەنها دوای دانانی کلیل لە لیستی داڕێژەرەکاندا دەردەکەوێت.\n"
+"ئەگەر نوێی دەکەیتەوە: elevenlabs_settings.txt چیتر ناخوێنرێتەوە، بۆیە کلیلەکەت دووبارە لە پۆلە نوێیەکەدا دابنێ. دواتر دەتوانیت فایلە کۆنەکە بسڕیتەوە، کە کلیلەکەت وەک دەقی ئاسایی تێدایە.\n"
+"هەڵبژاردەیەکی نوێ لە ڕێکخستنەکانی ElevenLabs TTS: داڕێژەرێک بۆ گەڕان. هەموو شتێک دەڵێت جگە لە خوێندنەوەی هەموو، بۆیە کرێدیتەکانی ElevenLabs تەنها بۆ ئەوە خەرج دەکرێن کە هەڵیدەبژێریت بیخوێنیتەوە. فەرمانێک بۆ هەڵکردن و کوژاندنەوەی دەتوانرێت لە ئاماژەکانی تێخستن دابنرێت.\n"
+"کاتێک داڕێژەرێک بۆ گەڕان بار کراوە، ئەڵقەی ڕێکخستنەکان ڕێکخستنەکانی هەردوو داڕێژەرەکەی تێدایە، بە ناوی داڕێژەرەکەیانەوە.\n"
+"خوێندنەوەی هەموو چیتر لە نێوان ڕستەکاندا ناوەستێت کاتێک ڕستەی داهاتوو لە ElevenLabs وەردەگیرێت.\n"
+"لە کاتی خوێندنەوەی هەموودا، نیشاندەرەکە ئێستا لە نزیکترەوە دوای قسەکردنەکە دەکەوێت.\n"
+"خوێندنەوەی هەموو ئێستا بە ElevenLabs دەڵێت چ دەقێک پێش و دوای هەر داواکارییەک دێت، بۆیە ئاوازی دەنگ لە ڕستەیەکەوە بۆ ڕستەی داهاتوو دەڕوات.\n"
+"لەوانەیە قسەکردن زووتر دەست پێبکات، چونکە پەیوەندی لەگەڵ ElevenLabs لە نێوان قسەکاندا کراوە دەمێنێتەوە.\n"
+"ڕێکخستنەکانی دەنگ ئێستا تەنها ئەوە پیشان دەدەن کە مۆدێلە هەڵبژێردراوەکە پشتگیری دەکات. بۆ Eleven v3، جێگیری هەڵبژاردنێکە لە نێوان داهێنەرانە، سروشتی یان جێگیر."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "نەتوانرا داڕێژەری دەنگ بۆ گەڕان بار بکرێت؛ ElevenLabs بۆ هەموو قسەکردنێک بەکاردێت."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "نەتوانرا {synth} بار بکرێت؛ {fallback} بۆ گەڕان بەکاردێت."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs بەردەست نییە؛ خوێندنەوەی هەموو {synth} بەکاردێنێت."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "هیچ (ElevenLabs هەموو شتێک دەڵێت)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&داڕێژەری دەنگ بۆ گەڕان:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "گۆڕین لە نێوان داڕێژەرێکی جیاواز بۆ گەڕان و ElevenLabs بۆ هەموو قسەکردن"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "هیچ داڕێژەرێکی گەڕان هەڵنەبژێردراوە؛ یەکێک لە ڕێکخستنەکانی ElevenLabs TTS هەڵبژێرە"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs بۆ هەموو قسەکردنێک بەکاردێت."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} بۆ گەڕان بەکاردێت."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

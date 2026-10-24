@@ -66,6 +66,15 @@ msgstr "Vekirî"
 msgid "Off"
 msgstr "Girtî"
 
+msgid "Creative"
+msgstr "Afirîner"
+
+msgid "Natural"
+msgstr "Xwezayî"
+
+msgid "Robust"
+msgstr "Stabîl"
+
 msgid "Split long text"
 msgstr "Nivîsa dirêj parve bike"
 
@@ -139,3 +148,116 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Dîsa kontrol bike ka ev hesab dikare kîjan deng û modelên ElevenLabs bikar "
 "bîne"
+
+msgid "ElevenLabs API Key"
+msgstr "Mifteya API ya ElevenLabs"
+
+msgid "&API key:"
+msgstr "Mifteya &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Pêşî mifteya API ya ElevenLabs a xwe pêve bike."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Mifteya API bi ElevenLabs re tê kontrolkirin..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Mifteya API nehat kontrolkirin. Ji bo hûrguliyan li tomara NVDA binêre."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Mifteya API nehat tomarkirin. Ji bo hûrguliyan li tomara NVDA binêre."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Mifteya &API paqij bike"
+
+msgid "Set &API key..."
+msgstr "Mifteya &API saz bike..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Mifteya API ya ElevenLabs were paqijkirin? Heta mifteyeke nû neyê sazkirin ElevenLabs nikare biaxive."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Mifteya API nehat paqijkirin. Ji bo hûrguliyan li tomara NVDA binêre."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ev mifteya API red kir. Kontrol bike ku ew bi tevahî hatiye kopîkirin û destûra wê ya xwendina dengan heye."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs nikarîbû mifteyê kontrol bike (HTTP {code}). Paşê dîsa biceribîne."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Ji bo kontrolkirina mifteyê negihîşt ElevenLabs. Girêdana xwe ya înternetê kontrol bike û dîsa biceribîne."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Ajokerê sentezkerê axaftinê ku dengê ji API ya nivîs-bo-axaftinê ya ElevenLabs diweşîne."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"Mifteya API niha di kategoriyeke nû ya ElevenLabs TTS de di mîhengên NVDA de tê danîn. Mifte berî tomarkirinê bi ElevenLabs re tê kontrolkirin, û ji bo bikarhênerê te yê Windowsê bi şîfrekirî tê tomarkirin. ElevenLabs tenê piştî ku mifteyek hat danîn di lîsteya sentezkeran de xuya dibe.\n"
+"Heke tu nûve dikî: elevenlabs_settings.txt êdî nayê xwendin, ji ber vê yekê mifteya xwe di kategoriya nû de dîsa deyne. Paşê tu dikarî pelê kevn jê bibî, ku mifteya te wekî nivîsa sade tê de ye.\n"
+"Vebijarkeke nû di mîhengên ElevenLabs TTS de: sentezkerek ji bo navîgasyonê. Ew her tiştî dibêje ji bilî xwendina hemûyan, ji ber vê yekê krediyên ElevenLabs tenê ji bo tiştê ku tu hildibijêrî bixwînî têne xerckirin. Fermanek ji bo vekirin û girtina wê dikare di Tevgerên Têketinê de were diyarkirin.\n"
+"Dema ku sentezkerek ji bo navîgasyonê barkirî ye, xeleka mîhengan mîhengên herdu sentezkeran dihewîne, bi navê sentezkerê wan.\n"
+"Xwendina hemûyan êdî di navbera hevokan de nasekine dema ku hevoka din ji ElevenLabs tê anîn.\n"
+"Di dema xwendina hemûyan de, nîşanker niha axaftinê ji nêztir dişopîne.\n"
+"Xwendina hemûyan niha ji ElevenLabs re dibêje kîjan nivîs berî û piştî her daxwazê tê, da ku awaza dengê ji hevokekê derbasî ya din bibe.\n"
+"Dibe ku axaftin zûtir dest pê bike, ji ber ku girêdana bi ElevenLabs re di navbera axaftinan de vekirî tê hiştin.\n"
+"Mîhengên dengê niha tenê tiştê ku modela hilbijartî piştgirî dike nîşan didin. Ji bo Eleven v3, aramî hilbijartinek e di navbera Afirîner, Xwezayî an Stabîl de."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Sentezkerek ji bo navîgasyonê nehat barkirin; ElevenLabs ji bo hemû axaftinê tê bikaranîn."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} nehat barkirin; {fallback} ji bo navîgasyonê tê bikaranîn."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ne berdest e; xwendina hemûyan dê {synth} bi kar bîne."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Tune (ElevenLabs her tiştî dibêje)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Sentezker ji bo navîgasyonê:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Di navbera sentezkerekî cuda ji bo navîgasyonê û ElevenLabs ji bo hemû axaftinê de diguhere"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Tu sentezkerê navîgasyonê nehatiye hilbijartin; di mîhengên ElevenLabs TTS de yekî hilbijêre"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs ji bo hemû axaftinê tê bikaranîn."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} ji bo navîgasyonê tê bikaranîn."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

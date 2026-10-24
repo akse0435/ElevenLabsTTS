@@ -66,6 +66,15 @@ msgstr "ჩართული"
 msgid "Off"
 msgstr "გამორთული"
 
+msgid "Creative"
+msgstr "კრეატიული"
+
+msgid "Natural"
+msgstr "ბუნებრივი"
+
+msgid "Robust"
+msgstr "მდგრადი"
+
 msgid "Split long text"
 msgstr "გრძელი ტექსტის დაყოფა"
 
@@ -139,3 +148,116 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "ხელახლა შემოწმება, რომელი ElevenLabs ხმები და მოდელები შეუძლია გამოიყენოს ამ"
 " ანგარიშს"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs-ის API გასაღები"
+
+msgid "&API key:"
+msgstr "&API გასაღები:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "ჯერ ჩასვით თქვენი ElevenLabs-ის API გასაღები."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "API გასაღების შემოწმება ElevenLabs-ში..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API გასაღების შემოწმება ვერ მოხერხდა. დეტალებისთვის იხილეთ NVDA-ს ჟურნალი."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API გასაღების შენახვა ვერ მოხერხდა. დეტალებისთვის იხილეთ NVDA-ს ჟურნალი."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API გასაღების წაშლა"
+
+msgid "Set &API key..."
+msgstr "&API გასაღების დაყენება..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "წაიშალოს ElevenLabs-ის API გასაღები? ElevenLabs ვერ ილაპარაკებს, სანამ ახალი გასაღები არ დაყენდება."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API გასაღების წაშლა ვერ მოხერხდა. დეტალებისთვის იხილეთ NVDA-ს ჟურნალი."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs-მა უარყო ეს API გასაღები. შეამოწმეთ, რომ ის სრულად არის კოპირებული და აქვს ხმების წაკითხვის ნებართვა."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs-მა ვერ შეამოწმა გასაღები (HTTP {code}). სცადეთ მოგვიანებით."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "გასაღების შესამოწმებლად ElevenLabs-თან დაკავშირება ვერ მოხერხდა. შეამოწმეთ ინტერნეტ კავშირი და სცადეთ ხელახლა."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "მეტყველების სინთეზატორის დრაივერი, რომელიც ასტრიმებს აუდიოს ElevenLabs-ის ტექსტიდან მეტყველების API-დან."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"API გასაღები ახლა დაყენდება NVDA-ის პარამეტრების ახალ კატეგორიაში ElevenLabs TTS. შენახვამდე გასაღები მოწმდება ElevenLabs-თან და ინახება დაშიფრული თქვენი Windows მომხმარებლისთვის. ElevenLabs სინთეზატორების სიაში მხოლოდ გასაღების დაყენების შემდეგ ჩანს.\n"
+"თუ განაახლებთ: elevenlabs_settings.txt აღარ იკითხება, ამიტომ ხელახლა დააყენეთ გასაღები ახალ კატეგორიაში. ამის შემდეგ შეგიძლიათ წაშალოთ ძველი ფაილი, რომელიც თქვენს გასაღებს უბრალო ტექსტად ინახავს.\n"
+"ახალი პარამეტრი ElevenLabs TTS-ის პარამეტრებში: სინთეზატორი ნავიგაციისთვის. ის ყველაფერს წარმოთქვამს ყველაფრის წაკითხვის გარდა, ასე რომ ElevenLabs-ის კრედიტები მხოლოდ იმაზე იხარჯება, რისი წაკითხვაც აირჩიეთ. მისი ჩართვისა და გამორთვის ბრძანების მინიჭება შესაძლებელია შეყვანის ჟესტებში.\n"
+"სანამ ნავიგაციის სინთეზატორი ჩატვირთულია, პარამეტრების რგოლი ორივე სინთეზატორის პარამეტრებს შეიცავს, მათი სინთეზატორის სახელით.\n"
+"ყველაფრის წაკითხვა აღარ ჩერდება წინადადებებს შორის, სანამ შემდეგი ElevenLabs-იდან მოდის.\n"
+"ყველაფრის წაკითხვისას კურსორი ახლა უფრო ზუსტად მიჰყვება მეტყველებას.\n"
+"ყველაფრის წაკითხვა ახლა ეუბნება ElevenLabs-ს, რა ტექსტია ყოველი მოთხოვნის წინ და შემდეგ, ასე რომ ინტონაცია ერთი წინადადებიდან მეორეში გადადის.\n"
+"მეტყველება შეიძლება უფრო ადრე დაიწყოს, რადგან ElevenLabs-თან კავშირი გამონათქვამებს შორის ღია რჩება.\n"
+"ხმის პარამეტრები ახლა მხოლოდ იმას აჩვენებს, რასაც არჩეული მოდელი უჭერს მხარს. Eleven v3-ისთვის სტაბილურობა არჩევანია კრეატიული, ბუნებრივი ან მდგრადი შორის."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "ნავიგაციისთვის სინთეზატორის ჩატვირთვა ვერ მოხერხდა; მთელი მეტყველებისთვის გამოიყენება ElevenLabs."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth}-ის ჩატვირთვა ვერ მოხერხდა; ნავიგაციისთვის გამოიყენება {fallback}."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs მიუწვდომელია; ყველაფრის წაკითხვა გამოიყენებს {synth}-ს."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "არცერთი (ElevenLabs ყველაფერს წარმოთქვამს)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&სინთეზატორი ნავიგაციისთვის:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "გადართავს ნავიგაციის ცალკე სინთეზატორსა და მთელი მეტყველებისთვის ElevenLabs-ს შორის"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "ნავიგაციის სინთეზატორი არ არის არჩეული; აირჩიეთ ElevenLabs TTS-ის პარამეტრებში"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "მთელი მეტყველებისთვის გამოიყენება ElevenLabs."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "ნავიგაციისთვის გამოიყენება {synth}."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

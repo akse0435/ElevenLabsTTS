@@ -66,6 +66,15 @@ msgstr "เปิด"
 msgid "Off"
 msgstr "ปิด"
 
+msgid "Creative"
+msgstr "สร้างสรรค์"
+
+msgid "Natural"
+msgstr "เป็นธรรมชาติ"
+
+msgid "Robust"
+msgstr "มั่นคง"
+
 msgid "Split long text"
 msgstr "แบ่งข้อความยาว"
 
@@ -136,3 +145,116 @@ msgstr "รายงานการใช้เครดิต ElevenLabs ใน
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "ตรวจสอบอีกครั้งว่าบัญชีนี้ใช้เสียงและโมเดล ElevenLabs ใดได้บ้าง"
+
+msgid "ElevenLabs API Key"
+msgstr "คีย์ API ของ ElevenLabs"
+
+msgid "&API key:"
+msgstr "คีย์ &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "โปรดวางคีย์ API ของ ElevenLabs ก่อน"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "กำลังตรวจสอบคีย์ API กับ ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "ไม่สามารถตรวจสอบคีย์ API ได้ โปรดดูบันทึกของ NVDA สำหรับรายละเอียด"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "ไม่สามารถบันทึกคีย์ API ได้ โปรดดูบันทึกของ NVDA สำหรับรายละเอียด"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "ล้างคีย์ &API"
+
+msgid "Set &API key..."
+msgstr "ตั้งค่าคีย์ &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ล้างคีย์ API ของ ElevenLabs หรือไม่ ElevenLabs จะพูดไม่ได้จนกว่าจะตั้งค่าคีย์ใหม่"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "ไม่สามารถล้างคีย์ API ได้ โปรดดูบันทึกของ NVDA สำหรับรายละเอียด"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ปฏิเสธคีย์ API นี้ โปรดตรวจสอบว่าคัดลอกมาครบถ้วนและได้รับอนุญาตให้อ่านเสียง"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ไม่สามารถตรวจสอบคีย์ได้ (HTTP {code}) โปรดลองอีกครั้งในภายหลัง"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ไม่สามารถเชื่อมต่อ ElevenLabs เพื่อตรวจสอบคีย์ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ไดรเวอร์เสียงสังเคราะห์ที่สตรีมเสียงจาก API แปลงข้อความเป็นเสียงพูดของ ElevenLabs"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"ตอนนี้คีย์ API ตั้งค่าในหมวดหมู่ ElevenLabs TTS ใหม่ในการตั้งค่าของ NVDA คีย์จะถูกตรวจสอบกับ ElevenLabs ก่อนบันทึก และจัดเก็บแบบเข้ารหัสสำหรับผู้ใช้ Windows ของคุณ ElevenLabs จะปรากฏในรายการเครื่องสังเคราะห์เสียงเมื่อตั้งค่าคีย์แล้วเท่านั้น\n"
+"หากคุณกำลังอัปเกรด: จะไม่อ่าน elevenlabs_settings.txt อีกต่อไป ดังนั้นโปรดตั้งค่าคีย์ของคุณอีกครั้งในหมวดหมู่ใหม่ จากนั้นคุณสามารถลบไฟล์เก่า ซึ่งเก็บคีย์ของคุณเป็นข้อความธรรมดา\n"
+"ตัวเลือกใหม่ในการตั้งค่า ElevenLabs TTS: เครื่องสังเคราะห์เสียงสำหรับการนำทาง ซึ่งพูดทุกอย่างยกเว้นการอ่านทั้งหมด เครดิต ElevenLabs จึงถูกใช้เฉพาะกับสิ่งที่คุณเลือกอ่านเท่านั้น คำสั่งเปิดและปิดตัวเลือกนี้สามารถกำหนดได้ในท่าทางการป้อนข้อมูล\n"
+"ขณะที่โหลดเครื่องสังเคราะห์เสียงสำหรับการนำทางอยู่ วงแหวนการตั้งค่าจะมีการตั้งค่าของเครื่องสังเคราะห์เสียงทั้งสอง โดยตั้งชื่อตามเครื่องสังเคราะห์เสียงของแต่ละรายการ\n"
+"การอ่านทั้งหมดจะไม่หยุดระหว่างประโยคอีกต่อไปขณะที่กำลังดึงประโยคถัดไปจาก ElevenLabs\n"
+"ระหว่างการอ่านทั้งหมด เคอร์เซอร์จะติดตามเสียงพูดได้ใกล้ชิดขึ้น\n"
+"การอ่านทั้งหมดจะบอก ElevenLabs ว่ามีข้อความใดอยู่ก่อนและหลังคำขอแต่ละรายการ เพื่อให้ท่วงทำนองไหลต่อจากประโยคหนึ่งไปยังประโยคถัดไป\n"
+"เสียงพูดอาจเริ่มเร็วขึ้น เนื่องจากการเชื่อมต่อกับ ElevenLabs จะเปิดค้างไว้ระหว่างการพูดแต่ละครั้ง\n"
+"การตั้งค่าเสียงจะแสดงเฉพาะสิ่งที่โมเดลที่เลือกรองรับ สำหรับ Eleven v3 ความเสถียรเป็นตัวเลือกระหว่าง สร้างสรรค์, เป็นธรรมชาติ หรือ มั่นคง"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "ไม่สามารถโหลดเครื่องสังเคราะห์เสียงสำหรับการนำทางได้ ใช้ ElevenLabs สำหรับเสียงพูดทั้งหมด"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "ไม่สามารถโหลด {synth} ได้ ใช้ {fallback} สำหรับการนำทาง"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ไม่พร้อมใช้งาน การอ่านทั้งหมดจะใช้ {synth}"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "ไม่มี (ElevenLabs พูดทุกอย่าง)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "เครื่องสังเคราะห์เสียงสำหรับการนำทาง (&S):"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "สลับระหว่างเครื่องสังเคราะห์เสียงแยกสำหรับการนำทาง และ ElevenLabs สำหรับเสียงพูดทั้งหมด"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "ยังไม่ได้เลือกเครื่องสังเคราะห์เสียงสำหรับการนำทาง โปรดเลือกในการตั้งค่า ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ใช้ ElevenLabs สำหรับเสียงพูดทั้งหมด"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "ใช้ {synth} สำหรับการนำทาง"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

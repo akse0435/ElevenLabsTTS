@@ -66,6 +66,15 @@ msgstr "Ein"
 msgid "Off"
 msgstr "Aus"
 
+msgid "Creative"
+msgstr "Kreativ"
+
+msgid "Natural"
+msgstr "Natürlich"
+
+msgid "Robust"
+msgstr "Robust"
+
 msgid "Split long text"
 msgstr "Langen Text aufteilen"
 
@@ -140,3 +149,116 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Erneut prüfen, welche Stimmen und Modelle von ElevenLabs dieses Konto nutzen"
 " kann"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs-API-Schlüssel"
+
+msgid "&API key:"
+msgstr "&API-Schlüssel:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Fügen Sie zuerst Ihren ElevenLabs-API-Schlüssel ein."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "API-Schlüssel wird bei ElevenLabs geprüft..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Der API-Schlüssel konnte nicht geprüft werden. Einzelheiten finden Sie im NVDA-Protokoll."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Der API-Schlüssel konnte nicht gespeichert werden. Einzelheiten finden Sie im NVDA-Protokoll."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API-Schlüssel entfernen"
+
+msgid "Set &API key..."
+msgstr "&API-Schlüssel festlegen..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Den ElevenLabs-API-Schlüssel entfernen? ElevenLabs kann erst wieder sprechen, wenn ein neuer Schlüssel festgelegt wurde."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Der API-Schlüssel konnte nicht entfernt werden. Einzelheiten finden Sie im NVDA-Protokoll."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs hat diesen API-Schlüssel abgelehnt. Prüfen Sie, ob er vollständig kopiert wurde und Stimmen lesen darf."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs konnte den Schlüssel nicht prüfen (HTTP {code}). Versuchen Sie es später erneut."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ElevenLabs ist zum Prüfen des Schlüssels nicht erreichbar. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Sprachausgabe-Treiber, der Audio von der Text-zu-Sprache-API von ElevenLabs streamt."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"Der API-Schlüssel wird jetzt in einer neuen Kategorie ElevenLabs TTS in den Einstellungen von NVDA festgelegt. Der Schlüssel wird vor dem Speichern bei ElevenLabs geprüft und verschlüsselt für Ihren Windows-Benutzer gespeichert. ElevenLabs erscheint erst in der Liste der Sprachausgaben, wenn ein Schlüssel festgelegt ist.\n"
+"Bei einem Update: elevenlabs_settings.txt wird nicht mehr gelesen, legen Sie Ihren Schlüssel daher in der neuen Kategorie erneut fest. Danach können Sie die alte Datei löschen, die Ihren Schlüssel im Klartext enthält.\n"
+"Neue Option in den Einstellungen von ElevenLabs TTS: eine Sprachausgabe für die Navigation. Sie spricht alles ausser «Alles lesen», sodass ElevenLabs-Guthaben nur für das verbraucht wird, was Sie lesen möchten. Ein Befehl zum Ein- und Ausschalten kann unter Tastenbefehle zugewiesen werden.\n"
+"Solange eine Sprachausgabe für die Navigation geladen ist, enthält der Stimmeneinstellungsring die Einstellungen beider Sprachausgaben, jeweils nach ihrer Sprachausgabe benannt.\n"
+"«Alles lesen» pausiert nicht mehr zwischen Sätzen, während der nächste von ElevenLabs geholt wird.\n"
+"Bei «Alles lesen» folgt der Cursor der Sprache jetzt genauer.\n"
+"«Alles lesen» teilt ElevenLabs jetzt mit, welcher Text vor und nach jeder Anfrage steht, sodass die Betonung von einem Satz zum nächsten fliesst.\n"
+"Die Sprachausgabe kann früher beginnen, da die Verbindung zu ElevenLabs zwischen Äusserungen offen gehalten wird.\n"
+"Die Stimmeneinstellungen zeigen jetzt nur noch, was das gewählte Modell unterstützt. Bei Eleven v3 ist die Stabilität eine Auswahl aus Kreativ, Natürlich oder Robust."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Für die Navigation konnte keine Sprachausgabe geladen werden; ElevenLabs wird für alle Ausgaben verwendet."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} konnte nicht geladen werden; für die Navigation wird {fallback} verwendet."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ist nicht verfügbar; «Alles lesen» verwendet {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Keine (ElevenLabs spricht alles)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Sprachausgabe für die Navigation:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Wechselt zwischen einer eigenen Sprachausgabe für die Navigation und ElevenLabs für alle Ausgaben"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Keine Sprachausgabe für die Navigation gewählt; wählen Sie eine in den Einstellungen von ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs wird für alle Ausgaben verwendet."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} wird für die Navigation verwendet."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

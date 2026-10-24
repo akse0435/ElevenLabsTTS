@@ -66,6 +66,15 @@ msgstr "Päällä"
 msgid "Off"
 msgstr "Pois"
 
+msgid "Creative"
+msgstr "Luova"
+
+msgid "Natural"
+msgstr "Luonnollinen"
+
+msgid "Robust"
+msgstr "Vakaa"
+
 msgid "Split long text"
 msgstr "Jaa pitkä teksti"
 
@@ -138,3 +147,116 @@ msgstr "Ilmoita ElevenLabs-krediittien käyttö nykyisellä jaksolla"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Tarkista uudelleen, mitä ElevenLabsin ääniä ja malleja tämä tili voi käyttää"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabsin API-avain"
+
+msgid "&API key:"
+msgstr "&API-avain:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Liitä ensin ElevenLabsin API-avaimesi."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Tarkistetaan API-avainta ElevenLabsilta..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API-avainta ei voitu tarkistaa. Katso lisätietoja NVDA:n lokista."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API-avainta ei voitu tallentaa. Katso lisätietoja NVDA:n lokista."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Tyhjennä &API-avain"
+
+msgid "Set &API key..."
+msgstr "Aseta &API-avain..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Tyhjennetäänkö ElevenLabsin API-avain? ElevenLabs ei voi puhua, ennen kuin uusi avain on asetettu."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API-avainta ei voitu tyhjentää. Katso lisätietoja NVDA:n lokista."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs hylkäsi tämän API-avaimen. Tarkista, että se on kopioitu kokonaan ja että sillä on lupa lukea ääniä."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ei voinut tarkistaa avainta (HTTP {code}). Yritä myöhemmin uudelleen."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ElevenLabsiin ei saatu yhteyttä avaimen tarkistamiseksi. Tarkista internetyhteytesi ja yritä uudelleen."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Puhesyntetisaattoriajuri, joka suoratoistaa ääntä ElevenLabsin tekstistä puheeksi -rajapinnasta."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"API-avain asetetaan nyt uudessa ElevenLabs TTS -luokassa NVDA:n asetuksissa. Avain tarkistetaan ElevenLabsilta ennen tallentamista, ja se tallennetaan salattuna Windows-käyttäjällesi. ElevenLabs näkyy syntetisaattoriluettelossa vasta, kun avain on asetettu.\n"
+"Jos päivität: elevenlabs_settings.txt-tiedostoa ei enää lueta, joten aseta avaimesi uudelleen uudessa luokassa. Sen jälkeen voit poistaa vanhan tiedoston, jossa avaimesi on tavallisena tekstinä.\n"
+"Uusi asetus ElevenLabs TTS -asetuksissa: navigoinnin syntetisaattori. Se puhuu kaiken paitsi jatkuvan luvun, joten ElevenLabs-krediittejä kuluu vain siihen, mitä valitset luettavaksi. Komento sen käyttöön ottamiseksi ja poistamiseksi voidaan määrittää Näppäinkomennot-valintaikkunassa.\n"
+"Kun navigoinnin syntetisaattori on ladattu, asetusrengas sisältää molempien syntetisaattorien asetukset syntetisaattorinsa mukaan nimettyinä.\n"
+"Jatkuva luku ei enää pidä taukoa lauseiden välillä, kun seuraavaa haetaan ElevenLabsilta.\n"
+"Jatkuvan luvun aikana kohdistin seuraa nyt puhetta tarkemmin.\n"
+"Jatkuva luku kertoo nyt ElevenLabsille, mitä tekstiä tulee kunkin pyynnön ennen ja jälkeen, joten intonaatio jatkuu sujuvasti lauseesta toiseen.\n"
+"Puhe voi alkaa aiemmin, koska yhteys ElevenLabsiin pidetään auki lausahdusten välillä.\n"
+"Ääniasetukset näyttävät nyt vain sen, mitä valittu malli tukee. Eleven v3:ssa vakaus valitaan vaihtoehdoista Luova, Luonnollinen tai Vakaa."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Navigoinnin puhesyntetisaattoria ei voitu ladata; ElevenLabsia käytetään kaikkeen puheeseen."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Syntetisaattoria {synth} ei voitu ladata; navigointiin käytetään syntetisaattoria {fallback}."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ei ole käytettävissä; jatkuva luku käyttää syntetisaattoria {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Ei mitään (ElevenLabs puhuu kaiken)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Navigoinnin syntetisaattori:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Vaihtaa erillisen navigointisyntetisaattorin ja kaikkeen puheeseen käytettävän ElevenLabsin välillä"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Navigoinnin syntetisaattoria ei ole valittu; valitse se ElevenLabs TTS -asetuksista"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabsia käytetään kaikkeen puheeseen."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Navigointiin käytetään syntetisaattoria {synth}."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

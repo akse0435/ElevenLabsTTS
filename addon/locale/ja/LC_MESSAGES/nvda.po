@@ -66,6 +66,15 @@ msgstr "オン"
 msgid "Off"
 msgstr "オフ"
 
+msgid "Creative"
+msgstr "クリエイティブ"
+
+msgid "Natural"
+msgstr "ナチュラル"
+
+msgid "Robust"
+msgstr "ロバスト"
+
 msgid "Split long text"
 msgstr "長いテキストを分割"
 
@@ -135,3 +144,116 @@ msgstr "現在の期間の ElevenLabs クレジット使用量を報告"
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "このアカウントで使用できる ElevenLabs の音声とモデルを再確認"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API キー"
+
+msgid "&API key:"
+msgstr "API キー(&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "まず ElevenLabs の API キーを貼り付けてください。"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs で API キーを確認しています..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API キーを確認できませんでした。詳細は NVDA のログを確認してください。"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API キーを保存できませんでした。詳細は NVDA のログを確認してください。"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "API キーを削除(&A)"
+
+msgid "Set &API key..."
+msgstr "API キーを設定(&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs の API キーを削除しますか？新しいキーを設定するまで ElevenLabs は読み上げできません。"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API キーを削除できませんでした。詳細は NVDA のログを確認してください。"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs はこの API キーを拒否しました。キーが完全にコピーされているか、音声の読み取りが許可されているかを確認してください。"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs はキーを確認できませんでした (HTTP {code})。後でもう一度お試しください。"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "キーを確認するために ElevenLabs に接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs の音声合成 API から音声をストリーミングする音声合成ドライバーです。"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"API キーは NVDA の設定に新しく加わった ElevenLabs TTS カテゴリで設定するようになりました。キーは保存前に ElevenLabs で確認され、Windows ユーザーごとに暗号化して保存されます。ElevenLabs はキーを設定するまで音声エンジンの一覧に表示されません。\n"
+"アップグレードする場合: elevenlabs_settings.txt は読み込まれなくなったため、新しいカテゴリでキーを設定し直してください。その後、キーが平文で入っている古いファイルは削除できます。\n"
+"ElevenLabs TTS の設定に新しいオプション: ナビゲーション用の音声エンジン。すべて読み以外のすべてを読み上げるため、ElevenLabs のクレジットは読みたいものにだけ使われます。オン・オフを切り替えるコマンドは入力ジェスチャーで割り当てられます。\n"
+"ナビゲーション用の音声エンジンが読み込まれている間、設定リングには両方の音声エンジンの設定が、それぞれの音声エンジン名付きで入ります。\n"
+"すべて読みで、次の文を ElevenLabs から取得している間に文と文の間で止まらなくなりました。\n"
+"すべて読みの間、カーソルが読み上げにより正確に追従するようになりました。\n"
+"すべて読みでは、各リクエストの前後にあるテキストを ElevenLabs に伝えるようになり、抑揚が文から文へ自然につながります。\n"
+"ElevenLabs との接続を発話の合間も開いたままにするため、読み上げが早く始まることがあります。\n"
+"音声の設定には、選んだモデルが対応しているものだけが表示されるようになりました。Eleven v3 では、安定性は クリエイティブ、ナチュラル、ロバスト から選びます。"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "ナビゲーション用の音声エンジンを読み込めませんでした。すべての読み上げに ElevenLabs を使用します。"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} を読み込めませんでした。ナビゲーションには {fallback} を使用します。"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs は利用できません。すべて読みには {synth} を使用します。"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "なし (ElevenLabs ですべてを読み上げ)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "ナビゲーション用の音声エンジン(&S):"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "ナビゲーション用の別の音声エンジンと、すべての読み上げに使う ElevenLabs を切り替えます"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "ナビゲーション用の音声エンジンが選ばれていません。ElevenLabs TTS の設定で選んでください"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "すべての読み上げに ElevenLabs を使用します。"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "ナビゲーションに {synth} を使用します。"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

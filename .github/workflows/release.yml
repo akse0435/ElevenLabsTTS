@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - addon/manifest.ini
+      - buildVars.py
       - .github/workflows/release.yml
   workflow_dispatch:
 
@@ -19,17 +19,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Read name and version from manifest
+      - name: Install build tools
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gettext
+          pip install scons==4.10.1 Markdown==3.10
+
+      - name: Read name and version from buildVars.py
         id: meta
         run: |
-          get() {
-            grep -E "^[[:space:]]*$1[[:space:]]*=" addon/manifest.ini | head -n1 \
-              | cut -d= -f2- | tr -d '\r"' | xargs
-          }
-          NAME="$(get name)"
-          VERSION="$(get version)"
+          read -r NAME VERSION < <(python -B -c "import buildVars as b; i = b.addon_info; print(i['addon_name'], i['addon_version'])")
           if [ -z "$NAME" ] || [ -z "$VERSION" ]; then
-            echo "::error::Could not read name/version from addon/manifest.ini"
+            echo "::error::Could not read name/version from buildVars.py"
             exit 1
           fi
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
@@ -52,9 +53,7 @@ jobs:
         id: build
         run: |
           FILE="${{ steps.meta.outputs.name }}-${{ steps.meta.outputs.version }}.nvda-addon"
-          cd addon
-          zip -r -X "../$FILE" . -x '*__pycache__*' -x '*.pyc'
-          cd ..
+          scons
           unzip -l "$FILE"
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
 

@@ -66,6 +66,15 @@ msgstr "تشغيل"
 msgid "Off"
 msgstr "إيقاف"
 
+msgid "Creative"
+msgstr "إبداعي"
+
+msgid "Natural"
+msgstr "طبيعي"
+
+msgid "Robust"
+msgstr "ثابت"
+
 msgid "Split long text"
 msgstr "تقسيم النص الطويل"
 
@@ -138,3 +147,116 @@ msgstr "الإبلاغ عن استخدام أرصدة ElevenLabs للفترة ا
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "التحقق مجددا من أصوات ونماذج ElevenLabs التي يمكن لهذا الحساب استخدامها"
+
+msgid "ElevenLabs API Key"
+msgstr "مفتاح API الخاص بـ ElevenLabs"
+
+msgid "&API key:"
+msgstr "مفتاح &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "الصق مفتاح API الخاص بـ ElevenLabs أولاً."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "جارٍ التحقق من مفتاح API لدى ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "تعذر التحقق من مفتاح API. راجع سجل NVDA لمزيد من التفاصيل."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "تعذر حفظ مفتاح API. راجع سجل NVDA لمزيد من التفاصيل."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "مسح مفتاح &API"
+
+msgid "Set &API key..."
+msgstr "تعيين مفتاح &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "هل تريد مسح مفتاح API الخاص بـ ElevenLabs؟ لن يتمكن ElevenLabs من النطق حتى يتم تعيين مفتاح جديد."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "تعذر مسح مفتاح API. راجع سجل NVDA لمزيد من التفاصيل."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "رفض ElevenLabs مفتاح API هذا. تأكد من نسخه بالكامل ومن أنه مسموح له بقراءة الأصوات."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "تعذر على ElevenLabs التحقق من المفتاح (HTTP {code}). حاول مرة أخرى لاحقًا."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "تعذر الوصول إلى ElevenLabs للتحقق من المفتاح. تحقق من اتصالك بالإنترنت وحاول مرة أخرى."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "برنامج تشغيل مُركِّب كلام يبث الصوت من واجهة برمجة تحويل النص إلى كلام من ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"يُعيَّن مفتاح API الآن في فئة جديدة باسم ElevenLabs TTS في إعدادات NVDA. يُتحقق من المفتاح مع ElevenLabs قبل حفظه، ويُخزَّن مشفرًا لمستخدم Windows الخاص بك. لا يظهر ElevenLabs في قائمة مُركِّبات الكلام إلا بعد تعيين مفتاح.\n"
+"إذا كنت تُرقّي: لم يعد يُقرأ الملف elevenlabs_settings.txt، لذا عيّن مفتاحك مرة أخرى في الفئة الجديدة. بعد ذلك يمكنك حذف الملف القديم الذي يحتوي على مفتاحك كنص عادي.\n"
+"خيار جديد في إعدادات ElevenLabs TTS: مُركِّب كلام للتنقل. ينطق كل شيء ما عدا القراءة المتواصلة، فلا تُنفق أرصدة ElevenLabs إلا على ما تختار قراءته. يمكن تعيين أمر لتشغيله وإيقافه في إيماءات الإدخال.\n"
+"أثناء تحميل مُركِّب كلام للتنقل، تحتوي حلقة الإعدادات على إعدادات المُركِّبين كليهما، مسماة باسم مُركِّبها.\n"
+"لم تعد القراءة المتواصلة تتوقف بين الجمل أثناء جلب الجملة التالية من ElevenLabs.\n"
+"أثناء القراءة المتواصلة، يتبع المؤشر الكلام الآن عن قرب أكثر.\n"
+"تُخبر القراءة المتواصلة الآن ElevenLabs بالنص الذي يأتي قبل كل طلب وبعده، فيتدفق التنغيم من جملة إلى التالية.\n"
+"قد يبدأ الكلام أسرع، لأن الاتصال بـ ElevenLabs يبقى مفتوحًا بين العبارات.\n"
+"تعرض إعدادات الصوت الآن ما يدعمه النموذج المختار فقط. في Eleven v3، الثبات اختيار بين إبداعي أو طبيعي أو ثابت."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "تعذّر تحميل مُركِّب كلام للتنقل؛ يُستخدم ElevenLabs لكل الكلام."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "تعذّر تحميل {synth}؛ يُستخدم {fallback} للتنقل."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs غير متاح؛ ستستخدم القراءة المتواصلة {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "لا شيء (ElevenLabs ينطق كل شيء)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&مُركِّب الكلام للتنقل:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "التبديل بين مُركِّب كلام منفصل للتنقل وElevenLabs لكل الكلام"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "لم يُختر مُركِّب كلام للتنقل؛ اختر واحدًا في إعدادات ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "استخدام ElevenLabs لكل الكلام."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "استخدام {synth} للتنقل."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

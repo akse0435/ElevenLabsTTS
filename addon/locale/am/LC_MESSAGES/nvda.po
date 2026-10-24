@@ -66,6 +66,15 @@ msgstr "አብራ"
 msgid "Off"
 msgstr "አጥፋ"
 
+msgid "Creative"
+msgstr "ፈጠራዊ"
+
+msgid "Natural"
+msgstr "ተፈጥሯዊ"
+
+msgid "Robust"
+msgstr "ጠንካራ"
+
 msgid "Split long text"
 msgstr "ረጅም ጽሑፍ ከፋፍል"
 
@@ -135,3 +144,116 @@ msgstr "ለአሁኑ ጊዜ የElevenLabs ክሬዲት አጠቃቀምን ሪፖ
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "ይህ መለያ የትኞቹን የElevenLabs ድምጾች እና ሞዴሎች መጠቀም እንደሚችል እንደገና ፈትሽ"
+
+msgid "ElevenLabs API Key"
+msgstr "የElevenLabs API ቁልፍ"
+
+msgid "&API key:"
+msgstr "&API ቁልፍ:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "መጀመሪያ የElevenLabs API ቁልፍዎን ይለጥፉ።"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "የAPI ቁልፉ ከElevenLabs ጋር እየተረጋገጠ ነው..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "የAPI ቁልፉን ማረጋገጥ አልተቻለም። ለዝርዝሮች የNVDA ምዝግብ ማስታወሻን ይመልከቱ።"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "የAPI ቁልፉን ማስቀመጥ አልተቻለም። ለዝርዝሮች የNVDA ምዝግብ ማስታወሻን ይመልከቱ።"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "የ&API ቁልፍን አጽዳ"
+
+msgid "Set &API key..."
+msgstr "የ&API ቁልፍ አዘጋጅ..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "የElevenLabs API ቁልፍ ይጽዳ? አዲስ ቁልፍ እስኪዘጋጅ ድረስ ElevenLabs መናገር አይችልም።"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "የAPI ቁልፉን ማጽዳት አልተቻለም። ለዝርዝሮች የNVDA ምዝግብ ማስታወሻን ይመልከቱ።"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ይህን የAPI ቁልፍ አልተቀበለም። ሙሉ በሙሉ መቅዳቱን እና ድምፆችን ለማንበብ መፈቀዱን ያረጋግጡ።"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ቁልፉን ማረጋገጥ አልቻለም (HTTP {code})። ቆይተው እንደገና ይሞክሩ።"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ቁልፉን ለማረጋገጥ ElevenLabs ጋር መድረስ አልተቻለም። የበይነመረብ ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ከElevenLabs ጽሑፍ-ወደ-ንግግር API ድምፅን የሚያሰራጭ የንግግር አቀናባሪ ሾፌር።"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"የAPI ቁልፍ አሁን በNVDA ቅንብሮች ውስጥ ባለ አዲስ ElevenLabs TTS ምድብ ይዘጋጃል። ቁልፉ ከመቀመጡ በፊት ከElevenLabs ጋር ይረጋገጣል፣ እና ለWindows ተጠቃሚዎ ተመስጥሮ ይቀመጣል። ElevenLabs በሲንተሳይዘር ዝርዝር ውስጥ የሚታየው ቁልፍ ከተዘጋጀ በኋላ ብቻ ነው።\n"
+"እያሻሻሉ ከሆነ፦ elevenlabs_settings.txt ከእንግዲህ አይነበብም፣ ስለዚህ ቁልፍዎን በአዲሱ ምድብ ውስጥ እንደገና ያዘጋጁ። ከዚያ ቁልፍዎን በግልጽ ጽሑፍ የያዘውን የድሮውን ፋይል መሰረዝ ይችላሉ።\n"
+"በElevenLabs TTS ቅንብሮች ውስጥ አዲስ አማራጭ፦ ለአሰሳ የሚሆን ሲንተሳይዘር። ከሁሉንም አንብብ በስተቀር ሁሉንም ይናገራል፣ ስለዚህ የElevenLabs ክሬዲቶች የሚወጡት ለማንበብ በመረጡት ላይ ብቻ ነው። እሱን የሚያበራና የሚያጠፋ ትዕዛዝ በግቤት ምልክቶች ውስጥ ሊመደብ ይችላል።\n"
+"ለአሰሳ የሚሆን ሲንተሳይዘር ሲጫን፣ የቅንብሮች ቀለበት የሁለቱንም ሲንተሳይዘሮች ቅንብሮች በሲንተሳይዘራቸው ስም ይይዛል።\n"
+"ሁሉንም አንብብ ቀጣዩ ዓረፍተ ነገር ከElevenLabs ሲመጣ በዓረፍተ ነገሮች መካከል ከእንግዲህ አይቆምም።\n"
+"በሁሉንም አንብብ ወቅት ጠቋሚው አሁን ንግግሩን በቅርበት ይከተላል።\n"
+"ሁሉንም አንብብ አሁን ለElevenLabs ከእያንዳንዱ ጥያቄ በፊትና በኋላ የሚመጣውን ጽሑፍ ይነግረዋል፣ ስለዚህ ቅላጼው ከአንድ ዓረፍተ ነገር ወደ ቀጣዩ ይፈሳል።\n"
+"ከElevenLabs ጋር ያለው ግንኙነት በንግግሮች መካከል ክፍት ስለሚቆይ ንግግር ቶሎ ሊጀምር ይችላል።\n"
+"የድምፅ ቅንብሮች አሁን የተመረጠው ሞዴል የሚደግፈውን ብቻ ያሳያሉ። ለEleven v3 መረጋጋት የፈጠራዊ፣ ተፈጥሯዊ ወይም ጠንካራ ምርጫ ነው።"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "ለአሰሳ ሲንተሳይዘር መጫን አልተቻለም፤ ለሁሉም ንግግር ElevenLabs ጥቅም ላይ ይውላል።"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth}ን መጫን አልተቻለም፤ ለአሰሳ {fallback} ጥቅም ላይ ይውላል።"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs አይገኝም፤ ሁሉንም አንብብ {synth}ን ይጠቀማል።"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "ምንም (ElevenLabs ሁሉንም ይናገራል)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "ለአሰሳ &ሲንተሳይዘር:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "ለአሰሳ በተለየ ሲንተሳይዘር እና ለሁሉም ንግግር በElevenLabs መካከል ይቀያይራል"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "የአሰሳ ሲንተሳይዘር አልተመረጠም፤ በElevenLabs TTS ቅንብሮች ውስጥ አንዱን ይምረጡ"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ለሁሉም ንግግር ElevenLabs ጥቅም ላይ እየዋለ ነው።"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "ለአሰሳ {synth} ጥቅም ላይ እየዋለ ነው።"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

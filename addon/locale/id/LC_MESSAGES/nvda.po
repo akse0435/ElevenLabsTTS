@@ -66,6 +66,15 @@ msgstr "Aktif"
 msgid "Off"
 msgstr "Nonaktif"
 
+msgid "Creative"
+msgstr "Kreatif"
+
+msgid "Natural"
+msgstr "Alami"
+
+msgid "Robust"
+msgstr "Kokoh"
+
 msgid "Split long text"
 msgstr "Pisahkan teks panjang"
 
@@ -138,3 +147,116 @@ msgstr "Laporkan penggunaan kredit ElevenLabs untuk periode saat ini"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Periksa ulang suara dan model ElevenLabs mana yang dapat digunakan akun ini"
+
+msgid "ElevenLabs API Key"
+msgstr "Kunci API ElevenLabs"
+
+msgid "&API key:"
+msgstr "Kunci &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Tempelkan kunci API ElevenLabs Anda terlebih dahulu."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Memeriksa kunci API dengan ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Kunci API tidak dapat diperiksa. Lihat log NVDA untuk detailnya."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Kunci API tidak dapat disimpan. Lihat log NVDA untuk detailnya."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Hapus kunci &API"
+
+msgid "Set &API key..."
+msgstr "Atur kunci &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Hapus kunci API ElevenLabs? ElevenLabs tidak dapat berbicara sampai kunci baru diatur."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Kunci API tidak dapat dihapus. Lihat log NVDA untuk detailnya."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs menolak kunci API ini. Pastikan kunci disalin sepenuhnya dan diizinkan membaca suara."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs tidak dapat memeriksa kunci (HTTP {code}). Coba lagi nanti."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Tidak dapat menghubungi ElevenLabs untuk memeriksa kunci. Periksa koneksi internet Anda dan coba lagi."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Driver penyintesis suara yang mengalirkan audio dari API teks-ke-suara ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
+"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
+"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
+"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
+"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
+"During say all, the caret now follows the speech more closely.\n"
+"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
+"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
+"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
+msgstr ""
+"Kunci API sekarang diatur di kategori ElevenLabs TTS baru dalam pengaturan NVDA. Kunci diperiksa dengan ElevenLabs sebelum disimpan, dan disimpan dalam bentuk terenkripsi untuk pengguna Windows Anda. ElevenLabs hanya muncul di daftar synthesizer setelah kunci diatur.\n"
+"Jika Anda meningkatkan versi: elevenlabs_settings.txt tidak lagi dibaca, jadi atur kunci Anda lagi di kategori baru. Setelah itu Anda dapat menghapus file lama, yang berisi kunci Anda dalam teks biasa.\n"
+"Opsi baru di pengaturan ElevenLabs TTS: synthesizer untuk navigasi. Synthesizer ini mengucapkan semuanya kecuali baca semua, sehingga kredit ElevenLabs hanya terpakai untuk apa yang Anda pilih untuk dibaca. Perintah untuk menyalakan dan mematikannya dapat ditetapkan di Gestur Input.\n"
+"Selama synthesizer untuk navigasi dimuat, cincin pengaturan berisi pengaturan kedua synthesizer, dinamai sesuai synthesizer masing-masing.\n"
+"Baca semua tidak lagi berhenti di antara kalimat saat kalimat berikutnya diambil dari ElevenLabs.\n"
+"Selama baca semua, kursor kini mengikuti ucapan dengan lebih dekat.\n"
+"Baca semua kini memberi tahu ElevenLabs teks apa yang muncul sebelum dan sesudah setiap permintaan, sehingga intonasi mengalir dari satu kalimat ke kalimat berikutnya.\n"
+"Ucapan mungkin dimulai lebih cepat, karena koneksi ke ElevenLabs tetap terbuka di antara ucapan.\n"
+"Pengaturan suara kini hanya menampilkan apa yang didukung model yang dipilih. Untuk Eleven v3, stabilitas berupa pilihan Kreatif, Alami, atau Kokoh."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Tidak dapat memuat synthesizer untuk navigasi; ElevenLabs digunakan untuk semua ucapan."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Tidak dapat memuat {synth}; {fallback} digunakan untuk navigasi."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs tidak tersedia; baca semua akan menggunakan {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Tidak ada (ElevenLabs mengucapkan semuanya)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Synthesizer untuk navigasi:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Beralih antara synthesizer terpisah untuk navigasi dan ElevenLabs untuk semua ucapan"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Belum ada synthesizer navigasi yang dipilih; pilih satu di pengaturan ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "Menggunakan ElevenLabs untuk semua ucapan."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Menggunakan {synth} untuk navigasi."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

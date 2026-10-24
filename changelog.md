@@ -6,7 +6,7 @@ While a synthesizer for navigation is loaded, the settings ring holds both synth
 Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.
 During say all, the caret now follows the speech more closely.
 Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.
-Speech starts sooner, as the connection to ElevenLabs is kept open between utterances.
+Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.
 Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust.
 
 V1.3 (10/04/2026):

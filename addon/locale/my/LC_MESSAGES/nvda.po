@@ -243,3 +243,8 @@ msgstr "စကားပြောအားလုံးအတွက် ElevenLabs 
 #. e.g. "Using eSpeak NG for navigation."
 msgid "Using {synth} for navigation."
 msgstr "လမ်းညွှန်ရန် {synth} ကို အသုံးပြုနေသည်။"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

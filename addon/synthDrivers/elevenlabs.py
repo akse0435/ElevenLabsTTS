@@ -1811,7 +1811,7 @@ class SynthDriver(BaseSynthDriver):
 		if self._worker is not None:
 			self._worker.stop()
 		self._closePlayer()
-		self._navigation.unload()
+		self._navigation.unload(restore=False)
 		# Saves the current settings and unregisters the config save action.
 		super().terminate()
 

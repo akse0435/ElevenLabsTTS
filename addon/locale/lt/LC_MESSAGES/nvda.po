@@ -139,3 +139,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Dar kartą patikrinti, kuriuos ElevenLabs balsus ir modelius gali naudoti ši "
 "paskyra"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API raktas"
+
+msgid "&API key:"
+msgstr "&API raktas:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Pirmiausia įklijuokite savo ElevenLabs API raktą."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Tikrinamas API raktas su ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Nepavyko patikrinti API rakto. Išsamesnės informacijos žr. NVDA žurnale."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Nepavyko išsaugoti API rakto. Išsamesnės informacijos žr. NVDA žurnale."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Išvalyti &API raktą"
+
+msgid "Set &API key..."
+msgstr "Nustatyti &API raktą..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Išvalyti ElevenLabs API raktą? ElevenLabs negalės kalbėti, kol nebus nustatytas naujas raktas."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Nepavyko išvalyti API rakto. Išsamesnės informacijos žr. NVDA žurnale."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs atmetė šį API raktą. Patikrinkite, ar jis nukopijuotas visas ir ar jam leidžiama skaityti balsus."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs nepavyko patikrinti rakto (HTTP {code}). Bandykite vėliau."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Nepavyko susisiekti su ElevenLabs rakto patikrinimui. Patikrinkite interneto ryšį ir bandykite dar kartą."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Kalbos sintezatoriaus tvarkyklė, transliuojanti garsą iš ElevenLabs teksto vertimo kalba API."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Visi priedo nustatymai ir pranešimai dabar išversti.\n"
+"Jei ElevenLabs API seanso metu staiga tampa nepasiekiama, NVDA dabar persijungia į eSpeak, užuot nutilusi."

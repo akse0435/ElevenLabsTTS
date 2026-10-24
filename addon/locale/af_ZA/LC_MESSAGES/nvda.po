@@ -139,3 +139,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Kontroleer weer watter stemme en modelle van ElevenLabs hierdie rekening kan"
 " gebruik"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API-sleutel"
+
+msgid "&API key:"
+msgstr "&API-sleutel:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Plak eers jou ElevenLabs API-sleutel."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Kontroleer die API-sleutel by ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Die API-sleutel kon nie gekontroleer word nie. Sien die NVDA-log vir besonderhede."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Die API-sleutel kon nie gestoor word nie. Sien die NVDA-log vir besonderhede."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Vee &API-sleutel uit"
+
+msgid "Set &API key..."
+msgstr "Stel &API-sleutel..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Vee die ElevenLabs API-sleutel uit? ElevenLabs kan nie praat totdat 'n nuwe sleutel gestel is nie."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Die API-sleutel kon nie uitgevee word nie. Sien die NVDA-log vir besonderhede."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs het hierdie API-sleutel geweier. Kontroleer dat dit volledig gekopieer is en dat dit stemme mag lees."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs kon nie die sleutel kontroleer nie (HTTP {code}). Probeer later weer."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Kon nie ElevenLabs bereik om die sleutel te kontroleer nie. Kontroleer jou internetverbinding en probeer weer."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Spraaksintetiseerderdrywer wat klank vanaf die ElevenLabs teks-na-spraak-API stroom."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Alle instellings en boodskappe in die byvoeging is nou gelokaliseer.\n"
+"As die ElevenLabs-API skielik tydens 'n sessie onbeskikbaar raak, skakel NVDA nou oor na eSpeak in plaas daarvan om stil te raak."

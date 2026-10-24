@@ -138,3 +138,57 @@ msgstr "Laporkan penggunaan kredit ElevenLabs untuk periode saat ini"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Periksa ulang suara dan model ElevenLabs mana yang dapat digunakan akun ini"
+
+msgid "ElevenLabs API Key"
+msgstr "Kunci API ElevenLabs"
+
+msgid "&API key:"
+msgstr "Kunci &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Tempelkan kunci API ElevenLabs Anda terlebih dahulu."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Memeriksa kunci API dengan ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Kunci API tidak dapat diperiksa. Lihat log NVDA untuk detailnya."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Kunci API tidak dapat disimpan. Lihat log NVDA untuk detailnya."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Hapus kunci &API"
+
+msgid "Set &API key..."
+msgstr "Atur kunci &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Hapus kunci API ElevenLabs? ElevenLabs tidak dapat berbicara sampai kunci baru diatur."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Kunci API tidak dapat dihapus. Lihat log NVDA untuk detailnya."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs menolak kunci API ini. Pastikan kunci disalin sepenuhnya dan diizinkan membaca suara."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs tidak dapat memeriksa kunci (HTTP {code}). Coba lagi nanti."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Tidak dapat menghubungi ElevenLabs untuk memeriksa kunci. Periksa koneksi internet Anda dan coba lagi."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Driver penyintesis suara yang mengalirkan audio dari API teks-ke-suara ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Semua pengaturan dan pesan dalam add-on kini telah dilokalkan.\n"
+"Jika API ElevenLabs tiba-tiba tidak tersedia selama sesi, NVDA kini beralih ke eSpeak alih-alih menjadi diam."

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # ElevenLabs speech synthesizer driver for NVDA.
 #
-# Setup: installing the add-on creates elevenlabs_settings.txt in NVDA's
-# configuration folder (usually %APPDATA%\nvda). Put your ElevenLabs API key
-# after the equals sign on its api_key line, restart NVDA and select
-# "ElevenLabs" as the synthesizer. The same file holds the driver's other
-# settings, and a key in the older elevenlabs_api_key.txt is moved into it.
+# Setup: set your ElevenLabs API key in NVDA's settings, ElevenLabs TTS
+# category, then select "ElevenLabs" as the synthesizer. The key and what the
+# driver learns about the account are kept in elevenlabs_settings.json; see
+# _elevenlabsSettings.
 #
 # All speech is sent to ElevenLabs and counts towards your API usage. Speeds
 # the API can't deliver itself are made locally with sonic, which NVDA ships
@@ -14,7 +13,6 @@
 import array
 import hashlib
 import json
-import os
 import queue
 import re
 import struct
@@ -46,6 +44,7 @@ from synthDriverHandler import (
 	synthDoneSpeaking,
 	synthIndexReached,
 )
+from synthDrivers import _elevenlabsSettings as _settings
 
 try:
 	import addonHandler
@@ -213,22 +212,8 @@ _SETTING_API_NAMES = {
 	"normalization": "apply_text_normalization",
 }
 
-SETTINGS_FILENAME = "elevenlabs_settings.txt"
-# Files used before the settings file existed; read once and then migrated.
-LEGACY_KEY_FILENAME = "elevenlabs_api_key.txt"
-LEGACY_FORMAT_FILENAME = "elevenlabs_output_format.txt"
-SETTINGS_HEADER = (
-	"# Settings for the ElevenLabs NVDA add-on, one name = value per line.",
-	"# api_key: your ElevenLabs API key. Paste it after the equals sign below.",
-	"# output_format: audio format the driver negotiated with your plan.",
-	"# unusable_voices, voice_check: voices this account cannot generate with,",
-	"# and a fingerprint of the account state they were worked out for.",
-	"# unusable_voices_<model>, voice_check_<model>: the same for other models.",
-	"# unusable_models, model_check: the same for models.",
-	"# refused_<model>: request fields a model has refused.",
-	"# check_voices = no turns the voice check off.",
-	"# Remove a line to work that setting out again.",
-)
+# Where to set the API key, for log messages.
+KEY_LOCATION = "NVDA's settings, ElevenLabs TTS category"
 
 # Fallback voice (Rachel), used until the real voice list arrives.
 FALLBACK_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
@@ -362,134 +347,6 @@ def _isOutputFormatRejection(detail):
 	return "output_format" in detail or "output format" in detail
 
 
-def _configFilePath(fileName):
-	return os.path.join(globalVars.appArgs.configPath, fileName)
-
-
-def _readLines(fileName):
-	try:
-		with open(_configFilePath(fileName), "r", encoding="utf-8-sig") as f:
-			return f.read().splitlines()
-	except OSError:
-		return None
-
-
-def _readSettings():
-	"""Reads the settings file into a dict of lower case names to values."""
-	settings = {}
-	for line in _readLines(SETTINGS_FILENAME) or ():
-		line = line.strip()
-		if not line or line.startswith("#"):
-			continue
-		if "=" in line:
-			name, _sep, value = line.partition("=")
-			settings[name.strip().lower()] = value.strip()
-		elif "api_key" not in settings:
-			# A line with no name is taken as the key, so the old key file still
-			# works if it is simply renamed.
-			settings["api_key"] = line
-	return settings
-
-
-# Checks run on several threads, so writes take turns.
-_settingsLock = threading.Lock()
-
-
-def _writeSetting(name, value):
-	"""Rewrites one line of the settings file, leaving the rest untouched."""
-	with _settingsLock:
-		return _writeSettingNow(name, value)
-
-
-def _writeSettingNow(name, value):
-	lines = _readLines(SETTINGS_FILENAME)
-	if lines is None:
-		lines = list(SETTINGS_HEADER)
-	newLine = f"{name} = {value}"
-	for index, line in enumerate(lines):
-		if "=" in line and not line.strip().startswith("#") \
-				and line.partition("=")[0].strip().lower() == name:
-			lines[index] = newLine
-			break
-	else:
-		lines.append(newLine)
-	try:
-		with open(_configFilePath(SETTINGS_FILENAME), "w", encoding="utf-8") as f:
-			f.write("\n".join(lines) + "\n")
-		return True
-	except OSError:
-		log.debugWarning(f"Could not save {name} to {SETTINGS_FILENAME}", exc_info=True)
-		return False
-
-
-def _ensureSettingsFile():
-	"""Makes sure the settings file exists and has a line ready for the key.
-
-	Runs on every start, so it also covers a copied add-on or a deleted file.
-	An existing file is never overwritten, only added to."""
-	path = _configFilePath(SETTINGS_FILENAME)
-	lines = _readLines(SETTINGS_FILENAME)
-	if lines is None:
-		try:
-			with open(path, "w", encoding="utf-8") as f:
-				# The trailing space is deliberate, so the key can be typed or
-				# pasted straight after it without adding one first.
-				f.write("\n".join(SETTINGS_HEADER) + "\napi_key = \n")
-			log.info(f"ElevenLabs: created {path}; add your API key to the api_key line.")
-		except OSError:
-			log.error(f"ElevenLabs: could not create {path}", exc_info=True)
-		return path
-	if "api_key" not in _readSettings():
-		# The file is there but has nothing to paste a key into, so give it one.
-		_writeSetting("api_key", "")
-	return path
-
-
-def _readApiKey():
-	key = _readSettings().get("api_key")
-	if key:
-		return key
-	# Falls back to the old file if the settings file has no key yet, or if it
-	# could not be written when the key was migrated.
-	for line in _readLines(LEGACY_KEY_FILENAME) or ():
-		line = line.strip()
-		if line:
-			return line
-	return None
-
-
-def invalidateChecks():
-	"""Forgets the recorded voice and model checks, so the next load redoes them.
-
-	For when the synthesizer is not running and there is nothing to check against."""
-	names = {"voice_check", "model_check"}
-	names.update(n for n in _readSettings() if n.startswith("voice_check_"))
-	return all([_writeSetting(name, "") for name in sorted(names)])
-
-
-def _migrateLegacyFiles():
-	"""Moves the old separate key and format files into the settings file."""
-	settings = _readSettings()
-	migrated = []
-	if "api_key" not in settings:
-		for line in _readLines(LEGACY_KEY_FILENAME) or ():
-			line = line.strip()
-			if line and _writeSetting("api_key", line):
-				migrated.append(LEGACY_KEY_FILENAME)
-			break
-	if "output_format" not in settings:
-		for line in _readLines(LEGACY_FORMAT_FILENAME) or ():
-			line = line.strip()
-			if line and _writeSetting("output_format", line):
-				migrated.append(LEGACY_FORMAT_FILENAME)
-			break
-	if migrated:
-		log.info(
-			f"ElevenLabs: moved {', '.join(migrated)} into {SETTINGS_FILENAME}; "
-			"the old file(s) are no longer used and can be deleted."
-		)
-
-
 class ElevenLabsUnavailable(Exception):
 	"""The synthesizer cannot be used, so NVDA should fall back to another one."""
 
@@ -592,13 +449,6 @@ def _languageName(langId, englishName):
 		return languageHandler.getLanguageDescription(langId) or englishName
 	except Exception:
 		return englishName
-
-
-def _voiceCheckKeys(modelId):
-	"""Settings lines with a model's voice check; the default model keeps the old names."""
-	if modelId == DEFAULT_MODEL:
-		return "unusable_voices", "voice_check"
-	return f"unusable_voices_{modelId}", f"voice_check_{modelId}"
 
 
 def _requestTimeout(modelId):
@@ -726,14 +576,50 @@ def _fetchJson(url, key, timeout):
 			pass
 		if e.code in (401, 403):
 			raise ElevenLabsUnavailable(
-				f"ElevenLabs rejected the API key (HTTP {e.code}). Check the api_key line "
-				f"in {SETTINGS_FILENAME}. {detail}"
+				f"ElevenLabs rejected the API key (HTTP {e.code}). Set it again in "
+				f"{KEY_LOCATION}. {detail}"
 			)
 		raise ElevenLabsUnavailable(f"ElevenLabs returned HTTP {e.code} for {url}. {detail}")
 	except (URLError, OSError) as e:
 		raise ElevenLabsUnavailable(f"Could not reach ElevenLabs: {e}")
 	except ValueError as e:
 		raise ElevenLabsUnavailable(f"ElevenLabs sent a response that could not be read: {e}")
+
+
+def checkApiKey(key):
+	"""Asks ElevenLabs whether key works; None if it does, else a message for the user.
+
+	The voice list is what the driver can't start without, so that is what's asked for.
+	Blocks for up to INIT_TIMEOUT, so it must not run on the main thread."""
+	if not key.isascii() or not key.isprintable() or " " in key:
+		# Can't be sent in a header, and is no API key anyway.
+		# Translators: shown when ElevenLabs refuses the API key that was entered.
+		return _(
+			"ElevenLabs rejected this API key. Check that it was copied in full and "
+			"that it is allowed to read voices."
+		)
+	req = urlrequest.Request(f"{API_BASE}/v1/voices", headers={
+		"xi-api-key": key,
+		"Accept": "application/json",
+	})
+	try:
+		with urlrequest.urlopen(req, timeout=INIT_TIMEOUT) as resp:
+			resp.read()
+		return None
+	except HTTPError as e:
+		log.debug(f"ElevenLabs: the API key was refused (HTTP {e.code}).")
+		if e.code in (401, 403):
+			# Translators: shown when ElevenLabs refuses the API key that was entered.
+			return _(
+				"ElevenLabs rejected this API key. Check that it was copied in full and "
+				"that it is allowed to read voices."
+			)
+		# Translators: shown when the API key can't be checked; {code} is an HTTP status code.
+		return _("ElevenLabs could not check the key (HTTP {code}). Try again later.").format(code=e.code)
+	except (URLError, OSError) as e:
+		log.debug(f"ElevenLabs: could not reach ElevenLabs to check the API key: {e}")
+		# Translators: shown when ElevenLabs can't be reached to check the API key.
+		return _("Could not reach ElevenLabs to check the key. Check your internet connection and try again.")
 
 
 def _makePlayer(sampleRate):
@@ -1011,8 +897,7 @@ class _SpeechWorker(threading.Thread):
 		if not key:
 			driver.reportError(
 				"nokey",
-				f"The ElevenLabs API key is no longer readable. Check the api_key line in "
-				f"{SETTINGS_FILENAME} in NVDA's configuration folder.",
+				f"No ElevenLabs API key is set. Set one in {KEY_LOCATION}.",
 			)
 			return False
 		modelId = driver.model
@@ -1099,9 +984,6 @@ class _SpeechWorker(threading.Thread):
 				if modelId == DEFAULT_MODEL and e.code == 403 and _isOutputFormatRejection(detail) \
 						and driver._useNextOutputFormat():
 					continue
-				if e.code == 401:
-					# The key may have been edited; read it again next time.
-					driver._forgetApiKey()
 				if e.code in RETRY_STATUS_CODES and not fedAudio and retries < MAX_RETRIES:
 					retries += 1
 					if self._waitBeforeRetry(gen):
@@ -1297,9 +1179,9 @@ class SynthDriver(BaseSynthDriver):
 
 	@classmethod
 	def check(cls):
-		# Always listed, so a user who hasn't set up a key yet gets a clear
-		# explanation on selecting it rather than a missing entry.
-		return True
+		# Without a key it can't speak, so it isn't offered until one is set in
+		# NVDA's settings. The key is cached, so this is cheap to ask often.
+		return cls._getApiKey() is not None
 
 	def __init__(self):
 		super().__init__()
@@ -1333,7 +1215,6 @@ class SynthDriver(BaseSynthDriver):
 		self._speedWarned = set()
 		self._tier = ""
 		self._formatIndex = 0
-		self._apiKey = None
 		self._loggedErrors = {}
 		# What the settings file already says, so it is only rewritten on a change.
 		self._recordedFormat = None
@@ -1347,7 +1228,6 @@ class SynthDriver(BaseSynthDriver):
 		self._worker = None
 		self._probeThread = None
 		self._probeStop = threading.Event()
-		_migrateLegacyFiles()
 		self._loadOutputFormat()
 		self._migrateLegacyVariantSetting()
 		self._loadSavedModel()
@@ -1483,14 +1363,10 @@ class SynthDriver(BaseSynthDriver):
 
 	# --- API key ---
 
-	def _getApiKey(self):
-		"""Returns the cached key, reading the settings file only when needed."""
-		if self._apiKey is None:
-			self._apiKey = _readApiKey()
-		return self._apiKey
-
-	def _forgetApiKey(self):
-		self._apiKey = None
+	@staticmethod
+	def _getApiKey():
+		# Read afresh each time, as the settings panel can set or clear it at any moment.
+		return _settings.getApiKey()
 
 	# --- Error reporting ---
 
@@ -1644,13 +1520,13 @@ class SynthDriver(BaseSynthDriver):
 		if self._recordedFormat == self.outputFormat:
 			# Nothing new, so the settings file isn't touched for every utterance.
 			return
-		if _readSettings().get("output_format") != self.outputFormat:
-			_writeSetting("output_format", self.outputFormat)
+		with _settings.editing() as settings:
+			settings["outputFormat"] = self.outputFormat
 		self._recordedFormat = self.outputFormat
 
 	def _loadOutputFormat(self):
 		"""Restores the audio format worked out in an earlier session."""
-		savedFormat = _readSettings().get("output_format")
+		savedFormat = _settings.get("outputFormat")
 		for index, (formatName, sampleRate) in enumerate(OUTPUT_FORMATS):
 			if formatName == savedFormat:
 				self._formatIndex = index
@@ -1658,7 +1534,9 @@ class SynthDriver(BaseSynthDriver):
 				break
 		else:
 			if savedFormat:
-				log.warning(f"ElevenLabs: ignoring unknown output_format {savedFormat!r} in {SETTINGS_FILENAME}")
+				log.warning(
+					f"ElevenLabs: ignoring unknown outputFormat {savedFormat!r} in {_settings.SETTINGS_FILENAME}"
+				)
 
 	# --- Voices ---
 	# Only voices this account can generate with are listed. Voices stay on an
@@ -1669,10 +1547,9 @@ class SynthDriver(BaseSynthDriver):
 		"""Checks the account and builds the voice list; raises if unusable."""
 		key = self._getApiKey()
 		if not key:
-			path = _ensureSettingsFile()
 			raise ElevenLabsUnavailable(
-				f"No ElevenLabs API key yet. Open {path} and put your key after the equals "
-				"sign on the api_key line, then select the synthesizer again."
+				f"No ElevenLabs API key is set. Set one in {KEY_LOCATION}, then select "
+				"the synthesizer again."
 			)
 		data = _fetchJson(f"{API_BASE}/v1/voices", key, INIT_TIMEOUT)
 		voices = OrderedDict()
@@ -1717,29 +1594,28 @@ class SynthDriver(BaseSynthDriver):
 
 	def _loadUnusableVoices(self):
 		"""Restores the chosen model's checked result, if it still applies."""
-		settings = _readSettings()
-		unusableKey, checkKey = _voiceCheckKeys(self._modelId)
-		if settings.get(checkKey) != self._accountFingerprint():
+		check = _settings.get("voiceChecks", {}).get(self._modelId) or {}
+		if check.get("fingerprint") != self._accountFingerprint():
 			# The plan or the voice list changed, so the old result means nothing.
 			self._unusableVoices = set()
 			self._voicesChecked = False
 			return
-		saved = settings.get(unusableKey, "")
-		self._unusableVoices = {v.strip() for v in saved.split(",") if v.strip()}
+		self._unusableVoices = {v for v in check.get("unusable", ()) if isinstance(v, str)}
 		# A result is only recorded once every voice has an answer, so a matching
 		# fingerprint means the whole list is already known good.
 		self._voicesChecked = True
 
 	def _saveUnusableVoices(self):
-		unusableKey, checkKey = _voiceCheckKeys(self._modelId)
-		_writeSetting(unusableKey, ",".join(sorted(self._unusableVoices)))
-		# The fingerprint says every voice is known, so only then is it written.
-		if self._voicesChecked or self._voiceCheckDisabled():
-			_writeSetting(checkKey, self._accountFingerprint())
+		with _settings.editing() as settings:
+			check = settings.setdefault("voiceChecks", {}).setdefault(self._modelId, {})
+			check["unusable"] = sorted(self._unusableVoices)
+			# The fingerprint says every voice is known, so only then is it written.
+			if self._voicesChecked or self._voiceCheckDisabled():
+				check["fingerprint"] = self._accountFingerprint()
 
 	@staticmethod
 	def _voiceCheckDisabled():
-		return _readSettings().get("check_voices", "").lower() in ("no", "false", "0", "off")
+		return _settings.get("checkVoices", True) is False
 
 	def _rebuildVoiceList(self):
 		"""Rebuilds the list NVDA sees, leaving out voices known to be unusable."""
@@ -1760,8 +1636,8 @@ class SynthDriver(BaseSynthDriver):
 		if not self._voicesCache:
 			raise ElevenLabsUnavailable(
 				"None of the voices on this ElevenLabs account can be used with the current "
-				f"plan. Remove the unusable_voices line from {SETTINGS_FILENAME} to check "
-				"them again, or upgrade the plan."
+				"plan. Select another synthesizer and press NVDA+Shift+V to check them "
+				"again, or upgrade the plan."
 			)
 		# The chosen voice is checked first, since that request also proves the
 		# key, the plan and the audio format work end to end.
@@ -1769,7 +1645,7 @@ class SynthDriver(BaseSynthDriver):
 		if self._voicesChecked:
 			return
 		if self._voiceCheckDisabled():
-			log.debug(f"ElevenLabs: the voice check is switched off in {SETTINGS_FILENAME}.")
+			log.debug(f"ElevenLabs: the voice check is switched off in {_settings.SETTINGS_FILENAME}.")
 			return
 		pending = [v for v in self._voicesCache if v != self._voiceId]
 		if pending:
@@ -2120,11 +1996,10 @@ class SynthDriver(BaseSynthDriver):
 	def _loadRefusedFields(self):
 		"""Restores the fields each model has refused."""
 		_refused.clear()
-		for name, value in _readSettings().items():
-			if name.startswith("refused_"):
-				fields = {f.strip() for f in value.split(",") if f.strip() in _LEARNABLE_FIELDS}
-				if fields:
-					_refused[name[len("refused_"):]] = fields
+		for modelId, saved in (_settings.get("refusedFields") or {}).items():
+			fields = {f for f in saved if f in _LEARNABLE_FIELDS} if isinstance(saved, list) else set()
+			if fields:
+				_refused[modelId] = fields
 
 	def _refuseFields(self, modelId, detail):
 		"""Records fields a refusal names for a model; True if any are new.
@@ -2137,7 +2012,8 @@ class SynthDriver(BaseSynthDriver):
 			return False
 		fields = _refused.setdefault(modelId, set())
 		fields.update(new)
-		_writeSetting(f"refused_{modelId}", ",".join(sorted(fields)))
+		with _settings.editing() as settings:
+			settings.setdefault("refusedFields", {})[modelId] = sorted(fields)
 		log.warning(
 			f"ElevenLabs: {info.name} does not take {', '.join(sorted(new))}, so it is left out "
 			f"from now on. {detail.strip()[:300]}"
@@ -2153,11 +2029,11 @@ class SynthDriver(BaseSynthDriver):
 
 	def _loadModelCheck(self):
 		"""Restores the cached model check; False if there is none for this account state."""
-		settings = _readSettings()
-		if settings.get("model_check") != self._modelFingerprint():
+		check = _settings.get("modelCheck") or {}
+		if check.get("fingerprint") != self._modelFingerprint():
 			self._modelsChecked = False
 			return False
-		saved = (m.strip() for m in settings.get("unusable_models", "").split(","))
+		saved = check.get("unusable", ())
 		self._unusableModels = {m for m in saved if m in _offeredModels and m != DEFAULT_MODEL}
 		self._modelsChecked = True
 		return True
@@ -2179,8 +2055,8 @@ class SynthDriver(BaseSynthDriver):
 		# The default model has already spoken, so it needs no check.
 		pending = [m for m in _offeredModels if m != DEFAULT_MODEL]
 		# Learned again from scratch; the default model's on first refusal.
-		for modelId in list(_refused):
-			_writeSetting(f"refused_{modelId}", "")
+		with _settings.editing() as settings:
+			settings.pop("refusedFields", None)
 		_refused.clear()
 		voiceId = self._modelProbeVoice()
 		unusable, unanswered, succeeded, lastReason, accountFailure = self._probeAll(
@@ -2219,8 +2095,11 @@ class SynthDriver(BaseSynthDriver):
 				"run again next time the synthesizer is loaded."
 			)
 			return
-		_writeSetting("unusable_models", ",".join(sorted(self._unusableModels)))
-		_writeSetting("model_check", self._modelFingerprint())
+		with _settings.editing() as settings:
+			settings["modelCheck"] = {
+				"fingerprint": self._modelFingerprint(),
+				"unusable": sorted(self._unusableModels),
+			}
 		self._modelsChecked = True
 
 	def _probeModel(self, voiceId, modelId):

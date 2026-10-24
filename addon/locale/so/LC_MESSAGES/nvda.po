@@ -139,3 +139,57 @@ msgstr "Soo sheeg isticmaalka dhibcaha ElevenLabs ee muddadan"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Mar kale hubi codadka iyo moodallada ElevenLabs ee akoonkani isticmaali karo"
+
+msgid "ElevenLabs API Key"
+msgstr "Furaha API ee ElevenLabs"
+
+msgid "&API key:"
+msgstr "Furaha &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Marka hore ku dheji furahaaga API ee ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Furaha API waxaa lagu hubinayaa ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Furaha API lama hubin karin. Faahfaahinta ka eeg diiwaanka NVDA."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Furaha API lama kaydin karin. Faahfaahinta ka eeg diiwaanka NVDA."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Tirtir furaha &API"
+
+msgid "Set &API key..."
+msgstr "Deji furaha &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Ma la tirtiraa furaha API ee ElevenLabs? ElevenLabs ma hadli karo ilaa fure cusub la dejiyo."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Furaha API lama tirtiri karin. Faahfaahinta ka eeg diiwaanka NVDA."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs wuu diiday furahan API. Hubi in si buuxda loo koobiyeeyay iyo in loo oggol yahay inuu akhriyo codadka."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ma hubin karin furaha (HTTP {code}). Mar kale isku day goor dambe."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Lagama gaari karin ElevenLabs si loo hubiyo furaha. Hubi xiriirkaaga internetka oo mar kale isku day."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Darawalka isku-darka hadalka ee codka ka soo daaya API-ga qoraal-ilaa-hadal ee ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Dhammaan dejinta iyo fariimaha ku jira kordhinta hadda waa la turjumay.\n"
+"Haddii API-ga ElevenLabs si lama filaan ah aan loo heli karin inta lagu jiro fadhi, NVDA hadda wuxuu u wareegaa eSpeak halkii uu aamusi lahaa."

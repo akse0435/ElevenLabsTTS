@@ -140,3 +140,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "ဤအကောင့်က မည်သည့် ElevenLabs အသံများနှင့် မော်ဒယ်များကို အသုံးပြုနိုင်သည်ကို"
 " ထပ်မံစစ်ဆေးပါ"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API ကီး"
+
+msgid "&API key:"
+msgstr "&API ကီး:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "သင်၏ ElevenLabs API ကီးကို ဦးစွာ ကူးထည့်ပါ။"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs ဖြင့် API ကီးကို စစ်ဆေးနေသည်..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API ကီးကို စစ်ဆေး၍ မရပါ။ အသေးစိတ်အတွက် NVDA မှတ်တမ်းကို ကြည့်ပါ။"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API ကီးကို သိမ်းဆည်း၍ မရပါ။ အသေးစိတ်အတွက် NVDA မှတ်တမ်းကို ကြည့်ပါ။"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API ကီးကို ရှင်းလင်းရန်"
+
+msgid "Set &API key..."
+msgstr "&API ကီး သတ်မှတ်ရန်..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API ကီးကို ရှင်းလင်းမလား။ ကီးအသစ် သတ်မှတ်သည်အထိ ElevenLabs စကားမပြောနိုင်ပါ။"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API ကီးကို ရှင်းလင်း၍ မရပါ။ အသေးစိတ်အတွက် NVDA မှတ်တမ်းကို ကြည့်ပါ။"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs သည် ဤ API ကီးကို ငြင်းပယ်ခဲ့သည်။ ၎င်းကို အပြည့်အစုံ ကူးယူထားကြောင်းနှင့် အသံများကို ဖတ်ခွင့်ရှိကြောင်း စစ်ဆေးပါ။"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs သည် ကီးကို စစ်ဆေး၍ မရပါ (HTTP {code})။ နောက်မှ ထပ်စမ်းကြည့်ပါ။"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ကီးကို စစ်ဆေးရန် ElevenLabs သို့ ချိတ်ဆက်၍ မရပါ။ သင်၏ အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်စမ်းကြည့်ပါ။"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs စာသားမှအသံ API မှ အသံကို တိုက်ရိုက်ထုတ်လွှင့်သော အသံပေါင်းစပ်ကိရိယာ ဒရိုက်ဗာ။"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"ပေါင်းထည့်ကိရိယာရှိ ဆက်တင်များနှင့် မက်ဆေ့ချ်များ အားလုံးကို ယခု ဘာသာပြန်ထားပြီးဖြစ်သည်။\n"
+"အသုံးပြုနေစဉ် ElevenLabs API ရုတ်တရက် မရရှိနိုင်တော့ပါက NVDA သည် ယခု အသံတိတ်သွားမည့်အစား eSpeak သို့ ပြန်ပြောင်းပါသည်။"

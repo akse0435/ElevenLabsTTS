@@ -135,3 +135,57 @@ msgstr "דיווח על השימוש בקרדיטים של ElevenLabs בתקופ
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "בדיקה חוזרת אילו קולות ומודלים של ElevenLabs חשבון זה יכול להשתמש בהם"
+
+msgid "ElevenLabs API Key"
+msgstr "מפתח API של ElevenLabs"
+
+msgid "&API key:"
+msgstr "מפתח &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "הדבק תחילה את מפתח ה-API של ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "בודק את מפתח ה-API מול ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "לא ניתן לבדוק את מפתח ה-API. ראה את יומן NVDA לפרטים."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "לא ניתן לשמור את מפתח ה-API. ראה את יומן NVDA לפרטים."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "נקה מפתח &API"
+
+msgid "Set &API key..."
+msgstr "הגדר מפתח &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "לנקות את מפתח ה-API של ElevenLabs? ElevenLabs לא יוכל לדבר עד שיוגדר מפתח חדש."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "לא ניתן לנקות את מפתח ה-API. ראה את יומן NVDA לפרטים."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs דחה את מפתח ה-API הזה. ודא שהוא הועתק במלואו ושיש לו הרשאה לקרוא קולות."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs לא הצליח לבדוק את המפתח (HTTP {code}). נסה שוב מאוחר יותר."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "לא ניתן להתחבר ל-ElevenLabs כדי לבדוק את המפתח. בדוק את חיבור האינטרנט שלך ונסה שוב."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "מנהל התקן של מסנתז דיבור שמזרים שמע מממשק ה-API להמרת טקסט לדיבור של ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"כל ההגדרות וההודעות בתוסף מתורגמות כעת.\n"
+"אם ה-API של ElevenLabs הופך לפתע ללא זמין במהלך הפעלה, NVDA עובר כעת ל-eSpeak במקום להשתתק."

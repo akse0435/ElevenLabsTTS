@@ -136,3 +136,57 @@ msgstr "รายงานการใช้เครดิต ElevenLabs ใน
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "ตรวจสอบอีกครั้งว่าบัญชีนี้ใช้เสียงและโมเดล ElevenLabs ใดได้บ้าง"
+
+msgid "ElevenLabs API Key"
+msgstr "คีย์ API ของ ElevenLabs"
+
+msgid "&API key:"
+msgstr "คีย์ &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "โปรดวางคีย์ API ของ ElevenLabs ก่อน"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "กำลังตรวจสอบคีย์ API กับ ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "ไม่สามารถตรวจสอบคีย์ API ได้ โปรดดูบันทึกของ NVDA สำหรับรายละเอียด"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "ไม่สามารถบันทึกคีย์ API ได้ โปรดดูบันทึกของ NVDA สำหรับรายละเอียด"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "ล้างคีย์ &API"
+
+msgid "Set &API key..."
+msgstr "ตั้งค่าคีย์ &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ล้างคีย์ API ของ ElevenLabs หรือไม่ ElevenLabs จะพูดไม่ได้จนกว่าจะตั้งค่าคีย์ใหม่"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "ไม่สามารถล้างคีย์ API ได้ โปรดดูบันทึกของ NVDA สำหรับรายละเอียด"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ปฏิเสธคีย์ API นี้ โปรดตรวจสอบว่าคัดลอกมาครบถ้วนและได้รับอนุญาตให้อ่านเสียง"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ไม่สามารถตรวจสอบคีย์ได้ (HTTP {code}) โปรดลองอีกครั้งในภายหลัง"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ไม่สามารถเชื่อมต่อ ElevenLabs เพื่อตรวจสอบคีย์ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ไดรเวอร์เสียงสังเคราะห์ที่สตรีมเสียงจาก API แปลงข้อความเป็นเสียงพูดของ ElevenLabs"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"การตั้งค่าและข้อความทั้งหมดในโปรแกรมเสริมได้รับการแปลแล้ว\n"
+"หาก API ของ ElevenLabs ใช้งานไม่ได้กะทันหันระหว่างเซสชัน ตอนนี้ NVDA จะเปลี่ยนไปใช้ eSpeak แทนที่จะเงียบไป"

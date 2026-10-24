@@ -139,3 +139,57 @@ msgstr "Informar del uso de créditos de ElevenLabs en el periodo actual"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Volver a comprobar qué voces y modelos de ElevenLabs puede usar esta cuenta"
+
+msgid "ElevenLabs API Key"
+msgstr "Clave de API de ElevenLabs"
+
+msgid "&API key:"
+msgstr "Clave de &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Primero pegue su clave de API de ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Comprobando la clave de API con ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "No se pudo comprobar la clave de API. Consulte el registro de NVDA para más detalles."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "No se pudo guardar la clave de API. Consulte el registro de NVDA para más detalles."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Borrar la clave de &API"
+
+msgid "Set &API key..."
+msgstr "Establecer la clave de &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "¿Borrar la clave de API de ElevenLabs? ElevenLabs no podrá hablar hasta que se establezca una clave nueva."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "No se pudo borrar la clave de API. Consulte el registro de NVDA para más detalles."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs rechazó esta clave de API. Compruebe que se copió completa y que tiene permiso para leer voces."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs no pudo comprobar la clave (HTTP {code}). Vuelva a intentarlo más tarde."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "No se pudo contactar con ElevenLabs para comprobar la clave. Compruebe su conexión a internet y vuelva a intentarlo."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Controlador de sintetizador de voz que transmite audio desde la API de texto a voz de ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Todas las opciones y mensajes del complemento están ahora traducidos.\n"
+"Si la API de ElevenLabs deja de estar disponible de repente durante una sesión, NVDA ahora vuelve a eSpeak en lugar de quedarse en silencio."

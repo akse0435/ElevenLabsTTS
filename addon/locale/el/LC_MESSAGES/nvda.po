@@ -141,3 +141,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Επανέλεγχος των φωνών και μοντέλων του ElevenLabs που μπορεί να "
 "χρησιμοποιήσει αυτός ο λογαριασμός"
+
+msgid "ElevenLabs API Key"
+msgstr "Κλειδί API του ElevenLabs"
+
+msgid "&API key:"
+msgstr "Κλειδί &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Επικολλήστε πρώτα το κλειδί API του ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Έλεγχος του κλειδιού API με το ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Δεν ήταν δυνατός ο έλεγχος του κλειδιού API. Δείτε το αρχείο καταγραφής του NVDA για λεπτομέρειες."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Δεν ήταν δυνατή η αποθήκευση του κλειδιού API. Δείτε το αρχείο καταγραφής του NVDA για λεπτομέρειες."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Εκκαθάριση κλειδιού &API"
+
+msgid "Set &API key..."
+msgstr "Ορισμός κλειδιού &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Να γίνει εκκαθάριση του κλειδιού API του ElevenLabs; Το ElevenLabs δεν μπορεί να μιλήσει μέχρι να οριστεί νέο κλειδί."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Δεν ήταν δυνατή η εκκαθάριση του κλειδιού API. Δείτε το αρχείο καταγραφής του NVDA για λεπτομέρειες."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "Το ElevenLabs απέρριψε αυτό το κλειδί API. Βεβαιωθείτε ότι αντιγράφηκε ολόκληρο και ότι επιτρέπεται να διαβάζει φωνές."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "Το ElevenLabs δεν μπόρεσε να ελέγξει το κλειδί (HTTP {code}). Δοκιμάστε ξανά αργότερα."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Δεν ήταν δυνατή η σύνδεση με το ElevenLabs για τον έλεγχο του κλειδιού. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Πρόγραμμα οδήγησης συνθέτη ομιλίας που μεταδίδει ήχο από το API μετατροπής κειμένου σε ομιλία της ElevenLabs."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Όλες οι ρυθμίσεις και τα μηνύματα του πρόσθετου είναι πλέον μεταφρασμένα.\n"
+"Αν το API της ElevenLabs γίνει ξαφνικά μη διαθέσιμο κατά τη διάρκεια μιας συνεδρίας, το NVDA επιστρέφει πλέον στο eSpeak αντί να σωπαίνει."

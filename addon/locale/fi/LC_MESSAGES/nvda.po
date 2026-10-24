@@ -138,3 +138,57 @@ msgstr "Ilmoita ElevenLabs-krediittien käyttö nykyisellä jaksolla"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Tarkista uudelleen, mitä ElevenLabsin ääniä ja malleja tämä tili voi käyttää"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabsin API-avain"
+
+msgid "&API key:"
+msgstr "&API-avain:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Liitä ensin ElevenLabsin API-avaimesi."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Tarkistetaan API-avainta ElevenLabsilta..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API-avainta ei voitu tarkistaa. Katso lisätietoja NVDA:n lokista."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API-avainta ei voitu tallentaa. Katso lisätietoja NVDA:n lokista."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Tyhjennä &API-avain"
+
+msgid "Set &API key..."
+msgstr "Aseta &API-avain..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Tyhjennetäänkö ElevenLabsin API-avain? ElevenLabs ei voi puhua, ennen kuin uusi avain on asetettu."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API-avainta ei voitu tyhjentää. Katso lisätietoja NVDA:n lokista."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs hylkäsi tämän API-avaimen. Tarkista, että se on kopioitu kokonaan ja että sillä on lupa lukea ääniä."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ei voinut tarkistaa avainta (HTTP {code}). Yritä myöhemmin uudelleen."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ElevenLabsiin ei saatu yhteyttä avaimen tarkistamiseksi. Tarkista internetyhteytesi ja yritä uudelleen."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Puhesyntetisaattoriajuri, joka suoratoistaa ääntä ElevenLabsin tekstistä puheeksi -rajapinnasta."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Kaikki lisäosan asetukset ja ilmoitukset on nyt käännetty.\n"
+"Jos ElevenLabsin rajapinta muuttuu yhtäkkiä istunnon aikana käyttökelvottomaksi, NVDA siirtyy nyt eSpeakiin sen sijaan, että vaikenisi."

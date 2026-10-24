@@ -134,3 +134,57 @@ msgstr "報告目前週期的 ElevenLabs 點數用量"
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "重新檢查此帳戶可以使用哪些 ElevenLabs 語音和模型"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API 金鑰"
+
+msgid "&API key:"
+msgstr "API 金鑰(&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "請先貼上您的 ElevenLabs API 金鑰。"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "正在透過 ElevenLabs 檢查 API 金鑰..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "無法檢查 API 金鑰。詳情請查看 NVDA 記錄檔。"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "無法儲存 API 金鑰。詳情請查看 NVDA 記錄檔。"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "清除 API 金鑰(&A)"
+
+msgid "Set &API key..."
+msgstr "設定 API 金鑰(&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "要清除 ElevenLabs API 金鑰嗎？設定新金鑰之前，ElevenLabs 將無法朗讀。"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "無法清除 API 金鑰。詳情請查看 NVDA 記錄檔。"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs 拒絕了此 API 金鑰。請檢查金鑰是否完整複製，以及是否有讀取語音的權限。"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs 無法檢查該金鑰 (HTTP {code})。請稍後再試。"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "無法連線至 ElevenLabs 以檢查金鑰。請檢查您的網路連線，然後再試一次。"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "從 ElevenLabs 文字轉語音 API 串流傳輸音訊的語音合成器驅動程式。"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"附加元件中的所有設定和訊息現已在地化。\n"
+"如果在工作階段期間 ElevenLabs API 突然無法使用，NVDA 現在會切換至 eSpeak，而不是變得無聲。"

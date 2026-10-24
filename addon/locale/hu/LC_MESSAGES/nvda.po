@@ -141,3 +141,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Annak újbóli ellenőrzése, hogy ez a fiók az ElevenLabs mely hangjait és "
 "modelljeit használhatja"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API-kulcs"
+
+msgid "&API key:"
+msgstr "&API-kulcs:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Először illessze be az ElevenLabs API-kulcsát."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Az API-kulcs ellenőrzése az ElevenLabsnél..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Az API-kulcs nem ellenőrizhető. A részletekért lásd az NVDA naplóját."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Az API-kulcs nem menthető. A részletekért lásd az NVDA naplóját."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API-kulcs törlése"
+
+msgid "Set &API key..."
+msgstr "&API-kulcs beállítása..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Törli az ElevenLabs API-kulcsot? Az ElevenLabs nem tud beszélni, amíg új kulcsot nem állít be."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Az API-kulcs nem törölhető. A részletekért lásd az NVDA naplóját."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "Az ElevenLabs elutasította ezt az API-kulcsot. Ellenőrizze, hogy teljesen át lett-e másolva, és van-e joga a hangok olvasásához."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "Az ElevenLabs nem tudta ellenőrizni a kulcsot (HTTP {code}). Próbálja újra később."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Az ElevenLabs nem érhető el a kulcs ellenőrzéséhez. Ellenőrizze az internetkapcsolatot, és próbálja újra."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Beszédszintetizátor-illesztőprogram, amely az ElevenLabs szövegfelolvasó API-jából streameli a hangot."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"A bővítmény összes beállítása és üzenete mostantól le van fordítva.\n"
+"Ha az ElevenLabs API egy munkamenet közben hirtelen elérhetetlenné válik, az NVDA mostantól az eSpeakre vált ahelyett, hogy elnémulna."

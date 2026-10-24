@@ -135,3 +135,57 @@ msgstr "현재 기간의 ElevenLabs 크레딧 사용량 알림"
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "이 계정에서 사용할 수 있는 ElevenLabs 음성과 모델 다시 확인"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API 키"
+
+msgid "&API key:"
+msgstr "API 키(&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "먼저 ElevenLabs API 키를 붙여 넣으세요."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs에서 API 키를 확인하는 중..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API 키를 확인할 수 없습니다. 자세한 내용은 NVDA 로그를 확인하세요."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API 키를 저장할 수 없습니다. 자세한 내용은 NVDA 로그를 확인하세요."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "API 키 지우기(&A)"
+
+msgid "Set &API key..."
+msgstr "API 키 설정(&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API 키를 지우시겠습니까? 새 키를 설정할 때까지 ElevenLabs가 말할 수 없습니다."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API 키를 지울 수 없습니다. 자세한 내용은 NVDA 로그를 확인하세요."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs가 이 API 키를 거부했습니다. 키가 모두 복사되었는지, 음성을 읽을 권한이 있는지 확인하세요."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs가 키를 확인할 수 없습니다(HTTP {code}). 나중에 다시 시도하세요."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "키를 확인하기 위해 ElevenLabs에 연결할 수 없습니다. 인터넷 연결을 확인하고 다시 시도하세요."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs 텍스트 음성 변환 API에서 오디오를 스트리밍하는 음성 합성기 드라이버입니다."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"추가 기능의 모든 설정과 메시지가 이제 번역되었습니다.\n"
+"세션 중에 ElevenLabs API를 갑자기 사용할 수 없게 되면 NVDA가 이제 무음이 되는 대신 eSpeak로 전환합니다."

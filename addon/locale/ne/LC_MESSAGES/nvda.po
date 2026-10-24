@@ -138,3 +138,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "यो खाताले कुन ElevenLabs आवाज र मोडेलहरू प्रयोग गर्न सक्छ भनी फेरि जाँच "
 "गर्नुहोस्"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API कुञ्जी"
+
+msgid "&API key:"
+msgstr "&API कुञ्जी:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "पहिले आफ्नो ElevenLabs API कुञ्जी टाँस्नुहोस्।"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs सँग API कुञ्जी जाँच गरिँदै..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API कुञ्जी जाँच गर्न सकिएन। विवरणका लागि NVDA लग हेर्नुहोस्।"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API कुञ्जी सुरक्षित गर्न सकिएन। विवरणका लागि NVDA लग हेर्नुहोस्।"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API कुञ्जी हटाउनुहोस्"
+
+msgid "Set &API key..."
+msgstr "&API कुञ्जी सेट गर्नुहोस्..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API कुञ्जी हटाउने? नयाँ कुञ्जी सेट नभएसम्म ElevenLabs बोल्न सक्दैन।"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API कुञ्जी हटाउन सकिएन। विवरणका लागि NVDA लग हेर्नुहोस्।"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ले यो API कुञ्जी अस्वीकार गर्‍यो। यो पूर्ण रूपमा प्रतिलिपि गरिएको छ र स्वरहरू पढ्ने अनुमति छ भनी जाँच गर्नुहोस्।"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ले कुञ्जी जाँच गर्न सकेन (HTTP {code})। पछि फेरि प्रयास गर्नुहोस्।"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "कुञ्जी जाँच गर्न ElevenLabs मा पुग्न सकिएन। आफ्नो इन्टरनेट जडान जाँच गरी फेरि प्रयास गर्नुहोस्।"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs पाठबाट वाक् API बाट अडियो स्ट्रिम गर्ने वाक् संश्लेषक ड्राइभर।"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"एड-अनका सबै सेटिङहरू र सन्देशहरू अब अनुवाद गरिएका छन्।\n"
+"यदि सत्रको समयमा ElevenLabs API अचानक अनुपलब्ध भयो भने, NVDA अब मौन हुनुको सट्टा eSpeak मा फर्कन्छ।"

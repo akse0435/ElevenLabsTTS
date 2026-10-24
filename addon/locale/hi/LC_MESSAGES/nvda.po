@@ -137,3 +137,57 @@ msgstr "वर्तमान अवधि के लिए ElevenLabs क्र
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "फिर से जाँचें कि यह खाता कौन सी ElevenLabs आवाज़ें और मॉडल उपयोग कर सकता है"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API कुंजी"
+
+msgid "&API key:"
+msgstr "API कुंजी (&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "पहले अपनी ElevenLabs API कुंजी चिपकाएँ।"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs के साथ API कुंजी की जाँच हो रही है..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API कुंजी की जाँच नहीं की जा सकी। विवरण के लिए NVDA लॉग देखें।"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API कुंजी सहेजी नहीं जा सकी। विवरण के लिए NVDA लॉग देखें।"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "API कुंजी हटाएँ (&A)"
+
+msgid "Set &API key..."
+msgstr "API कुंजी सेट करें (&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API कुंजी हटाएँ? नई कुंजी सेट होने तक ElevenLabs बोल नहीं सकता।"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API कुंजी हटाई नहीं जा सकी। विवरण के लिए NVDA लॉग देखें।"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ने इस API कुंजी को अस्वीकार कर दिया। जाँचें कि यह पूरी कॉपी हुई है और इसे आवाज़ें पढ़ने की अनुमति है।"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs कुंजी की जाँच नहीं कर सका (HTTP {code})। बाद में फिर से प्रयास करें।"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "कुंजी की जाँच के लिए ElevenLabs तक नहीं पहुँचा जा सका। अपना इंटरनेट कनेक्शन जाँचें और फिर से प्रयास करें।"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "स्पीच सिंथेसाइज़र ड्राइवर जो ElevenLabs टेक्स्ट-टू-स्पीच API से ऑडियो स्ट्रीम करता है।"
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"ऐड-ऑन की सभी सेटिंग्स और संदेश अब अनुवादित हैं।\n"
+"यदि किसी सत्र के दौरान ElevenLabs API अचानक अनुपलब्ध हो जाता है, तो NVDA अब चुप होने के बजाय eSpeak पर लौट आता है।"

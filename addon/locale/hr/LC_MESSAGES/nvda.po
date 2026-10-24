@@ -138,3 +138,57 @@ msgstr "Izvijesti o potrošnji ElevenLabs kredita u tekućem razdoblju"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Ponovno provjeri koje ElevenLabs glasove i modele ovaj račun može koristiti"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API ključ"
+
+msgid "&API key:"
+msgstr "&API ključ:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Najprije zalijepite svoj ElevenLabs API ključ."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Provjera API ključa kod ElevenLabsa..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API ključ nije moguće provjeriti. Pogledajte NVDA zapisnik za pojedinosti."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API ključ nije moguće spremiti. Pogledajte NVDA zapisnik za pojedinosti."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Izbriši &API ključ"
+
+msgid "Set &API key..."
+msgstr "Postavi &API ključ..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Izbrisati ElevenLabs API ključ? ElevenLabs ne može govoriti dok se ne postavi novi ključ."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API ključ nije moguće izbrisati. Pogledajte NVDA zapisnik za pojedinosti."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs je odbio ovaj API ključ. Provjerite je li kopiran u cijelosti i smije li čitati glasove."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs nije mogao provjeriti ključ (HTTP {code}). Pokušajte ponovno kasnije."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Nije moguće pristupiti ElevenLabsu radi provjere ključa. Provjerite internetsku vezu i pokušajte ponovno."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Upravljački program sintetizatora govora koji prenosi zvuk s ElevenLabs API-ja za pretvaranje teksta u govor."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"Sve postavke i poruke u dodatku sada su lokalizirane.\n"
+"Ako ElevenLabs API iznenada postane nedostupan tijekom sesije, NVDA se sada vraća na eSpeak umjesto da utihne."

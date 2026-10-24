@@ -140,3 +140,57 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "இந்தக் கணக்கு எந்த ElevenLabs குரல்களையும் மாதிரிகளையும் பயன்படுத்தலாம் என "
 "மீண்டும் சரிபார்"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API விசை"
+
+msgid "&API key:"
+msgstr "API விசை (&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "முதலில் உங்கள் ElevenLabs API விசையை ஒட்டவும்."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs உடன் API விசை சரிபார்க்கப்படுகிறது..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API விசையைச் சரிபார்க்க முடியவில்லை. விவரங்களுக்கு NVDA பதிவைப் பார்க்கவும்."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API விசையைச் சேமிக்க முடியவில்லை. விவரங்களுக்கு NVDA பதிவைப் பார்க்கவும்."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "API விசையை அழி (&A)"
+
+msgid "Set &API key..."
+msgstr "API விசையை அமை (&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API விசையை அழிக்கவா? புதிய விசை அமைக்கப்படும் வரை ElevenLabs பேச முடியாது."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API விசையை அழிக்க முடியவில்லை. விவரங்களுக்கு NVDA பதிவைப் பார்க்கவும்."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs இந்த API விசையை நிராகரித்தது. அது முழுமையாக நகலெடுக்கப்பட்டதா, குரல்களைப் படிக்க அனுமதி உள்ளதா எனச் சரிபார்க்கவும்."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs விசையைச் சரிபார்க்க முடியவில்லை (HTTP {code}). பின்னர் மீண்டும் முயற்சிக்கவும்."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "விசையைச் சரிபார்க்க ElevenLabs ஐ அணுக முடியவில்லை. உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs உரையிலிருந்து பேச்சு API இலிருந்து ஒலியை ஸ்ட்ரீம் செய்யும் பேச்சு ஒருங்கிணைப்பி இயக்கி."
+
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"All settings and messages within the add-on are now localized.\n"
+"If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent."
+msgstr ""
+"நீட்சிநிரலின் அனைத்து அமைப்புகளும் செய்திகளும் இப்போது மொழிபெயர்க்கப்பட்டுள்ளன.\n"
+"அமர்வின்போது ElevenLabs API திடீரென கிடைக்காமல் போனால், NVDA இப்போது அமைதியாவதற்குப் பதிலாக eSpeak க்கு மாறுகிறது."

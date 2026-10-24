@@ -66,6 +66,15 @@ msgstr "ਚਾਲੂ"
 msgid "Off"
 msgstr "ਬੰਦ"
 
+msgid "Creative"
+msgstr "ਰਚਨਾਤਮਕ"
+
+msgid "Natural"
+msgstr "ਕੁਦਰਤੀ"
+
+msgid "Robust"
+msgstr "ਸਥਿਰ"
+
 msgid "Split long text"
 msgstr "ਲੰਮੀ ਲਿਖਤ ਵੰਡੋ"
 

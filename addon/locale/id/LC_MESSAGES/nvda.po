@@ -66,6 +66,15 @@ msgstr "Aktif"
 msgid "Off"
 msgstr "Nonaktif"
 
+msgid "Creative"
+msgstr "Kreatif"
+
+msgid "Natural"
+msgstr "Alami"
+
+msgid "Robust"
+msgstr "Kokoh"
+
 msgid "Split long text"
 msgstr "Pisahkan teks panjang"
 

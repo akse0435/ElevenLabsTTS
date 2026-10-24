@@ -66,6 +66,15 @@ msgstr "Açık"
 msgid "Off"
 msgstr "Kapalı"
 
+msgid "Creative"
+msgstr "Yaratıcı"
+
+msgid "Natural"
+msgstr "Doğal"
+
+msgid "Robust"
+msgstr "Sağlam"
+
 msgid "Split long text"
 msgstr "Uzun metni böl"
 

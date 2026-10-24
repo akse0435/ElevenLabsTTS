@@ -66,6 +66,15 @@ msgstr "Til"
 msgid "Off"
 msgstr "Fra"
 
+msgid "Creative"
+msgstr "Kreativ"
+
+msgid "Natural"
+msgstr "Naturlig"
+
+msgid "Robust"
+msgstr "Robust"
+
 msgid "Split long text"
 msgstr "Opdel lang tekst"
 

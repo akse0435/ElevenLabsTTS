@@ -66,6 +66,15 @@ msgstr "آن"
 msgid "Off"
 msgstr "آف"
 
+msgid "Creative"
+msgstr "تخلیقی"
+
+msgid "Natural"
+msgstr "قدرتی"
+
+msgid "Robust"
+msgstr "مستحکم"
+
 msgid "Split long text"
 msgstr "طویل متن تقسیم کریں"
 

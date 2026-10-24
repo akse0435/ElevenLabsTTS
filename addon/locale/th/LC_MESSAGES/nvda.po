@@ -66,6 +66,15 @@ msgstr "เปิด"
 msgid "Off"
 msgstr "ปิด"
 
+msgid "Creative"
+msgstr "สร้างสรรค์"
+
+msgid "Natural"
+msgstr "เป็นธรรมชาติ"
+
+msgid "Robust"
+msgstr "มั่นคง"
+
 msgid "Split long text"
 msgstr "แบ่งข้อความยาว"
 

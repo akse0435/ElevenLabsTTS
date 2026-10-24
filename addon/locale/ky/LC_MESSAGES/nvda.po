@@ -66,6 +66,15 @@ msgstr "Күйгүзүлгөн"
 msgid "Off"
 msgstr "Өчүрүлгөн"
 
+msgid "Creative"
+msgstr "Чыгармачыл"
+
+msgid "Natural"
+msgstr "Табигый"
+
+msgid "Robust"
+msgstr "Туруктуу"
+
 msgid "Split long text"
 msgstr "Узун текстти бөлүү"
 

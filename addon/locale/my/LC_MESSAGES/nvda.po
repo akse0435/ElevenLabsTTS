@@ -66,6 +66,15 @@ msgstr "ဖွင့်"
 msgid "Off"
 msgstr "ပိတ်"
 
+msgid "Creative"
+msgstr "ဖန်တီးမှု"
+
+msgid "Natural"
+msgstr "သဘာဝ"
+
+msgid "Robust"
+msgstr "တည်ငြိမ်"
+
 msgid "Split long text"
 msgstr "ရှည်လျားသော စာသားကို ခွဲရန်"
 

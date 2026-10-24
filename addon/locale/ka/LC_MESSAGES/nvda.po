@@ -66,6 +66,15 @@ msgstr "ჩართული"
 msgid "Off"
 msgstr "გამორთული"
 
+msgid "Creative"
+msgstr "კრეატიული"
+
+msgid "Natural"
+msgstr "ბუნებრივი"
+
+msgid "Robust"
+msgstr "მდგრადი"
+
 msgid "Split long text"
 msgstr "გრძელი ტექსტის დაყოფა"
 

@@ -66,6 +66,15 @@ msgstr "Ein"
 msgid "Off"
 msgstr "Aus"
 
+msgid "Creative"
+msgstr "Kreativ"
+
+msgid "Natural"
+msgstr "Natürlich"
+
+msgid "Robust"
+msgstr "Robust"
+
 msgid "Split long text"
 msgstr "Langen Text aufteilen"
 

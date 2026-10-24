@@ -66,6 +66,15 @@ msgstr "Асаалттай"
 msgid "Off"
 msgstr "Унтраалттай"
 
+msgid "Creative"
+msgstr "Бүтээлч"
+
+msgid "Natural"
+msgstr "Байгалийн"
+
+msgid "Robust"
+msgstr "Тогтвортой"
+
 msgid "Split long text"
 msgstr "Урт текстийг хуваах"
 

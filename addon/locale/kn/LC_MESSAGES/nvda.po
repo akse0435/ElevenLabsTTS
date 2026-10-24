@@ -66,6 +66,15 @@ msgstr "ಆನ್"
 msgid "Off"
 msgstr "ಆಫ್"
 
+msgid "Creative"
+msgstr "ಸೃಜನಾತ್ಮಕ"
+
+msgid "Natural"
+msgstr "ಸ್ವಾಭಾವಿಕ"
+
+msgid "Robust"
+msgstr "ಸ್ಥಿರ"
+
 msgid "Split long text"
 msgstr "ದೀರ್ಘ ಪಠ್ಯವನ್ನು ವಿಭಜಿಸಿ"
 

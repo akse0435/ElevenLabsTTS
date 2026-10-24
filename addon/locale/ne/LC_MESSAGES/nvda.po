@@ -66,6 +66,15 @@ msgstr "सक्रिय"
 msgid "Off"
 msgstr "निष्क्रिय"
 
+msgid "Creative"
+msgstr "सिर्जनात्मक"
+
+msgid "Natural"
+msgstr "स्वाभाविक"
+
+msgid "Robust"
+msgstr "स्थिर"
+
 msgid "Split long text"
 msgstr "लामो पाठ विभाजन गर्नुहोस्"
 

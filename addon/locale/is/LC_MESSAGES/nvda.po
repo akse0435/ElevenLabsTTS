@@ -66,6 +66,15 @@ msgstr "Kveikt"
 msgid "Off"
 msgstr "Slökkt"
 
+msgid "Creative"
+msgstr "Skapandi"
+
+msgid "Natural"
+msgstr "Náttúrulegt"
+
+msgid "Robust"
+msgstr "Stöðugt"
+
 msgid "Split long text"
 msgstr "Skipta löngum texta"
 

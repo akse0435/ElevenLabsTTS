@@ -66,6 +66,15 @@ msgstr "روشن"
 msgid "Off"
 msgstr "خاموش"
 
+msgid "Creative"
+msgstr "خلاقانه"
+
+msgid "Natural"
+msgstr "طبیعی"
+
+msgid "Robust"
+msgstr "پایدار"
+
 msgid "Split long text"
 msgstr "تقسیم متن طولانی"
 

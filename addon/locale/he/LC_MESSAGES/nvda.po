@@ -66,6 +66,15 @@ msgstr "מופעל"
 msgid "Off"
 msgstr "כבוי"
 
+msgid "Creative"
+msgstr "יצירתי"
+
+msgid "Natural"
+msgstr "טבעי"
+
+msgid "Robust"
+msgstr "יציב"
+
 msgid "Split long text"
 msgstr "פיצול טקסט ארוך"
 

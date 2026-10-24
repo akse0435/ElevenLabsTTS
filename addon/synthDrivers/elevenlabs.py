@@ -71,7 +71,7 @@ PROBE_WORKERS = 4
 MAX_PROBED_VOICES = 100
 # Bumped whenever a check changes, so results cached by an older version are redone.
 VOICE_CHECK_VERSION = 2
-MODEL_CHECK_VERSION = 1
+MODEL_CHECK_VERSION = 2
 # Voices tried at start up before giving up, which bounds how long NVDA waits.
 MAX_STARTUP_TRIES = 8
 # Upper bounds on each check, so NVDA is never held back indefinitely.
@@ -153,6 +153,21 @@ _TAG = re.compile(r"\[[^\[\]]*\]")
 _LEADING_TAG = re.compile(r"\s*\[[^\[\]]*\]")
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
+# Their names in the stability box shown instead of the slider for such models,
+# as ElevenLabs names them.
+STABILITY_PRESET_NAMES = OrderedDict((
+	# Translators: a choice for stability on models that take only three values;
+	# the widest emotional range.
+	("creative", _("Creative")),
+	# Translators: a choice for stability on models that take only three values;
+	# balanced and closest to the original voice.
+	("natural", _("Natural")),
+	# Translators: a choice for stability on models that take only three values;
+	# very steady, but less responsive to direction.
+	("robust", _("Robust")),
+))
+STABILITY_PRESET_VALUES = dict(zip(STABILITY_PRESET_NAMES, STABILITY_PRESETS))
+DEFAULT_STABILITY_PRESET = "natural"
 
 # What a model accepts: whether it takes language_code, and which voice_settings
 # and apply_text_normalization. Turbo takes the same as Flash, which ElevenLabs
@@ -198,8 +213,11 @@ _EARLIER_MODELS = ("eleven_monolingual_v1", "eleven_multilingual_v1")
 _offeredModels = OrderedDict(MODELS)
 # Fields each model has refused, saved as refused_<model> in the settings file.
 _refused = {}
+# Recorded instead of apply_text_normalization when only "on" was refused, which
+# Flash and Turbo v2.5 allow only on Enterprise plans; auto and off still work.
+_NORMALIZATION_ON_REFUSED = "apply_text_normalization=on"
 # Fields a refusal may name; only those a model was sent are recorded.
-_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS
+_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS + (_NORMALIZATION_ON_REFUSED,)
 # Models known to take only the stability presets.
 PRESET_STABILITY_MODELS = ("eleven_v3", "eleven_v3_conversational")
 # The voice_settings name behind each slider and checkbox. Only those the chosen
@@ -431,6 +449,18 @@ def _modelInfo(modelId):
 	return info
 
 
+def _withoutDeclined(settings, model):
+	"""settings less those the model list says the model can't use.
+
+	Only an explicit false counts, and it can only take settings away, so the
+	list can't bring back one the model is known to refuse."""
+	declined = {
+		field for flag, field in (("can_use_style", "style"), ("can_use_speaker_boost", "use_speaker_boost"))
+		if model.get(flag) is False
+	}
+	return tuple(name for name in settings if name not in declined)
+
+
 def _modelDisplayName(info):
 	if info.englishOnly:
 		# Translators: a model that only speaks English; {name} is its name.
@@ -519,7 +549,7 @@ def _installTagFilter():
 	def processText(locale, text, *args, **kwargs):
 		try:
 			synth = getSynth()
-			if getattr(synth, "name", None) == "elevenlabs" and synth.audioTags \
+			if getattr(synth, "name", None) == "elevenlabs" and synth._tagsActive() \
 					and ("[" in text or "]" in text):
 				text = _hideTags(text)
 		except Exception:
@@ -553,6 +583,56 @@ def _openVoicePanels():
 			yield window
 		else:
 			pending.extend(window.GetChildren())
+
+
+def _sizerWindows(item):
+	"""The windows of a control or labelled control sizer, in order."""
+	import wx
+
+	if isinstance(item, wx.Window):
+		return [item]
+	windows = []
+	for child in item.GetChildren():
+		if child.IsWindow():
+			windows.append(child.GetWindow())
+		elif child.IsSizer():
+			windows.extend(_sizerWindows(child.GetSizer()))
+	return windows
+
+
+def _orderVoicePanel(panel, settingIds):
+	"""Puts the driver's controls in panel in the order of settingIds, on screen and
+	in tab order.
+
+	NVDA adds the control of a setting that becomes supported after the panel was
+	built after all the others it has made, and tab order follows creation, so a
+	model change would leave e.g. the stability box after audio tags."""
+	import wx
+
+	sizer = panel.settingsSizer
+	items = [panel.sizerDict[sid] for sid in settingIds if sid in panel.sizerDict]
+	positions = {}
+	for index, child in enumerate(sizer.GetChildren()):
+		positions[id(child.GetWindow() or child.GetSizer())] = index
+	if len(items) < 2 or any(id(item) not in positions for item in items):
+		return
+	# NVDA keeps them together, before its own voice options; keep that block in place.
+	start = min(positions[id(item)] for item in items)
+	if [positions[id(item)] for item in items] != list(range(start, start + len(items))):
+		for index, item in enumerate(items):
+			shown = sizer.IsShown(item)
+			sizer.Detach(item)
+			# As NVDA inserts them.
+			sizer.Insert(start + index, item, border=10, flag=wx.BOTTOM)
+			sizer.Show(item, shown)
+	windows = [w for item in items for w in _sizerWindows(item)]
+	siblings = list(windows[0].GetParent().GetChildren())
+	first = min(windows, key=siblings.index)
+	if first is not windows[0]:
+		windows[0].MoveBeforeInTabOrder(first)
+	for previous, window in zip(windows, windows[1:]):
+		window.MoveAfterInTabOrder(previous)
+	sizer.Layout()
 
 
 def _fetchJson(url, key, timeout):
@@ -789,7 +869,7 @@ class _SpeechWorker(threading.Thread):
 		parts = _splitText(text, *_modelInfo(modelId).parts) if self.driver.splitText else [text]
 		# Joined screen lines can hold double spaces, which v3 may speak as a breath.
 		parts = [p for p in (" ".join(p.split()) for p in parts) if p]
-		if self.driver.audioTags and _modelInfo(modelId).tags:
+		if self.driver._tagsActive() and _modelInfo(modelId).tags:
 			parts = [self._withTag(gen, p) for p in parts]
 			# Tags alone are refused (HTTP 400), but still carry over to the next text.
 			parts = [p for p in parts if _TAG.sub("", p).strip()]
@@ -836,8 +916,9 @@ class _SpeechWorker(threading.Thread):
 		return text
 
 	def _textFor(self, text, modelId):
-		"""text as sent to modelId: audio tags are left out where they'd be read."""
-		if self.driver.audioTags and not _modelInfo(modelId).tags:
+		"""text as sent to modelId: audio tags are left out where they'd be read,
+		e.g. when the default model stands in for the chosen one."""
+		if self.driver._tagsActive() and not _modelInfo(modelId).tags:
 			text = " ".join(_TAG.sub(" ", text).split())
 		return text
 
@@ -994,7 +1075,8 @@ class _SpeechWorker(threading.Thread):
 						and driver._usePresetStability(modelId):
 					continue
 				# A field the model won't take is left out from now on.
-				if not fedAudio and _isRefusal(e.code) and driver._refuseFields(modelId, detail):
+				if not fedAudio and _isRefusal(e.code) \
+						and driver._refuseFields(modelId, detail, json.loads(req.data)):
 					continue
 				refusal = _classifyRefusal(e.code, detail) if not fedAudio else None
 				# Out of credits, or the key no longer works: no model can speak.
@@ -1117,6 +1199,16 @@ class SynthDriver(BaseSynthDriver):
 			# Translators: name of a setting in the settings ring.
 			displayName=_("Stability"),
 		),
+		# Shown instead of the slider for models that take only STABILITY_PRESETS.
+		DriverSetting(
+			"stabilityPreset",
+			# Translators: label of the stability slider, or of the box that replaces it, in voice settings.
+			pgettext("label", "Stabilit&y"),
+			availableInSettingsRing=True,
+			defaultVal=DEFAULT_STABILITY_PRESET,
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Stability"),
+		),
 		NumericDriverSetting(
 			"clarity",
 			# Translators: label of a slider in voice settings.
@@ -1193,6 +1285,8 @@ class SynthDriver(BaseSynthDriver):
 		self._rateBoost = False
 		self._volume = 100
 		self._stability = DEFAULT_STABILITY
+		# Kept apart from the slider's value, so each survives the other's model.
+		self._stabilityPreset = DEFAULT_STABILITY_PRESET
 		self._clarity = DEFAULT_CLARITY
 		self._style = DEFAULT_STYLE
 		self._speakerBoost = DEFAULT_SPEAKER_BOOST
@@ -1308,11 +1402,24 @@ class SynthDriver(BaseSynthDriver):
 	def _get_supportedSettings(self):
 		if self._configuring:
 			return self._allSettings
-		accepted = _modelInfo(self._modelId).settings
+		info = _modelInfo(self._modelId)
+		presets = self._modelId in self._presetStabilityModels
+		# Shown only if the model takes them, besides the voice_settings in _SETTING_API_NAMES.
+		shown = {
+			LANGUAGE_SETTING_ID: info.languageCode,
+			"audioTags": info.tags,
+			"stability": "stability" in info.settings and not presets,
+			"stabilityPreset": "stability" in info.settings and presets,
+		}
 		return tuple(
 			s for s in self._allSettings
-			if s.id not in _SETTING_API_NAMES or _SETTING_API_NAMES[s.id] in accepted
+			if shown.get(s.id, True)
+			and (s.id not in _SETTING_API_NAMES or _SETTING_API_NAMES[s.id] in info.settings)
 		)
+
+	def _tagsActive(self):
+		"""Whether audio tags are on for the chosen model; its checkbox is hidden for others."""
+		return self._audioTags and _modelInfo(self._modelId).tags
 
 	@contextmanager
 	def _allSettingsVisible(self):
@@ -1355,6 +1462,7 @@ class SynthDriver(BaseSynthDriver):
 				if changedSetting:
 					for panel in _openVoicePanels():
 						panel.updateDriverSettings(changedSetting=changedSetting)
+						_orderVoicePanel(panel, [s.id for s in self._allSettings])
 			except Exception:
 				log.debugWarning("ElevenLabs: could not refresh NVDA's settings", exc_info=True)
 
@@ -1882,7 +1990,7 @@ class SynthDriver(BaseSynthDriver):
 				if settleFormat and e.code == 403 and _isOutputFormatRejection(detail) \
 						and self._useNextOutputFormat():
 					continue
-				if _isRefusal(e.code) and self._refuseFields(modelId, detail):
+				if _isRefusal(e.code) and self._refuseFields(modelId, detail, body):
 					continue
 				return _classifyRefusal(e.code, detail), detail.strip()
 			except (URLError, OSError) as e:
@@ -1976,22 +2084,28 @@ class SynthDriver(BaseSynthDriver):
 		except ElevenLabsUnavailable as e:
 			log.debugWarning(f"ElevenLabs: could not read the model list; using the built-in one. {e}")
 			data = None
-		names = OrderedDict()
+		listed = OrderedDict()
 		for model in data if isinstance(data, list) else ():
 			if isinstance(model, dict) and model.get("can_do_text_to_speech") and model.get("model_id"):
-				names[model["model_id"]] = model.get("name") or model["model_id"]
+				listed[model["model_id"]] = model
 		_offeredModels.clear()
-		if not names:
+		if not listed:
 			_offeredModels.update(MODELS)
 			return
 		# Release order: older unknown ones, MODELS, then new ones, likely newer.
 		known = list(_EARLIER_MODELS) + list(MODELS)
-		order = [m for m in known if m in names or m == DEFAULT_MODEL]
-		order += [m for m in names if m not in known]
+		order = [m for m in known if m in listed or m == DEFAULT_MODEL]
+		order += [m for m in listed if m not in known]
 		for modelId in order:
-			_offeredModels[modelId] = MODELS.get(modelId) or ModelInfo(
-				names[modelId], True, _ALL_SETTINGS, realtime=False
-			)
+			model = listed.get(modelId, {})
+			info = MODELS.get(modelId)
+			if info is None:
+				languages = [lang.get("language_id") for lang in model.get("languages") or () if isinstance(lang, dict)]
+				info = ModelInfo(
+					model.get("name") or modelId, True, _ALL_SETTINGS, realtime=False,
+					englishOnly=languages == ["en"],
+				)
+			_offeredModels[modelId] = info._replace(settings=_withoutDeclined(info.settings, model))
 
 	def _loadRefusedFields(self):
 		"""Restores the fields each model has refused."""
@@ -2001,13 +2115,18 @@ class SynthDriver(BaseSynthDriver):
 			if fields:
 				_refused[modelId] = fields
 
-	def _refuseFields(self, modelId, detail):
-		"""Records fields a refusal names for a model; True if any are new.
+	def _refuseFields(self, modelId, detail, body):
+		"""Records fields a refusal of body names for a model; True if any are new.
 
 		They are left out of later requests, and their settings hidden."""
 		info = _modelInfo(modelId)
 		sent = set(info.settings) | ({"language_code"} if info.languageCode else set())
 		new = {f for f in sent if re.search(rf"\b{f}\b", detail.lower())}
+		if "apply_text_normalization" in new and body.get("apply_text_normalization") == "on":
+			# Only the value was refused, so just "on" is left out of the box.
+			new.discard("apply_text_normalization")
+			new.add(_NORMALIZATION_ON_REFUSED)
+		new -= _refused.get(modelId, set())
 		if not new:
 			return False
 		fields = _refused.setdefault(modelId, set())
@@ -2128,7 +2247,8 @@ class SynthDriver(BaseSynthDriver):
 		if "apply_text_normalization" in info.settings:
 			if probe:
 				body["apply_text_normalization"] = "auto"
-			elif not plain and self._normalization != "auto":
+			elif not plain and self._normalization != "auto" \
+					and self._normalization in self._normalizationsFor(modelId):
 				body["apply_text_normalization"] = self._normalization
 		body["voice_settings"] = self._voiceSettings(modelId, plain, probe)
 		return body
@@ -2152,8 +2272,11 @@ class SynthDriver(BaseSynthDriver):
 				"speed": self._apiSpeed(modelId),
 			}
 		if modelId in self._presetStabilityModels:
-			stability = values["stability"]
-			values["stability"] = min(STABILITY_PRESETS, key=lambda preset: abs(preset - stability))
+			if plain or probe:
+				stability = values["stability"]
+				values["stability"] = min(STABILITY_PRESETS, key=lambda preset: abs(preset - stability))
+			else:
+				values["stability"] = STABILITY_PRESET_VALUES[self._stabilityPreset]
 		accepted = _modelInfo(modelId).settings
 		return {name: value for name, value in values.items() if name in accepted}
 
@@ -2165,7 +2288,15 @@ class SynthDriver(BaseSynthDriver):
 			return False
 		self._presetStabilityModels.add(modelId)
 		log.debug(f"ElevenLabs: {modelId} refused the stability value; using presets.")
+		if modelId == self._modelId:
+			# The box replaces the slider, starting where the slider was, so the voice keeps its sound.
+			self._stabilityPreset = self._nearestStabilityPreset()
+			self._refreshGui(changedSetting="model")
 		return True
+
+	def _nearestStabilityPreset(self):
+		stability = self._stability / 100.0
+		return min(STABILITY_PRESET_VALUES, key=lambda name: abs(STABILITY_PRESET_VALUES[name] - stability))
 
 	def _reportModelFailure(self, modelId, reason):
 		"""Logs that a model failed and the default one spoke, once per reason."""
@@ -2230,15 +2361,24 @@ class SynthDriver(BaseSynthDriver):
 			self._refreshGui(changedSetting="model")
 
 	# --- Text normalization ---
-	# The box is hidden for a model that refuses apply_text_normalization.
+	# The box is hidden for a model that refuses apply_text_normalization, and
+	# "on" left out for one that refused only that.
+
+	@staticmethod
+	def _normalizationsFor(modelId):
+		refused = _NORMALIZATION_ON_REFUSED in _refused.get(modelId, ())
+		return [mode for mode in NORMALIZATIONS if not (refused and mode == "on")]
 
 	def _get_availableNormalizations(self):
 		return OrderedDict(
-			(mode, StringParameterInfo(mode, name))
-			for mode, name in NORMALIZATIONS.items()
+			(mode, StringParameterInfo(mode, NORMALIZATIONS[mode]))
+			for mode in self._normalizationsFor(self._modelId)
 		)
 
 	def _get_normalization(self):
+		# What the model gets, for the box; NVDA saves the choice itself, kept for other models.
+		if not self._configuring and self._normalization not in self._normalizationsFor(self._modelId):
+			return DEFAULT_NORMALIZATION
 		return self._normalization
 
 	def _set_normalization(self, value):
@@ -2272,8 +2412,11 @@ class SynthDriver(BaseSynthDriver):
 
 	def _get_language(self):
 		# Reported to NVDA so symbol pronunciation follows the chosen language.
-		# None means "no opinion", so NVDA keeps using its own language.
-		return None if self._language == "auto" else self._language
+		# None means "no opinion", so NVDA keeps using its own language. A model
+		# without language_code hides the box, so its choice is no opinion either.
+		if self._language == "auto" or not _modelInfo(self._modelId).languageCode:
+			return None
+		return self._language
 
 	def _get_availableLanguages(self):
 		return {langId for langId in LANGUAGES if langId != "auto"}
@@ -2300,6 +2443,22 @@ class SynthDriver(BaseSynthDriver):
 
 	def _set_stability(self, value):
 		self._stability = max(0, min(100, int(value)))
+
+	def _get_availableStabilitypresets(self):
+		return OrderedDict(
+			(preset, StringParameterInfo(preset, name))
+			for preset, name in STABILITY_PRESET_NAMES.items()
+		)
+
+	def _get_stabilityPreset(self):
+		return self._stabilityPreset
+
+	def _set_stabilityPreset(self, value):
+		if value in STABILITY_PRESET_NAMES:
+			self._stabilityPreset = value
+		else:
+			log.warning(f"ElevenLabs: unknown stability {value!r}; using natural.")
+			self._stabilityPreset = DEFAULT_STABILITY_PRESET
 
 	def _get_clarity(self):
 		return self._clarity

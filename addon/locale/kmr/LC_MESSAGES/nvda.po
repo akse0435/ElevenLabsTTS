@@ -66,6 +66,15 @@ msgstr "Vekirî"
 msgid "Off"
 msgstr "Girtî"
 
+msgid "Creative"
+msgstr "Afirîner"
+
+msgid "Natural"
+msgstr "Xwezayî"
+
+msgid "Robust"
+msgstr "Stabîl"
+
 msgid "Split long text"
 msgstr "Nivîsa dirêj parve bike"
 

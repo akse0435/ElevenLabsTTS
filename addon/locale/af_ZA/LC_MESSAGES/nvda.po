@@ -66,6 +66,15 @@ msgstr "Aan"
 msgid "Off"
 msgstr "Af"
 
+msgid "Creative"
+msgstr "Kreatief"
+
+msgid "Natural"
+msgstr "Natuurlik"
+
+msgid "Robust"
+msgstr "Robuust"
+
 msgid "Split long text"
 msgstr "Verdeel lang teks"
 

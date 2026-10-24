@@ -66,6 +66,15 @@ msgstr "Ar siúl"
 msgid "Off"
 msgstr "As"
 
+msgid "Creative"
+msgstr "Cruthaitheach"
+
+msgid "Natural"
+msgstr "Nádúrtha"
+
+msgid "Robust"
+msgstr "Láidir"
+
 msgid "Split long text"
 msgstr "Roinn téacs fada"
 

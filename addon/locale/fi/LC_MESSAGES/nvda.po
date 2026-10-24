@@ -66,6 +66,15 @@ msgstr "Päällä"
 msgid "Off"
 msgstr "Pois"
 
+msgid "Creative"
+msgstr "Luova"
+
+msgid "Natural"
+msgstr "Luonnollinen"
+
+msgid "Robust"
+msgstr "Vakaa"
+
 msgid "Split long text"
 msgstr "Jaa pitkä teksti"
 

@@ -66,6 +66,15 @@ msgstr "Bật"
 msgid "Off"
 msgstr "Tắt"
 
+msgid "Creative"
+msgstr "Sáng tạo"
+
+msgid "Natural"
+msgstr "Tự nhiên"
+
+msgid "Robust"
+msgstr "Ổn định"
+
 msgid "Split long text"
 msgstr "Chia nhỏ văn bản dài"
 

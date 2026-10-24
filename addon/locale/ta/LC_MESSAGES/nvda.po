@@ -66,6 +66,15 @@ msgstr "இயக்கு"
 msgid "Off"
 msgstr "நிறுத்து"
 
+msgid "Creative"
+msgstr "படைப்பாற்றல்"
+
+msgid "Natural"
+msgstr "இயல்பான"
+
+msgid "Robust"
+msgstr "நிலையான"
+
 msgid "Split long text"
 msgstr "நீண்ட உரையைப் பிரி"
 

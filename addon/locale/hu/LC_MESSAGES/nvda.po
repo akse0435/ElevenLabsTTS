@@ -66,6 +66,15 @@ msgstr "Be"
 msgid "Off"
 msgstr "Ki"
 
+msgid "Creative"
+msgstr "Kreatív"
+
+msgid "Natural"
+msgstr "Természetes"
+
+msgid "Robust"
+msgstr "Robusztus"
+
 msgid "Split long text"
 msgstr "Hosszú szöveg felosztása"
 

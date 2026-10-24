@@ -66,6 +66,15 @@ msgstr "Shid"
 msgid "Off"
 msgstr "Dami"
 
+msgid "Creative"
+msgstr "Hal-abuur"
+
+msgid "Natural"
+msgstr "Dabiici"
+
+msgid "Robust"
+msgstr "Adag"
+
 msgid "Split long text"
 msgstr "Kala qaybi qoraalka dheer"
 

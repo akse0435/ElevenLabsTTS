@@ -66,6 +66,15 @@ msgstr "Įjungta"
 msgid "Off"
 msgstr "Išjungta"
 
+msgid "Creative"
+msgstr "Kūrybiškas"
+
+msgid "Natural"
+msgstr "Natūralus"
+
+msgid "Robust"
+msgstr "Stabilus"
+
 msgid "Split long text"
 msgstr "Skaidyti ilgą tekstą"
 

@@ -66,6 +66,15 @@ msgstr "Zapnuté"
 msgid "Off"
 msgstr "Vypnuté"
 
+msgid "Creative"
+msgstr "Kreatívna"
+
+msgid "Natural"
+msgstr "Prirodzená"
+
+msgid "Robust"
+msgstr "Robustná"
+
 msgid "Split long text"
 msgstr "Rozdeliť dlhý text"
 

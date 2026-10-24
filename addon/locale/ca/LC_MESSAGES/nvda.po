@@ -66,6 +66,15 @@ msgstr "Activat"
 msgid "Off"
 msgstr "Desactivat"
 
+msgid "Creative"
+msgstr "Creatiu"
+
+msgid "Natural"
+msgstr "Natural"
+
+msgid "Robust"
+msgstr "Robust"
+
 msgid "Split long text"
 msgstr "Divideix el text llarg"
 

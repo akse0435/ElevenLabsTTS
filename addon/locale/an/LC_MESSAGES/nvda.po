@@ -66,6 +66,15 @@ msgstr "Activau"
 msgid "Off"
 msgstr "Desactivau"
 
+msgid "Creative"
+msgstr "Creativo"
+
+msgid "Natural"
+msgstr "Natural"
+
+msgid "Robust"
+msgstr "Robusto"
+
 msgid "Split long text"
 msgstr "Dividir o texto largo"
 

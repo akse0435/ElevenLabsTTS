@@ -66,6 +66,15 @@ msgstr "开"
 msgid "Off"
 msgstr "关"
 
+msgid "Creative"
+msgstr "创意"
+
+msgid "Natural"
+msgstr "自然"
+
+msgid "Robust"
+msgstr "稳定"
+
 msgid "Split long text"
 msgstr "拆分长文本"
 

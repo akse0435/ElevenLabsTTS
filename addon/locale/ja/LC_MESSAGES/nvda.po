@@ -66,6 +66,15 @@ msgstr "オン"
 msgid "Off"
 msgstr "オフ"
 
+msgid "Creative"
+msgstr "クリエイティブ"
+
+msgid "Natural"
+msgstr "ナチュラル"
+
+msgid "Robust"
+msgstr "ロバスト"
+
 msgid "Split long text"
 msgstr "長いテキストを分割"
 

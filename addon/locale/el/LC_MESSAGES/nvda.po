@@ -66,6 +66,15 @@ msgstr "Ενεργό"
 msgid "Off"
 msgstr "Ανενεργό"
 
+msgid "Creative"
+msgstr "Δημιουργική"
+
+msgid "Natural"
+msgstr "Φυσική"
+
+msgid "Robust"
+msgstr "Σταθερή"
+
 msgid "Split long text"
 msgstr "Διαίρεση μεγάλου κειμένου"
 

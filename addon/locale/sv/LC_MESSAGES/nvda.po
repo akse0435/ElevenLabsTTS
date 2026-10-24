@@ -66,6 +66,15 @@ msgstr "På"
 msgid "Off"
 msgstr "Av"
 
+msgid "Creative"
+msgstr "Kreativ"
+
+msgid "Natural"
+msgstr "Naturlig"
+
+msgid "Robust"
+msgstr "Robust"
+
 msgid "Split long text"
 msgstr "Dela upp lång text"
 

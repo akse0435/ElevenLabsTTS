@@ -66,6 +66,15 @@ msgstr "चालू"
 msgid "Off"
 msgstr "बंद"
 
+msgid "Creative"
+msgstr "रचनात्मक"
+
+msgid "Natural"
+msgstr "स्वाभाविक"
+
+msgid "Robust"
+msgstr "स्थिर"
+
 msgid "Split long text"
 msgstr "लंबे पाठ को विभाजित करें"
 

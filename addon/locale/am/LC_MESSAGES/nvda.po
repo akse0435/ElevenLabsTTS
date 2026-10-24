@@ -66,6 +66,15 @@ msgstr "አብራ"
 msgid "Off"
 msgstr "አጥፋ"
 
+msgid "Creative"
+msgstr "ፈጠራዊ"
+
+msgid "Natural"
+msgstr "ተፈጥሯዊ"
+
+msgid "Robust"
+msgstr "ጠንካራ"
+
 msgid "Split long text"
 msgstr "ረጅም ጽሑፍ ከፋፍል"
 

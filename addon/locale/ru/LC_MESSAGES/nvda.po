@@ -66,6 +66,15 @@ msgstr "Вкл."
 msgid "Off"
 msgstr "Выкл."
 
+msgid "Creative"
+msgstr "Творческая"
+
+msgid "Natural"
+msgstr "Естественная"
+
+msgid "Robust"
+msgstr "Устойчивая"
+
 msgid "Split long text"
 msgstr "Разбивать длинный текст"
 

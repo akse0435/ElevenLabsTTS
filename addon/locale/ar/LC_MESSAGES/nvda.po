@@ -66,6 +66,15 @@ msgstr "تشغيل"
 msgid "Off"
 msgstr "إيقاف"
 
+msgid "Creative"
+msgstr "إبداعي"
+
+msgid "Natural"
+msgstr "طبيعي"
+
+msgid "Robust"
+msgstr "ثابت"
+
 msgid "Split long text"
 msgstr "تقسيم النص الطويل"
 

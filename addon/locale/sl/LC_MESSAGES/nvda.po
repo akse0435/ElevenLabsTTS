@@ -66,6 +66,15 @@ msgstr "Vklopljeno"
 msgid "Off"
 msgstr "Izklopljeno"
 
+msgid "Creative"
+msgstr "Ustvarjalno"
+
+msgid "Natural"
+msgstr "Naravno"
+
+msgid "Robust"
+msgstr "Robustno"
+
 msgid "Split long text"
 msgstr "Razdeli dolgo besedilo"
 

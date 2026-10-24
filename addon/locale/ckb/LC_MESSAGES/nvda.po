@@ -66,6 +66,15 @@ msgstr "چالاک"
 msgid "Off"
 msgstr "ناچالاک"
 
+msgid "Creative"
+msgstr "داهێنەرانە"
+
+msgid "Natural"
+msgstr "سروشتی"
+
+msgid "Robust"
+msgstr "جێگیر"
+
 msgid "Split long text"
 msgstr "دابەشکردنی دەقی درێژ"
 

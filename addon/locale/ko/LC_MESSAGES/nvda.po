@@ -66,6 +66,15 @@ msgstr "켜기"
 msgid "Off"
 msgstr "끄기"
 
+msgid "Creative"
+msgstr "창의적"
+
+msgid "Natural"
+msgstr "자연스러움"
+
+msgid "Robust"
+msgstr "안정적"
+
 msgid "Split long text"
 msgstr "긴 텍스트 나누기"
 

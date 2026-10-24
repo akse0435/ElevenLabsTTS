@@ -11,6 +11,7 @@
 # from 2025.1 onwards, hence the minimum version.
 
 import array
+import bisect
 import hashlib
 import http.client
 import io
@@ -21,7 +22,8 @@ import select
 import struct
 import threading
 import time
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict, deque, namedtuple
+from itertools import accumulate
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from ctypes import c_short
@@ -39,6 +41,7 @@ from autoSettingsUtils.driverSetting import (
 )
 from autoSettingsUtils.utils import StringParameterInfo
 from logHandler import log
+from speech import sayAll
 from speech.commands import IndexCommand, LangChangeCommand
 from synthDriverHandler import (
 	SynthDriver as BaseSynthDriver,
@@ -103,6 +106,9 @@ PREVIOUS_REQUEST_GRACE = 0.5
 POLL_INTERVAL = 0.05
 # Silence mid-utterance, in seconds, long enough to log.
 GAP_TO_LOG = 0.3
+# How long the speech thread waits for say all's next utterance before letting
+# the player go idle, which would hold the next request back until playback ends.
+SAY_ALL_IDLE_GRACE = 0.5
 
 # Long text is split between sentences; see ModelInfo.parts.
 _SENTENCE_END = re.compile(r"(?<=[.!?\u2026])\s+|\n+")
@@ -532,6 +538,19 @@ def _splitText(text, first, later):
 	return _group(pieces, later, first) or [text]
 
 
+def _nonSpace(text):
+	"""The characters of text other than white space, which splitting leaves alone,
+	so they tell which part an index falls in."""
+	return len(_WHITESPACE.sub("", text))
+
+
+def _isSayAllRunning():
+	try:
+		return sayAll.SayAllHandler is not None and sayAll.SayAllHandler.isRunning()
+	except Exception:
+		return False
+
+
 def _hideTags(text):
 	"""Swaps the brackets of audio tags in text for characters NVDA keeps."""
 	def hide(match):
@@ -878,6 +897,12 @@ class _Download(threading.Thread):
 		"""Stops passing audio on; the connection closes when the server next answers."""
 		self._wanted = False
 
+	@property
+	def done(self):
+		"""Whether all audio has arrived."""
+		with self._doneLock:
+			return self._done
+
 	def whenDone(self, callback):
 		"""Calls callback once all audio has arrived, now if it already has."""
 		with self._doneLock:
@@ -936,6 +961,73 @@ class _Download(threading.Thread):
 		self.chunks.put(b"")
 
 
+class _IndexSchedule:
+	"""Reports an utterance's indexes as its audio plays, in say all.
+
+	The splitter can only cut between parts, so an index is reported when the part
+	its text falls in starts playing. Those after all the text, which NVDA waits for
+	before it sends the next utterance, go once the last part has fully arrived and
+	started playing, so the next utterance can be fetched while this one plays."""
+
+	def __init__(self, report, byPart, trailing):
+		self._report = report
+		self._lock = threading.Lock()
+		# Indexes not yet reported, one list per part and the trailing ones last.
+		self._pending = [list(indexes) for indexes in byPart] + [list(trailing)]
+		self._lastPart = len(byPart) - 1
+		# The last part whose audio has started playing.
+		self._started = -1
+		self._downloaded = False
+		# Set once the trailing indexes are reported.
+		self.finished = threading.Event()
+
+	def started(self, part):
+		with self._lock:
+			self._started = max(self._started, part)
+			self._reportUpTo(part)
+			self._checkTrailing()
+
+	def downloaded(self):
+		with self._lock:
+			self._downloaded = True
+			self._checkTrailing()
+
+	def flush(self):
+		"""Reports every index not yet reported, e.g. when synthesis failed."""
+		with self._lock:
+			self._reportUpTo(len(self._pending) - 1)
+
+	def _checkTrailing(self):
+		if self._downloaded and self._started >= self._lastPart:
+			self._reportUpTo(len(self._pending) - 1)
+
+	def _reportUpTo(self, slot):
+		for i in range(slot + 1):
+			pending, self._pending[i] = self._pending[i], []
+			for index in pending:
+				self._report(index)
+		if slot == len(self._pending) - 1:
+			self.finished.set()
+
+
+class _Job:
+	"""One utterance from NVDA, as the speech thread works through it."""
+
+	__slots__ = ("gen", "text", "indexes", "langOverride", "sayAll", "parts", "schedule")
+
+	def __init__(self, gen, text, indexes, langOverride, sayAll):
+		self.gen = gen
+		self.text = text
+		# (index, non-space characters of text before it)
+		self.indexes = indexes
+		self.langOverride = langOverride
+		# Spoken while say all was running.
+		self.sayAll = sayAll
+		# Set by _SpeechWorker._plan.
+		self.parts = None
+		self.schedule = None
+
+
 class _SpeechWorker(threading.Thread):
 	"""Background thread: fetches audio from the API and feeds the player."""
 
@@ -944,7 +1036,10 @@ class _SpeechWorker(threading.Thread):
 	def __init__(self, driver):
 		super().__init__(name="ElevenLabsSpeechWorker")
 		self.driver = driver
-		self.queue = queue.Queue()
+		# Jobs waiting, and None once stopped. Not a queue.Queue, as say all looks
+		# at the next job before taking it.
+		self._jobs = deque()
+		self._jobsChanged = threading.Condition()
 		self.generation = 0  # incremented on cancel so stale jobs are dropped
 		self._lock = threading.Lock()
 		self._running = True
@@ -962,78 +1057,188 @@ class _SpeechWorker(threading.Thread):
 		self._connections = _ConnectionPool()
 		self.start()
 
-	def enqueue(self, text, indexes, langOverride=None):
+	def enqueue(self, text, indexes, langOverride=None, sayAll=False):
 		with self._lock:
 			gen = self.generation
-		self.queue.put((gen, text, indexes, langOverride))
+		with self._jobsChanged:
+			self._jobs.append(_Job(gen, text, indexes, langOverride, sayAll))
+			self._jobsChanged.notify()
 
 	def cancelAll(self):
 		with self._lock:
 			self.generation += 1
 		self._dropPrefetch()
-		# Empty the queue.
-		try:
-			while True:
-				self.queue.get_nowait()
-		except queue.Empty:
-			pass
+		with self._jobsChanged:
+			self._jobs.clear()
 
 	def stop(self):
 		self._running = False
 		self.cancelAll()
 		self._connections.closeAll()
-		self.queue.put(None)
+		with self._jobsChanged:
+			self._jobs.append(None)
+			self._jobsChanged.notify()
 
 	def _isCurrent(self, gen):
 		with self._lock:
 			return gen == self.generation and self._running
 
+	def _takeJob(self):
+		with self._jobsChanged:
+			while not self._jobs:
+				self._jobsChanged.wait()
+			return self._jobs.popleft()
+
+	def _peekJob(self):
+		with self._jobsChanged:
+			return self._jobs[0] if self._jobs else None
+
+	def _waitForJob(self, timeout):
+		"""True if a job is waiting, or arrives within timeout."""
+		with self._jobsChanged:
+			if not self._jobs:
+				self._jobsChanged.wait(timeout)
+			return bool(self._jobs)
+
+	def _waitForNextSayAll(self, job):
+		"""True if NVDA sends more speech soon after job's trailing indexes, which it
+		waits for, are reported; they may still be in the playback buffer."""
+		# Bounded in case the player was rebuilt, which drops its callbacks.
+		deadline = max(self._playEnd or 0, time.time()) + 1
+		while not job.schedule.finished.is_set() and time.time() < deadline:
+			if self._waitForJob(POLL_INTERVAL):
+				return True
+			if not self._isCurrent(job.gen):
+				return False
+		return self._waitForJob(SAY_ALL_IDLE_GRACE)
+
 	def run(self):
 		while True:
-			item = self.queue.get()
-			if item is None:
+			job = self._takeJob()
+			if job is None:
 				return
-			gen, text, indexes, langOverride = item
-			if not self._isCurrent(gen):
+			if not self._isCurrent(job.gen):
 				continue
 			completed = False
 			try:
-				completed = self._speakParts(gen, text, langOverride)
+				completed = self._speakJob(job)
 			except Exception:
 				log.error("Unexpected error in the ElevenLabs driver", exc_info=True)
-			if self._isCurrent(gen):
+			if not self._isCurrent(job.gen):
+				continue
+			if not (job.sayAll and completed):
 				# Indexes are reported even if synthesis failed, since NVDA's
-				# speech queue waits for them before moving on.
-				for index in indexes:
-					synthIndexReached.notify(synth=self.driver, index=index)
-				if self.queue.empty():
-					player = self.driver._player
-					if completed and player is not None:
-						try:
-							player.idle()
-						except Exception:
-							pass
-					synthDoneSpeaking.notify(synth=self.driver)
+				# speech queue waits for them before moving on. In say all they
+				# are reported as the audio plays instead.
+				self._schedule(job).flush()
+			if self._peekJob() is not None:
+				continue
+			# Idling now would hold back the next say all utterance until this
+			# one has finished playing, so it is given a moment to arrive.
+			if job.sayAll and completed and self._waitForNextSayAll(job):
+				continue
+			if not self._isCurrent(job.gen):
+				continue
+			player = self.driver._player
+			if completed and player is not None:
+				try:
+					player.idle()
+				except Exception:
+					pass
+			# Everything has played, so any index still waiting is reached.
+			self._schedule(job).flush()
+			synthDoneSpeaking.notify(synth=self.driver)
 
-	def _speakParts(self, gen, text, langOverride):
-		"""Speaks text, in parts when splitting is on."""
+	def _schedule(self, job):
+		"""job's indexes; planned here if the job failed before it got that far."""
+		if job.schedule is None:
+			job.schedule = _IndexSchedule(self._reporter(job.gen), [], [index for index, before in job.indexes])
+		return job.schedule
+
+	def _reporter(self, gen):
+		def report(index):
+			if self._isCurrent(gen):
+				synthIndexReached.notify(synth=self.driver, index=index)
+		return report
+
+	def _plan(self, job):
+		"""Splits job's text into parts and works out which part each index goes with."""
+		if job.parts is not None:
+			return
 		modelId = self.driver.model
-		self.driver._warnIfTooFast(modelId)
-		parts = _splitText(text, *_modelInfo(modelId).parts) if self.driver.splitText else [text]
+		parts = _splitText(job.text, *_modelInfo(modelId).parts) if self.driver.splitText else [job.text]
 		# Joined screen lines can hold double spaces, which v3 may speak as a breath.
 		parts = [p for p in (" ".join(p.split()) for p in parts) if p]
+		ends = list(accumulate(_nonSpace(p) for p in parts))
+		byPart = [[] for _ in parts]
+		trailing = []
+		for index, before in job.indexes:
+			# The part whose text ends after the index, so it is reported as that part starts.
+			part = bisect.bisect_right(ends, before)
+			(byPart[part] if part < len(parts) else trailing).append(index)
 		if self.driver._tagsActive() and _modelInfo(modelId).tags:
-			parts = [self._withTag(gen, p) for p in parts]
-			# Tags alone are refused (HTTP 400), but still carry over to the next text.
-			parts = [p for p in parts if _TAG.sub("", p).strip()]
-		self._playEnd = None
+			parts = [self._withTag(job.gen, p) for p in parts]
+			# Tags alone are refused (HTTP 400), but still carry over to the next text,
+			# and so do their indexes.
+			keptParts, keptIndexes, carried = [], [], []
+			for text, indexes in zip(parts, byPart):
+				carried += indexes
+				if _TAG.sub("", text).strip():
+					keptParts.append(text)
+					keptIndexes.append(carried)
+					carried = []
+			parts, byPart, trailing = keptParts, keptIndexes, carried + trailing
+		job.parts = parts
+		job.schedule = _IndexSchedule(self._reporter(job.gen), byPart, trailing)
+
+	def _speakJob(self, job):
+		"""Speaks job, in parts when splitting is on."""
+		self.driver._warnIfTooFast(self.driver.model)
+		self._plan(job)
+		if not job.sayAll:
+			# Say all's utterances follow one another, so a gap between them is worth logging.
+			self._playEnd = None
+		completed = False
 		try:
-			for i, part in enumerate(parts):
-				if not self._synthesize(gen, part, langOverride, parts[i + 1:]):
+			for i, part in enumerate(job.parts):
+				if not self._synthesize(job.gen, part, job.langOverride, job.parts[i + 1:], job, i):
 					return False
+			if job.sayAll and not job.parts:
+				# Only indexes, or only audio tags: reached once what came before has played.
+				self._afterPlayed(job.schedule.downloaded)
+			elif job.sayAll:
+				job.schedule.downloaded()
+			completed = True
 			return True
 		finally:
-			self._dropPrefetch()
+			# What is left after a success is the next say all utterance's first part.
+			if not completed:
+				self._dropPrefetch()
+
+	def _afterPlayed(self, callback):
+		"""Calls callback once the audio fed so far has played."""
+		player = self.driver._player
+		if player is None:
+			callback()
+			return
+		try:
+			# A single silent sample, only to be told when playback gets there.
+			player.feed(b"\0\0", onDone=callback)
+		except Exception:
+			log.debugWarning("ElevenLabs: could not wait for playback", exc_info=True)
+			callback()
+
+	def _prefetchNextJob(self, gen):
+		"""Starts the next say all utterance's first part while this one plays.
+		False while there is no next utterance yet."""
+		job = self._peekJob()
+		if job is None:
+			return False
+		if job.gen == gen and job.sayAll:
+			self._plan(job)
+			if job.parts:
+				self._prefetchNext(gen, job.parts[0], job.langOverride)
+		return True
 
 	def _buildRequest(self, key, text, langOverride, modelId):
 		"""The speech request for text, and its (voice, model) pair."""
@@ -1127,8 +1332,10 @@ class _SpeechWorker(threading.Thread):
 		if download is not None:
 			download.abandon()
 
-	def _synthesize(self, gen, text, langOverride=None, following=()):
+	def _synthesize(self, gen, text, langOverride=None, following=(), job=None, part=0):
+		"""Speaks one part; job and part place its indexes in say all."""
 		driver = self.driver
+		schedule = job.schedule if job is not None and job.sayAll else None
 		key = driver._getApiKey()
 		if not key:
 			driver.reportError(
@@ -1146,6 +1353,8 @@ class _SpeechWorker(threading.Thread):
 				return False
 			if not self._textFor(text, modelId):
 				# Only audio tags, which this model would read aloud.
+				if schedule is not None:
+					schedule.started(part)
 				return True
 			isUlaw = driver.outputFormat.startswith("ulaw")
 			req, pair = self._buildRequest(key, text, langOverride, modelId)
@@ -1158,6 +1367,10 @@ class _SpeechWorker(threading.Thread):
 				download = self._startDownload(req, pair)
 			if following:
 				download.whenDone(lambda: self._prefetchNext(gen, following[0], langOverride))
+			elif schedule is not None:
+				download.whenDone(schedule.downloaded)
+			# The next say all utterance is fetched once this, its last part, has arrived.
+			prefetchNextJob = schedule is not None and not following
 			player = sonic = None
 			fedAudio = False
 			received = 0  # bytes of 16 bit audio, before sonic
@@ -1205,14 +1418,15 @@ class _SpeechWorker(threading.Thread):
 					if not chunk:
 						continue
 					self._trackPlayback(len(chunk), modelId, text)
-					# feed blocks until there is room in the playback buffer
-					player.feed(chunk)
+					self._feed(player, chunk, schedule, part, not fedAudio)
 					fedAudio = True
+					if prefetchNextJob and download.done:
+						prefetchNextJob = not self._prefetchNextJob(gen)
 				if sonic is not None:
 					chunk = _sonicDrain(sonic)
 					if chunk:
 						self._trackPlayback(len(chunk), modelId, text)
-						player.feed(chunk)
+						self._feed(player, chunk, schedule, part, not fedAudio)
 						fedAudio = True
 			except HTTPError as e:
 				detail = _REQUEST_ID_PATTERN.sub("", self._readErrorDetail(e))
@@ -1293,8 +1507,19 @@ class _SpeechWorker(threading.Thread):
 				f"ElevenLabs: {_modelInfo(modelId).name} returned "
 				f"{received / (2.0 * OUTPUT_FORMATS[driver._formatIndex][1]):.2f} s of audio for {len(text)} chars."
 			)
+			if schedule is not None and not fedAudio:
+				schedule.started(part)
 			driver._onSynthesisSucceeded()
 			return True
+
+	@staticmethod
+	def _feed(player, chunk, schedule, part, first):
+		"""Feeds chunk; the first of a say all part reports the part's indexes once played."""
+		# feed blocks until there is room in the playback buffer
+		if schedule is not None and first:
+			player.feed(chunk, onDone=lambda: schedule.started(part))
+		else:
+			player.feed(chunk)
 
 	def _waitBeforeRetry(self, gen):
 		time.sleep(RETRY_DELAY)
@@ -1512,26 +1737,31 @@ class SynthDriver(BaseSynthDriver):
 
 	def speak(self, speechSequence):
 		textParts = []
+		# (index, non-space characters before it), which places it in a part.
 		indexes = []
+		before = 0
 		langOverride = None
 		for item in speechSequence:
 			if isinstance(item, str):
 				textParts.append(item)
+				before += _nonSpace(item)
 			elif isinstance(item, IndexCommand):
-				indexes.append(item.index)
+				indexes.append((item.index, before))
 			elif isinstance(item, LangChangeCommand):
 				# NVDA sends e.g. "en_US"; only the language part is used. None,
 				# or a language the API lacks, means the language setting.
 				code = (item.lang or "").split("_")[0].lower()
 				langOverride = code if code in LANGUAGES and code != "auto" else None
 		text = " ".join(textParts).replace(_TAG_OPEN, "[").replace(_TAG_CLOSE, "]").strip()
-		if not text:
+		inSayAll = _isSayAllRunning()
+		# In say all, earlier speech may still be playing, so indexes wait their turn.
+		if not text and not inSayAll:
 			# No text, but indexes must still be reported as reached.
-			for index in indexes:
+			for index, before in indexes:
 				synthIndexReached.notify(synth=self, index=index)
 			synthDoneSpeaking.notify(synth=self)
 			return
-		self._worker.enqueue(text, indexes, langOverride)
+		self._worker.enqueue(text, indexes, langOverride, inSayAll)
 
 	def cancel(self):
 		self._worker.cancelAll()

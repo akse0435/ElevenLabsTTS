@@ -1,3 +1,7 @@
+V1.4 (10/24/2026):
+Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.
+During say all, the caret now follows the speech more closely.
+
 V1.3 (10/04/2026):
 All settings and messages within the add-on are now localized.
 If the ElevenLabs API suddenly becomes unavailable during a session, NVDA now reverts to using eSpeak instead of becoming silent.

@@ -201,3 +201,43 @@ msgid ""
 msgstr ""
 "أصبحت جميع الإعدادات والرسائل في الإضافة مترجمة الآن.\n"
 "إذا أصبحت واجهة برمجة ElevenLabs غير متاحة فجأة أثناء الجلسة، يعود NVDA الآن إلى استخدام eSpeak بدلًا من أن يصمت."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "تعذّر تحميل مُركِّب كلام للتنقل؛ يُستخدم ElevenLabs لكل الكلام."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "تعذّر تحميل {synth}؛ يُستخدم {fallback} للتنقل."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs غير متاح؛ ستستخدم القراءة المتواصلة {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "لا شيء (ElevenLabs ينطق كل شيء)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&مُركِّب الكلام للتنقل:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "التبديل بين مُركِّب كلام منفصل للتنقل وElevenLabs لكل الكلام"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "لم يُختر مُركِّب كلام للتنقل؛ اختر واحدًا في إعدادات ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "استخدام ElevenLabs لكل الكلام."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "استخدام {synth} للتنقل."

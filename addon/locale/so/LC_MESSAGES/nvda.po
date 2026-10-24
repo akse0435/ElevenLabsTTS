@@ -202,3 +202,43 @@ msgid ""
 msgstr ""
 "Dhammaan dejinta iyo fariimaha ku jira kordhinta hadda waa la turjumay.\n"
 "Haddii API-ga ElevenLabs si lama filaan ah aan loo heli karin inta lagu jiro fadhi, NVDA hadda wuxuu u wareegaa eSpeak halkii uu aamusi lahaa."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Lama soo shubi karin codeeye loogu talagalay socodka; ElevenLabs ayaa loo isticmaalayaa dhammaan hadalka."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Lama soo shubi karin {synth}; {fallback} ayaa loo isticmaalayaa socodka."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs lama heli karo; akhri dhammaan waxay isticmaali doontaa {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Midna (ElevenLabs ayaa wax walba ku hadla)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Codeeyaha socodka:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Wuxuu kala beddelaa codeeye gaar ah oo socodka loogu talagalay iyo ElevenLabs oo loogu talagalay dhammaan hadalka"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Lama dooran codeeye socod; ka dooro mid dejinta ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs ayaa loo isticmaalayaa dhammaan hadalka."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} ayaa loo isticmaalayaa socodka."

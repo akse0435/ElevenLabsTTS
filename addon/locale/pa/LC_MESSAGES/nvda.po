@@ -199,3 +199,43 @@ msgid ""
 msgstr ""
 "ਐਡ-ਆਨ ਦੀਆਂ ਸਾਰੀਆਂ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸੁਨੇਹੇ ਹੁਣ ਅਨੁਵਾਦਿਤ ਹਨ।\n"
 "ਜੇ ਕਿਸੇ ਸੈਸ਼ਨ ਦੌਰਾਨ ElevenLabs API ਅਚਾਨਕ ਉਪਲਬਧ ਨਹੀਂ ਰਹਿੰਦਾ, ਤਾਂ NVDA ਹੁਣ ਚੁੱਪ ਹੋਣ ਦੀ ਬਜਾਏ eSpeak 'ਤੇ ਵਾਪਸ ਆ ਜਾਂਦਾ ਹੈ।"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "ਨੈਵੀਗੇਸ਼ਨ ਲਈ ਸਿੰਥੇਸਾਈਜ਼ਰ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ; ਸਾਰੀ ਬੋਲੀ ਲਈ ElevenLabs ਵਰਤਿਆ ਜਾ ਰਿਹਾ ਹੈ।"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ; ਨੈਵੀਗੇਸ਼ਨ ਲਈ {fallback} ਵਰਤਿਆ ਜਾ ਰਿਹਾ ਹੈ।"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ਉਪਲਬਧ ਨਹੀਂ ਹੈ; ਸਭ ਪੜ੍ਹੋ {synth} ਵਰਤੇਗਾ।"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "ਕੋਈ ਨਹੀਂ (ElevenLabs ਸਭ ਕੁਝ ਬੋਲਦਾ ਹੈ)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "ਨੈਵੀਗੇਸ਼ਨ ਲਈ &ਸਿੰਥੇਸਾਈਜ਼ਰ:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "ਨੈਵੀਗੇਸ਼ਨ ਲਈ ਵੱਖਰੇ ਸਿੰਥੇਸਾਈਜ਼ਰ ਅਤੇ ਸਾਰੀ ਬੋਲੀ ਲਈ ElevenLabs ਵਿਚਕਾਰ ਬਦਲਦਾ ਹੈ"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "ਕੋਈ ਨੈਵੀਗੇਸ਼ਨ ਸਿੰਥੇਸਾਈਜ਼ਰ ਨਹੀਂ ਚੁਣਿਆ ਗਿਆ; ElevenLabs TTS ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਇੱਕ ਚੁਣੋ"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ਸਾਰੀ ਬੋਲੀ ਲਈ ElevenLabs ਵਰਤਿਆ ਜਾ ਰਿਹਾ ਹੈ।"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "ਨੈਵੀਗੇਸ਼ਨ ਲਈ {synth} ਵਰਤਿਆ ਜਾ ਰਿਹਾ ਹੈ।"

@@ -203,3 +203,43 @@ msgid ""
 msgstr ""
 "ပေါင်းထည့်ကိရိယာရှိ ဆက်တင်များနှင့် မက်ဆေ့ချ်များ အားလုံးကို ယခု ဘာသာပြန်ထားပြီးဖြစ်သည်။\n"
 "အသုံးပြုနေစဉ် ElevenLabs API ရုတ်တရက် မရရှိနိုင်တော့ပါက NVDA သည် ယခု အသံတိတ်သွားမည့်အစား eSpeak သို့ ပြန်ပြောင်းပါသည်။"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ်ကို ဖွင့်၍မရပါ။ စကားပြောအားလုံးအတွက် ElevenLabs ကို အသုံးပြုနေသည်။"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} ကို ဖွင့်၍မရပါ။ လမ်းညွှန်ရန် {fallback} ကို အသုံးပြုနေသည်။"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ကို အသုံးမပြုနိုင်ပါ။ အားလုံးဖတ်ခြင်းသည် {synth} ကို အသုံးပြုပါမည်။"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "မရှိ (ElevenLabs က အားလုံးကို ပြောသည်)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "လမ်းညွှန်ရန် &အသံပေါင်းစပ်စနစ်:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "လမ်းညွှန်ရန် သီးခြားအသံပေါင်းစပ်စနစ်နှင့် စကားပြောအားလုံးအတွက် ElevenLabs အကြား ပြောင်းသည်"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ် ရွေးမထားပါ။ ElevenLabs TTS ဆက်တင်များတွင် တစ်ခုရွေးပါ"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "စကားပြောအားလုံးအတွက် ElevenLabs ကို အသုံးပြုနေသည်။"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "လမ်းညွှန်ရန် {synth} ကို အသုံးပြုနေသည်။"

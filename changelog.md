@@ -1,6 +1,7 @@
 V1.4 (10/24/2026):
 Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.
 During say all, the caret now follows the speech more closely.
+New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.
 
 V1.3 (10/04/2026):
 All settings and messages within the add-on are now localized.

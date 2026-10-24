@@ -203,3 +203,43 @@ msgid ""
 msgstr ""
 "Tá gach socrú agus teachtaireacht sa bhreiseán logánaithe anois.\n"
 "Má éiríonn API ElevenLabs dofhaighte go tobann le linn seisiúin, filleann NVDA ar eSpeak anois in ionad dul ina thost."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Níorbh fhéidir sintéiseoir a lódáil don nascleanúint; úsáidtear ElevenLabs don chaint ar fad."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Níorbh fhéidir {synth} a lódáil; úsáidtear {fallback} don nascleanúint."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "Níl ElevenLabs ar fáil; úsáidfidh léamh iomlán {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Dada (labhraíonn ElevenLabs gach rud)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Sintéiseoir don nascleanúint:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Athraíonn idir sintéiseoir ar leith don nascleanúint agus ElevenLabs don chaint ar fad"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Níl aon sintéiseoir nascleanúna roghnaithe; roghnaigh ceann i socruithe ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "Ag úsáid ElevenLabs don chaint ar fad."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Ag úsáid {synth} don nascleanúint."

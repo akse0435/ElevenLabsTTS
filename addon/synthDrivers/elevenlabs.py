@@ -50,6 +50,7 @@ from synthDriverHandler import (
 	synthDoneSpeaking,
 	synthIndexReached,
 )
+from synthDrivers import _elevenlabsNavigation as _navigation
 from synthDrivers import _elevenlabsSettings as _settings
 
 try:
@@ -93,6 +94,10 @@ MODEL_PROBE_WORKERS = 2
 
 # One retry covers a dropped connection or a busy server without much delay.
 MAX_RETRIES = 1
+# With a navigation synthesizer, utterances in a row ElevenLabs can't reach or
+# that its servers fail before it is given up for the session. Each is spoken
+# by the navigation synthesizer meanwhile.
+MAX_TRANSIENT_FAILURES = 3
 RETRY_DELAY = 0.5
 RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
 # v4 trains a voice the first time it is used with it, which can take well over
@@ -549,6 +554,19 @@ def _isSayAllRunning():
 		return sayAll.SayAllHandler is not None and sayAll.SayAllHandler.isRunning()
 	except Exception:
 		return False
+
+
+def _isUserSayAll():
+	"""Whether say all is reading because the user asked, rather than e.g. on page load."""
+	return _isSayAllRunning() and bool(getattr(sayAll.SayAllHandler, "startedFromScript", False))
+
+
+def _unhideTags(speechSequence):
+	"""speechSequence with the brackets _hideTags swapped out put back, for another synthesizer."""
+	return [
+		item.replace(_TAG_OPEN, "[").replace(_TAG_CLOSE, "]") if isinstance(item, str) else item
+		for item in speechSequence
+	]
 
 
 def _hideTags(text):
@@ -1013,10 +1031,12 @@ class _IndexSchedule:
 class _Job:
 	"""One utterance from NVDA, as the speech thread works through it."""
 
-	__slots__ = ("gen", "text", "indexes", "langOverride", "sayAll", "parts", "schedule")
+	__slots__ = ("gen", "sequence", "text", "indexes", "langOverride", "sayAll", "parts", "schedule", "fed")
 
-	def __init__(self, gen, text, indexes, langOverride, sayAll):
+	def __init__(self, gen, sequence, text, indexes, langOverride, sayAll):
 		self.gen = gen
+		# As NVDA sent it, for the navigation synthesizer if ElevenLabs can't speak it.
+		self.sequence = sequence
 		self.text = text
 		# (index, non-space characters of text before it)
 		self.indexes = indexes
@@ -1026,6 +1046,8 @@ class _Job:
 		# Set by _SpeechWorker._plan.
 		self.parts = None
 		self.schedule = None
+		# Whether any of its audio reached the player.
+		self.fed = False
 
 
 class _SpeechWorker(threading.Thread):
@@ -1057,11 +1079,11 @@ class _SpeechWorker(threading.Thread):
 		self._connections = _ConnectionPool()
 		self.start()
 
-	def enqueue(self, text, indexes, langOverride=None, sayAll=False):
+	def enqueue(self, sequence, text, indexes, langOverride=None, sayAll=False):
 		with self._lock:
 			gen = self.generation
 		with self._jobsChanged:
-			self._jobs.append(_Job(gen, text, indexes, langOverride, sayAll))
+			self._jobs.append(_Job(gen, sequence, text, indexes, langOverride, sayAll))
 			self._jobsChanged.notify()
 
 	def cancelAll(self):
@@ -1119,12 +1141,19 @@ class _SpeechWorker(threading.Thread):
 				return
 			if not self._isCurrent(job.gen):
 				continue
+			if self.driver._isGivenUp():
+				# Queued before ElevenLabs was given up, so it isn't asked again.
+				self._handOver(job)
+				continue
 			completed = False
 			try:
 				completed = self._speakJob(job)
 			except Exception:
 				log.error("Unexpected error in the ElevenLabs driver", exc_info=True)
 			if not self._isCurrent(job.gen):
+				continue
+			if not completed and not job.fed and self.driver._navigation.synth is not None:
+				self._handOver(job)
 				continue
 			if not (job.sayAll and completed):
 				# Indexes are reported even if synthesis failed, since NVDA's
@@ -1214,6 +1243,12 @@ class _SpeechWorker(threading.Thread):
 			# What is left after a success is the next say all utterance's first part.
 			if not completed:
 				self._dropPrefetch()
+
+	def _handOver(self, job):
+		"""Has the navigation synthesizer speak job, once ElevenLabs' audio before it has played."""
+		self._afterPlayed(lambda: queueHandler.queueFunction(
+			queueHandler.eventQueue, self.driver._speakInstead, job
+		))
 
 	def _afterPlayed(self, callback):
 		"""Calls callback once the audio fed so far has played."""
@@ -1477,7 +1512,7 @@ class _SpeechWorker(threading.Thread):
 						continue
 				# The service itself keeps failing, even after a retry.
 				if not fedAudio and e.code >= 500:
-					driver._fallBack(f"ElevenLabs keeps failing (HTTP {e.code}). {detail.strip()}")
+					driver._fallBack(f"ElevenLabs keeps failing (HTTP {e.code}). {detail.strip()}", transient=True)
 					return False
 				driver.reportError(f"http{e.code}", f"ElevenLabs API error {e.code}: {detail}")
 				return False
@@ -1497,12 +1532,14 @@ class _SpeechWorker(threading.Thread):
 					return False
 				# Both tries failed, so ElevenLabs can't be reached.
 				if not fedAudio:
-					driver._fallBack(f"ElevenLabs could not be reached: {e}")
+					driver._fallBack(f"ElevenLabs could not be reached: {e}", transient=True)
 					return False
 				driver.reportError("network", f"ElevenLabs network error: {e}")
 				return False
 			finally:
 				download.abandon()
+				if fedAudio and job is not None:
+					job.fed = True
 			log.debug(
 				f"ElevenLabs: {_modelInfo(modelId).name} returned "
 				f"{received / (2.0 * OUTPUT_FORMATS[driver._formatIndex][1]):.2f} s of audio for {len(text)} chars."
@@ -1645,7 +1682,7 @@ class SynthDriver(BaseSynthDriver):
 			displayName=_("Audio tags"),
 		),
 	)
-	supportedCommands = {IndexCommand, LangChangeCommand}
+	_supportedCommands = {IndexCommand, LangChangeCommand}
 	supportedNotifications = {synthIndexReached, synthDoneSpeaking}
 	# Above zero while NVDA sets up, loads or saves settings; see _allSettingsVisible.
 	_configuring = 0
@@ -1684,8 +1721,13 @@ class SynthDriver(BaseSynthDriver):
 		self._modelsChecked = False
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
 		self._modelFailures = {}
-		# Set once speech has been handed to FALLBACK_SYNTH.
+		# Set once ElevenLabs is given up: speech goes to FALLBACK_SYNTH, or with a
+		# navigation synthesizer, all of it goes there.
 		self._fellBack = False
+		# Failed utterances in a row; see MAX_TRANSIENT_FAILURES.
+		self._transientFailures = 0
+		# Speaks outside say all, when the user has chosen one.
+		self._navigation = _navigation.NavigationSynth(self)
 		# Models already warned as too slow for the speed.
 		self._speedWarned = set()
 		self._tier = ""
@@ -1725,6 +1767,10 @@ class SynthDriver(BaseSynthDriver):
 			f"{len(_offeredModels) - len(self._unusableModels)} model(s), "
 			f"plan {self._tier or 'unknown'}, audio {self.outputFormat}."
 		)
+		# Last, as nothing after it may fail and leave it loaded.
+		navigationSynth = _settings.get("navigationSynth")
+		if navigationSynth:
+			self.useNavigationSynth(navigationSynth)
 
 	def terminate(self):
 		self.cancel()
@@ -1732,10 +1778,15 @@ class SynthDriver(BaseSynthDriver):
 		if self._worker is not None:
 			self._worker.stop()
 		self._closePlayer()
+		self._navigation.unload()
 		# Saves the current settings and unregisters the config save action.
 		super().terminate()
 
 	def speak(self, speechSequence):
+		speaker = self._speaker()
+		if speaker is not self:
+			speaker.speak(_unhideTags(speechSequence))
+			return
 		textParts = []
 		# (index, non-space characters before it), which places it in a part.
 		indexes = []
@@ -1761,7 +1812,7 @@ class SynthDriver(BaseSynthDriver):
 				synthIndexReached.notify(synth=self, index=index)
 			synthDoneSpeaking.notify(synth=self)
 			return
-		self._worker.enqueue(text, indexes, langOverride, inSayAll)
+		self._worker.enqueue(speechSequence, text, indexes, langOverride, inSayAll)
 
 	def cancel(self):
 		self._worker.cancelAll()
@@ -1771,6 +1822,9 @@ class SynthDriver(BaseSynthDriver):
 				player.stop()
 			except Exception:
 				pass
+		navigation = self._navigation.synth
+		if navigation is not None:
+			navigation.cancel()
 
 	def pause(self, switch):
 		if self._worker is not None:
@@ -1782,6 +1836,95 @@ class SynthDriver(BaseSynthDriver):
 				player.pause(switch)
 			except Exception:
 				pass
+		navigation = self._navigation.synth
+		if navigation is not None:
+			navigation.pause(switch)
+
+	# --- Navigation synthesizer ---
+
+	def _speaker(self):
+		"""The synthesizer for speech now: the navigation one, unless ElevenLabs reads a say all."""
+		# Not there yet while the base class sets up.
+		holder = getattr(self, "_navigation", None)
+		navigation = holder.synth if holder is not None else None
+		if navigation is None or (not self._fellBack and _isUserSayAll()):
+			return self
+		return navigation
+
+	def _get_supportedCommands(self):
+		# NVDA asks while it builds speech, e.g. whether capitals can change pitch,
+		# so the navigation synthesizer's own answer applies to what it speaks.
+		speaker = self._speaker()
+		return self._supportedCommands if speaker is self else speaker.supportedCommands
+
+	def _isGivenUp(self):
+		"""True once ElevenLabs is given up and the navigation synthesizer speaks instead."""
+		return self._fellBack and self._navigation.synth is not None
+
+	def useNavigationSynth(self, name):
+		"""Loads synthesizer name to speak outside say all, or none if name is None.
+
+		Tells the user if it can't be loaded, and returns False then."""
+		import ui
+		if not name:
+			self._navigation.unload()
+			if self._fellBack:
+				# Nothing is left for ElevenLabs to hand speech to.
+				self._fellBack = False
+				self._fallBack("it was given up and there is no navigation synthesizer any more.")
+			return True
+		if name == self.name:
+			log.error("ElevenLabs: can't be its own navigation synthesizer.")
+			name = _navigation.FALLBACK_SYNTH
+		loaded = self._navigation.load(name)
+		if loaded is None:
+			queueHandler.queueFunction(
+				queueHandler.eventQueue,
+				ui.message,
+				# Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+				_("Could not load a synthesizer for navigation; using ElevenLabs for all speech."),
+			)
+			return False
+		if loaded == name:
+			return True
+		queueHandler.queueFunction(
+			queueHandler.eventQueue,
+			ui.message,
+			# Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+			# e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+			_("Could not load {synth}; using {fallback} for navigation.").format(
+				synth=_navigation.describe(name),
+				fallback=self._navigation.synth.description,
+			),
+		)
+		return False
+
+	def _get_navigationSynthDescription(self):
+		"""The name of the synthesizer speaking outside say all, or None."""
+		synth = self._navigation.synth
+		return synth.description if synth is not None else None
+
+	def _speakInstead(self, job):
+		"""Speaks job, which ElevenLabs couldn't, with the navigation synthesizer.
+		On the main thread."""
+		if not self._worker._isCurrent(job.gen):
+			return
+		navigation = self._navigation.synth
+		if navigation is not None:
+			navigation.speak(_unhideTags(job.sequence))
+			return
+		# Unloaded meanwhile; NVDA still waits for the indexes.
+		for index, before in job.indexes:
+			synthIndexReached.notify(synth=self, index=index)
+		synthDoneSpeaking.notify(synth=self)
+
+	def retryAfterFallBack(self):
+		"""Tries ElevenLabs again after it was given up, e.g. with a new API key."""
+		if not self._fellBack or self._navigation.synth is None:
+			return
+		self._fellBack = False
+		self._transientFailures = 0
+		log.info("ElevenLabs: trying ElevenLabs again for say all.")
 
 	# --- Settings shown in NVDA ---
 
@@ -1864,20 +2007,44 @@ class SynthDriver(BaseSynthDriver):
 
 	# --- Error reporting ---
 
-	def _fallBack(self, reason):
+	def _fallBack(self, reason, transient=False):
 		"""Hands speech to eSpeak for this session, so NVDA is never left silent.
 
+		With a navigation synthesizer, ElevenLabs stays loaded and that one speaks
+		everything instead, without asking ElevenLabs again. A transient failure,
+		e.g. a network outage, only does so after MAX_TRANSIENT_FAILURES in a row.
 		NVDA's saved synthesizer is kept, so ElevenLabs is used again after a restart."""
 		if self._fellBack:
 			return
+		if transient and self._navigation.synth is not None:
+			self._transientFailures += 1
+			if self._transientFailures < MAX_TRANSIENT_FAILURES:
+				log.warning(f"ElevenLabs: {reason} The navigation synthesizer speaks this instead.")
+				return
 		self._fellBack = True
+		import ui
+		navigation = self._navigation.synth
+		if navigation is not None:
+			log.error(
+				f"ElevenLabs: {reason} Say all uses {navigation.name} until ElevenLabs is selected again, "
+				f"a new API key is set, or voices are checked again."
+			)
+
+			def announce():
+				# Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+				# for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+				ui.message(_("ElevenLabs is unavailable; say all will use {synth}.").format(
+					synth=navigation.description
+				))
+
+			queueHandler.queueFunction(queueHandler.eventQueue, announce)
+			return
 		log.error(f"ElevenLabs: {reason} Switching to eSpeak until ElevenLabs is selected again.")
 
 		def switch():
 			if getSynth() is not self:
 				return
 			import synthDriverHandler
-			import ui
 			if synthDriverHandler.setSynth(FALLBACK_SYNTH, isFallback=True):
 				# Translators: spoken when NVDA switches to eSpeak.
 				ui.message(_("ElevenLabs is unavailable."))
@@ -2011,6 +2178,7 @@ class SynthDriver(BaseSynthDriver):
 	def _onSynthesisSucceeded(self):
 		"""Records the format that worked, so it isn't worked out again."""
 		self._loggedErrors.clear()
+		self._transientFailures = 0
 		if self._recordedFormat == self.outputFormat:
 			# Nothing new, so the settings file isn't touched for every utterance.
 			return
@@ -2257,6 +2425,8 @@ class SynthDriver(BaseSynthDriver):
 		"""
 		if self._probeThread is not None and self._probeThread.is_alive():
 			return False
+		# Asked for by the user, so worth trying ElevenLabs again if it was given up.
+		self.retryAfterFallBack()
 		# Off the main thread, so NVDA doesn't freeze while the user works.
 		self._probeThread = threading.Thread(
 			target=self._recheckNow,

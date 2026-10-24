@@ -17,8 +17,21 @@ The key is stored encrypted for your Windows user in elevenlabs_settings.json in
 
 If you used version 1.3 or earlier, the add-on no longer reads elevenlabs_settings.txt, so set your key again as above. You can delete the old file, which still holds your key in plain text.
 
+## Saving credits: a separate synthesizer for navigation
+
+Every word ElevenLabs speaks costs credits, including menus, key echo and moving around a web page. To spend them only on what you actually want to read, choose a "Synthesizer for navigation" in the ElevenLabs TTS category of NVDA's settings. That synthesizer then speaks everything, and ElevenLabs only reads say all (NVDA+down arrow on the desktop layout, NVDA+a on the laptop layout, and the other say all commands). Find the article you want to read, start say all, and it is read with your ElevenLabs voice; stop it and you are back to the other synthesizer at once. Both stay loaded, so switching costs nothing.
+
+The option is off by default ("None").
+
+- The synthesizer for navigation speaks with the voice, rate, pitch and other settings it already has in NVDA. To change them, select that synthesizer in NVDA, set it up, then select ElevenLabs again. NVDA's voice settings and the settings ring keep showing ElevenLabs' settings, even while the other synthesizer is speaking. Settings from configuration profiles apply to both.
+- Only say all you start yourself uses ElevenLabs. "Automatic say all on page load" in browse mode, for example, is read by the synthesizer for navigation. Anything NVDA says while say all reads, such as a notification, is spoken by ElevenLabs.
+- If the synthesizer for navigation can't be loaded, eSpeak is used instead, and NVDA tells you so.
+- If ElevenLabs stops working, for example when you run out of credits or the key no longer works, say all is read by the synthesizer for navigation for the rest of the session, and ElevenLabs is not asked again. If ElevenLabs can't be reached or its servers fail, a sentence it couldn't read is read by the other synthesizer, and ElevenLabs is given up after three such sentences in a row. To try ElevenLabs again, set a new API key, press NVDA+shift+v, or select ElevenLabs again.
+- A configuration profile that selects another synthesizer, such as one for say all, unloads ElevenLabs altogether, along with the synthesizer for navigation.
+
 ## Keyboard commands
 
 You can use the following keyboard commands in NVDA when the add-on is installed, regardless of whether or not you're using the synth:
 - NVDA+shift+u: Check how many credits you've used on your ElevenLabs account, as well as your plan.
 - NVDA+shift+V: Reload list of usable voices and models from your ElevenLabs account, good if you've upgraded your subscription while using the add-on.
+- Switch between the synthesizer for navigation and ElevenLabs for all speech: no key is assigned. Assign one in NVDA's Input Gestures, under "ElevenLabs speech synthesizer". It switches to the synthesizer you chose last in the settings.

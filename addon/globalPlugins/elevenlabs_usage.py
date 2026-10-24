@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-# The ElevenLabs TTS category in NVDA's settings, where the API key is set,
-# and shortcuts for the ElevenLabs synthesizer:
+# The ElevenLabs TTS category in NVDA's settings, where the API key and the
+# synthesizer for navigation are set, and shortcuts for the ElevenLabs synthesizer:
 #   NVDA+Shift+U: report the credit usage for the current period.
 #   NVDA+Shift+V: check again which voices and models this account can use,
 #     e.g. after changing plan.
-# Both can be changed in Input Gestures, under "ElevenLabs speech synthesizer".
+#   Unassigned: switch between the synthesizer for navigation and ElevenLabs
+#     for all speech.
+# All can be changed in Input Gestures, under "ElevenLabs speech synthesizer".
 
 import json
 import locale
@@ -15,6 +17,7 @@ from urllib import request as urlrequest
 import globalPluginHandler
 import globalVars
 import queueHandler
+import synthDriverHandler
 import ui
 import wx
 from gui import guiHelper
@@ -23,6 +26,7 @@ from gui.settingsDialogs import NVDASettingsDialog, SettingsDialog, SettingsPane
 from logHandler import log
 from scriptHandler import script
 from synthDriverHandler import getSynth
+from synthDrivers import _elevenlabsNavigation as _navigation
 from synthDrivers import _elevenlabsSettings as _settings
 
 try:
@@ -50,6 +54,26 @@ def _formatNumber(value):
 		return locale.format_string("%d", value, grouping=True)
 	except Exception:
 		return str(value)
+
+
+def _elevenLabs():
+	"""The ElevenLabs driver if it is NVDA's synthesizer, else None."""
+	synth = getSynth()
+	return synth if synth is not None and synth.name == "elevenlabs" else None
+
+
+def _setNavigationSynth(name):
+	"""Saves name as the synthesizer for navigation, None for none, and loads it
+	if ElevenLabs is running. False if it couldn't be loaded, which the driver has
+	told the user."""
+	with _settings.editing() as settings:
+		if name:
+			settings["navigationSynth"] = name
+			settings["lastNavigationSynth"] = name
+		else:
+			settings.pop("navigationSynth", None)
+	synth = _elevenLabs()
+	return synth.useNavigationSynth(name) if synth is not None else True
 
 
 def _showKeyError(parent, message):
@@ -133,6 +157,10 @@ class _ApiKeyDialog(SettingsDialog):
 		if error is not None:
 			self._showError(error)
 			return
+		synth = _elevenLabs()
+		if synth is not None:
+			# A new key may be what ElevenLabs was missing when it was given up.
+			synth.retryAfterFallBack()
 		super().onOk(None)
 
 	def _showStatus(self, show):
@@ -155,6 +183,30 @@ class ElevenLabsSettingsPanel(SettingsPanel):
 		self._keyButton = helper.addItem(wx.Button(self))
 		self._keyButton.Bind(wx.EVT_BUTTON, self._onKeyButton)
 		self._updateKeyButton()
+		saved = _settings.get("navigationSynth")
+		# None first: ElevenLabs speaks everything. NVDA's own list, so only
+		# synthesizers that can run here are offered, "No speech" among them.
+		synths = [
+			(name, description) for name, description in synthDriverHandler.getSynthList()
+			if name != "elevenlabs"
+		]
+		self._navigationNames = [None] + [name for name, description in synths]
+		labels = [
+			# Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+			_("None (ElevenLabs speaks everything)"),
+		] + [description for name, description in synths]
+		if saved and saved not in self._navigationNames:
+			# E.g. uninstalled since; kept rather than silently dropped.
+			self._navigationNames.append(saved)
+			labels.append(saved)
+		self._navigationList = helper.addLabeledControl(
+			# Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+			# that speaks everything except say all, so only say all uses ElevenLabs credits.
+			_("&Synthesizer for navigation:"),
+			wx.Choice,
+			choices=labels,
+		)
+		self._navigationList.SetSelection(self._navigationNames.index(saved) if saved else 0)
 
 	def _updateKeyButton(self):
 		if _settings.getApiKey() is not None:
@@ -196,8 +248,10 @@ class ElevenLabsSettingsPanel(SettingsPanel):
 			synth._fallBack("the API key was cleared.")
 
 	def onSave(self):
-		# Setting and clearing the key take effect at once, so there is nothing to save.
-		pass
+		# Setting and clearing the key take effect at once; only the synthesizer is left.
+		name = self._navigationNames[self._navigationList.GetSelection()]
+		if name != _settings.get("navigationSynth"):
+			_setNavigationSynth(name)
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -318,6 +372,33 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		else:
 			# Translators: spoken when the settings file could not be written.
 			ui.message(_("Could not update the ElevenLabs settings file"))
+
+	@script(
+		# Translators: description of a command in Input Gestures.
+		description=_("Switches between a separate synthesizer for navigation and ElevenLabs for all speech"),
+		category=CATEGORY,
+	)
+	def script_toggleNavigationSynth(self, gesture):
+		if _settings.get("navigationSynth"):
+			name = None
+		else:
+			name = _settings.get("lastNavigationSynth")
+			if not name:
+				# Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+				ui.message(_("No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"))
+				return
+		if not _setNavigationSynth(name):
+			# The driver has said what went wrong instead.
+			return
+		if name is None:
+			# Translators: spoken when ElevenLabs goes back to speaking everything.
+			ui.message(_("Using ElevenLabs for all speech."))
+			return
+		synth = _elevenLabs()
+		description = synth.navigationSynthDescription if synth is not None else None
+		# Translators: spoken when a separate synthesizer takes over everything but say all,
+		# e.g. "Using eSpeak NG for navigation."
+		ui.message(_("Using {synth} for navigation.").format(synth=description or _navigation.describe(name)))
 
 	@staticmethod
 	def _reportCheck(voices, unusableVoices, models, unusableModels):

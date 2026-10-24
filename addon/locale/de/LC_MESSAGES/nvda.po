@@ -203,3 +203,43 @@ msgid ""
 msgstr ""
 "Alle Einstellungen und Meldungen der Erweiterung sind jetzt übersetzt.\n"
 "Wenn die ElevenLabs-API während einer Sitzung plötzlich nicht mehr verfügbar ist, wechselt NVDA jetzt zu eSpeak, anstatt zu verstummen."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Für die Navigation konnte keine Sprachausgabe geladen werden; ElevenLabs wird für alle Ausgaben verwendet."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} konnte nicht geladen werden; für die Navigation wird {fallback} verwendet."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ist nicht verfügbar; „Alles lesen“ verwendet {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Keine (ElevenLabs spricht alles)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Sprachausgabe für die Navigation:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Wechselt zwischen einer eigenen Sprachausgabe für die Navigation und ElevenLabs für alle Ausgaben"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Keine Sprachausgabe für die Navigation gewählt; wählen Sie eine in den Einstellungen von ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs wird für alle Ausgaben verwendet."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} wird für die Navigation verwendet."

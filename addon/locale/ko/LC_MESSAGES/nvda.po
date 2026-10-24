@@ -198,3 +198,43 @@ msgid ""
 msgstr ""
 "추가 기능의 모든 설정과 메시지가 이제 번역되었습니다.\n"
 "세션 중에 ElevenLabs API를 갑자기 사용할 수 없게 되면 NVDA가 이제 무음이 되는 대신 eSpeak로 전환합니다."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "탐색용 신시사이저를 불러올 수 없습니다. 모든 음성에 ElevenLabs를 사용합니다."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth}을(를) 불러올 수 없습니다. 탐색에 {fallback}을(를) 사용합니다."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs를 사용할 수 없습니다. 모두 읽기는 {synth}을(를) 사용합니다."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "없음 (ElevenLabs가 모두 읽음)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "탐색용 신시사이저(&S):"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "탐색용 별도 신시사이저와 모든 음성용 ElevenLabs 사이를 전환합니다"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "탐색용 신시사이저가 선택되지 않았습니다. ElevenLabs TTS 설정에서 선택하세요"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "모든 음성에 ElevenLabs를 사용합니다."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "탐색에 {synth}을(를) 사용합니다."

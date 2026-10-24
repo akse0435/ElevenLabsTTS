@@ -12,9 +12,12 @@
 
 import array
 import hashlib
+import http.client
+import io
 import json
 import queue
 import re
+import select
 import struct
 import threading
 import time
@@ -59,6 +62,11 @@ CHUNK_SIZE = 4096
 # Seconds without audio before giving up. Measured worst: ~1 s real-time, ~2.3 s others.
 REQUEST_TIMEOUT = 15
 REALTIME_REQUEST_TIMEOUT = 8
+# Seconds a finished connection is kept for the next request. Reusing one saves
+# the TLS handshake before each utterance; reconnecting after a pause is cheap.
+CONNECTION_IDLE_TIMEOUT = 60
+# One for the part playing and one for the next part's prefetch.
+MAX_IDLE_CONNECTIONS = 2
 # Timeout for the checks run while NVDA waits for the synthesizer to load. If
 # they fail, NVDA falls back to another synthesizer.
 INIT_TIMEOUT = 8
@@ -722,15 +730,138 @@ def _makePlayer(sampleRate):
 	return nvwave.WavePlayer(**kwargs)
 
 
+class _ConnectionPool:
+	"""Keeps finished HTTPS connections open for a while, so the next request
+	skips the TCP and TLS handshake."""
+
+	def __init__(self):
+		self._lock = threading.Lock()
+		# (host, connection, time.monotonic() when it was last finished), oldest first.
+		self._idle = []
+		self._timer = None
+		self._closed = False
+		self._loggedProxy = False
+
+	def request(self, req, timeout):
+		"""Sends req; returns (connection, response, reused), or None when a proxy
+		is set, which urlopen handles instead."""
+		if "https" in urlrequest.getproxies() and not urlrequest.proxy_bypass(req.host):
+			if not self._loggedProxy:
+				self._loggedProxy = True
+				log.debug("ElevenLabs: a proxy is set, so connections are not kept open.")
+			return None
+		headers = dict(req.header_items())
+		# urlopen sends one, and a request without it could be treated as a bot.
+		headers.setdefault("User-agent", f"Python-urllib/{urlrequest.__version__}")
+		while True:
+			conn = self._take(req.host)
+			reused = conn is not None
+			if reused:
+				conn.timeout = timeout
+				conn.sock.settimeout(timeout)
+			else:
+				conn = http.client.HTTPSConnection(req.host, timeout=timeout)
+			try:
+				conn.request(req.get_method(), req.selector, req.data, headers)
+				return conn, conn.getresponse(), reused
+			except (http.client.BadStatusLine, ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+				conn.close()
+				if not reused:
+					raise
+				# The server closed it without the check in _take noticing, so the
+				# request never arrived and is safe to send again.
+				log.debug("ElevenLabs: a kept connection was closed by the server; reconnecting.")
+			except BaseException:
+				conn.close()
+				raise
+
+	def _take(self, host):
+		"""The most recently used idle connection to host that is still open, or None."""
+		now = time.monotonic()
+		with self._lock:
+			while self._idle:
+				idleHost, conn, since = self._idle.pop()
+				if idleHost == host and now - since < CONNECTION_IDLE_TIMEOUT and self._isOpen(conn):
+					self._scheduleSweep()
+					return conn
+				conn.close()
+			self._scheduleSweep()
+		return None
+
+	@staticmethod
+	def _isOpen(conn):
+		# An idle connection has nothing to read unless the server closed it.
+		if conn.sock is None:
+			return False
+		try:
+			readable, _, _ = select.select([conn.sock], [], [], 0)
+		except (OSError, ValueError):
+			return False
+		return not readable
+
+	def release(self, host, conn, resp):
+		"""Keeps conn for the next request if resp was read to the end, else closes it."""
+		if not resp.isclosed() or resp.will_close or conn.sock is None:
+			conn.close()
+			return
+		with self._lock:
+			if self._closed:
+				dropped = [conn]
+			else:
+				self._idle.append((host, conn, time.monotonic()))
+				dropped = [entry[1] for entry in self._idle[:-MAX_IDLE_CONNECTIONS]]
+				del self._idle[:-MAX_IDLE_CONNECTIONS]
+				self._scheduleSweep()
+		for extra in dropped:
+			extra.close()
+
+	def _scheduleSweep(self):
+		"""Arranges for the oldest idle connection to be closed once it expires.
+		Called with the lock held."""
+		if self._timer is not None:
+			self._timer.cancel()
+			self._timer = None
+		if not self._idle:
+			return
+		delay = self._idle[0][2] + CONNECTION_IDLE_TIMEOUT - time.monotonic()
+		self._timer = threading.Timer(max(delay, 0), self._sweep)
+		self._timer.daemon = True
+		self._timer.start()
+
+	def _sweep(self):
+		now = time.monotonic()
+		with self._lock:
+			expired = [entry for entry in self._idle if now - entry[2] >= CONNECTION_IDLE_TIMEOUT]
+			self._idle = [entry for entry in self._idle if entry not in expired]
+			self._scheduleSweep()
+		for _, conn, _ in expired:
+			conn.close()
+		if expired:
+			log.debug(f"ElevenLabs: closed {len(expired)} connection(s) unused for {CONNECTION_IDLE_TIMEOUT} s.")
+
+	def closeAll(self):
+		with self._lock:
+			self._closed = True
+			idle, self._idle = self._idle, []
+			if self._timer is not None:
+				self._timer.cancel()
+				self._timer = None
+		for _, conn, _ in idle:
+			conn.close()
+
+
 class _Download(threading.Thread):
 	"""One request on a thread of its own, so speech can move on without waiting for it."""
 
 	daemon = True
 
-	def __init__(self, req, timeout):
+	def __init__(self, req, timeout, pool=None):
 		super().__init__(name="ElevenLabsDownload")
 		self._req = req
 		self._timeout = timeout
+		self._pool = pool
+		# Whether the request went over a connection kept from an earlier one.
+		self.reused = False
 		self._onDone = None
 		self._done = False
 		self._doneLock = threading.Lock()
@@ -766,20 +897,40 @@ class _Download(threading.Thread):
 				log.error("ElevenLabs: could not fetch the next part", exc_info=True)
 
 	def run(self):
+		conn = resp = None
 		try:
-			with urlrequest.urlopen(self._req, timeout=self._timeout) as resp:
-				while self._wanted:
-					chunk = resp.read(CHUNK_SIZE)
-					if not chunk:
-						break
-					if self.firstAudio is None:
-						self.firstAudio = time.time()
-					self.chunks.put(chunk)
-				else:
-					return
+			opened = self._pool.request(self._req, self._timeout) if self._pool is not None else None
+			if opened is None:
+				resp = urlrequest.urlopen(self._req, timeout=self._timeout)
+			else:
+				conn, resp, self.reused = opened
+				if resp.status >= 400:
+					# Raised as urlopen would, so errors are handled the same either way.
+					# Reading the body first leaves the connection fit to reuse.
+					body = resp.read()
+					raise HTTPError(self._req.full_url, resp.status, resp.reason, resp.headers, io.BytesIO(body))
+			while self._wanted:
+				chunk = resp.read(CHUNK_SIZE)
+				if not chunk:
+					break
+				if self.firstAudio is None:
+					self.firstAudio = time.time()
+				self.chunks.put(chunk)
+			else:
+				return
+		except http.client.HTTPException as e:
+			# E.g. a connection cut off mid-answer, which counts as a network error.
+			self.chunks.put(URLError(e))
+			return
 		except Exception as e:
 			self.chunks.put(e)
 			return
+		finally:
+			# Kept only if read to the end; an abandoned answer closes the connection.
+			if conn is not None:
+				self._pool.release(self._req.host, conn, resp)
+			elif resp is not None:
+				resp.close()
 		# Before b"", so the next part starts before this one ends.
 		self._finish()
 		self.chunks.put(b"")
@@ -808,6 +959,7 @@ class _SpeechWorker(threading.Thread):
 		self._carriedTag = (None, None)
 		# When the audio fed so far should end playing; None before the first feed.
 		self._playEnd = None
+		self._connections = _ConnectionPool()
 		self.start()
 
 	def enqueue(self, text, indexes, langOverride=None):
@@ -829,6 +981,7 @@ class _SpeechWorker(threading.Thread):
 	def stop(self):
 		self._running = False
 		self.cancelAll()
+		self._connections.closeAll()
 		self.queue.put(None)
 
 	def _isCurrent(self, gen):
@@ -924,7 +1077,9 @@ class _SpeechWorker(threading.Thread):
 
 	def _startDownload(self, req, pair):
 		firstUse = pair[1] != DEFAULT_MODEL and pair not in self._usedVoices
-		download = _Download(req, FIRST_USE_TIMEOUT if firstUse else _requestTimeout(pair[1]))
+		download = _Download(
+			req, FIRST_USE_TIMEOUT if firstUse else _requestTimeout(pair[1]), self._connections
+		)
 		log.debug(f"ElevenLabs: request to {_modelInfo(pair[1]).name}: {json.loads(req.data)['text'][:200]!r}")
 		self._download = self._pending[pair] = download
 		return download
@@ -1023,7 +1178,8 @@ class _SpeechWorker(threading.Thread):
 						if download.firstAudio is not None:
 							log.debug(
 								f"ElevenLabs: {_modelInfo(modelId).name} first audio after "
-								f"{download.firstAudio - download.started:.2f} s, {len(text)} chars"
+								f"{download.firstAudio - download.started:.2f} s, {len(text)} chars, "
+								f"{'kept' if download.reused else 'new'} connection"
 								f"{', first use of voice ' + voiceId if firstUse else ''}."
 							)
 						player = driver._getPlayer()

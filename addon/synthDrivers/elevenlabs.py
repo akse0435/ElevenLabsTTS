@@ -235,8 +235,13 @@ _refused = {}
 # Recorded instead of apply_text_normalization when only "on" was refused, which
 # Flash and Turbo v2.5 allow only on Enterprise plans; auto and off still work.
 _NORMALIZATION_ON_REFUSED = "apply_text_normalization=on"
+# The text around a request, sent in say all so intonation carries across parts and
+# utterances. Not billed (measured on Flash v2.5).
+_CONTEXT_FIELDS = ("previous_text", "next_text")
+# ElevenLabs says v3 can't use them; other models that refuse them are learned.
+_NO_CONTEXT_MODELS = ("eleven_v3", "eleven_v3_conversational")
 # Fields a refusal may name; only those a model was sent are recorded.
-_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS + (_NORMALIZATION_ON_REFUSED,)
+_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS + (_NORMALIZATION_ON_REFUSED,) + _CONTEXT_FIELDS
 # Models known to take only the stability presets.
 PRESET_STABILITY_MODELS = ("eleven_v3", "eleven_v3_conversational")
 # The voice_settings name behind each slider and checkbox. Only those the chosen
@@ -1031,7 +1036,9 @@ class _IndexSchedule:
 class _Job:
 	"""One utterance from NVDA, as the speech thread works through it."""
 
-	__slots__ = ("gen", "sequence", "text", "indexes", "langOverride", "sayAll", "parts", "schedule", "fed")
+	__slots__ = (
+		"gen", "sequence", "text", "indexes", "langOverride", "sayAll", "parts", "schedule", "fed", "previous",
+	)
 
 	def __init__(self, gen, sequence, text, indexes, langOverride, sayAll):
 		self.gen = gen
@@ -1046,6 +1053,8 @@ class _Job:
 		# Set by _SpeechWorker._plan.
 		self.parts = None
 		self.schedule = None
+		# The last part of the say all utterance before it, sent as context.
+		self.previous = None
 		# Whether any of its audio reached the player.
 		self.fed = False
 
@@ -1074,6 +1083,8 @@ class _SpeechWorker(threading.Thread):
 		self._prefetch = None
 		# (generation, tag): the last audio tag spoken, until speech is cancelled.
 		self._carriedTag = (None, None)
+		# (generation, text): the last part of the last say all utterance planned.
+		self._lastSayAllPart = (None, None)
 		# When the audio fed so far should end playing; None before the first feed.
 		self._playEnd = None
 		self._connections = _ConnectionPool()
@@ -1217,6 +1228,11 @@ class _SpeechWorker(threading.Thread):
 					keptIndexes.append(carried)
 					carried = []
 			parts, byPart, trailing = keptParts, keptIndexes, carried + trailing
+		if job.sayAll and parts:
+			# Jobs are planned in the order they're spoken, so this is the one before.
+			lastGen, lastPart = self._lastSayAllPart
+			job.previous = lastPart if lastGen == job.gen else None
+			self._lastSayAllPart = (job.gen, parts[-1])
 		job.parts = parts
 		job.schedule = _IndexSchedule(self._reporter(job.gen), byPart, trailing)
 
@@ -1272,16 +1288,31 @@ class _SpeechWorker(threading.Thread):
 		if job.gen == gen and job.sayAll:
 			self._plan(job)
 			if job.parts:
-				self._prefetchNext(gen, job.parts[0], job.langOverride)
+				self._prefetchNext(gen, job.parts[0], job.langOverride, self._context(job, 0))
 		return True
 
-	def _buildRequest(self, key, text, langOverride, modelId):
-		"""The speech request for text, and its (voice, model) pair."""
+	@staticmethod
+	def _context(job, part):
+		"""(previous_text, next_text) for job's part; only say all has any."""
+		if job is None or not job.sayAll or not job.parts:
+			return (None, None)
+		previous = job.parts[part - 1] if part > 0 else job.previous
+		following = job.parts[part + 1] if part + 1 < len(job.parts) else None
+		return (previous, following)
+
+	def _buildRequest(self, key, text, langOverride, modelId, context=(None, None)):
+		"""The speech request for text, and its (voice, model) pair.
+
+		context is (previous_text, next_text), each left out if None or refused."""
 		driver = self.driver
 		# Language priority: NVDA's language markup > the language setting > auto.
 		lang = langOverride or driver._language
 		voiceId = driver.synthesisVoice
 		body = driver._requestBody(self._textFor(text, modelId), lang, modelId)
+		if modelId not in _NO_CONTEXT_MODELS:
+			for field, value in zip(_CONTEXT_FIELDS, context):
+				if value and field not in _refused.get(modelId, ()):
+					body[field] = self._textFor(value, modelId)
 		req = urlrequest.Request(
 			f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
 			f"?output_format={driver.outputFormat}",
@@ -1324,12 +1355,12 @@ class _SpeechWorker(threading.Thread):
 		self._download = self._pending[pair] = download
 		return download
 
-	def _prefetchNext(self, gen, text, langOverride):
+	def _prefetchNext(self, gen, text, langOverride, context=(None, None)):
 		"""Starts the next part's download while the current part plays."""
 		key = self.driver._getApiKey()
 		if not key:
 			return
-		req, pair = self._buildRequest(key, text, langOverride, self.driver.model)
+		req, pair = self._buildRequest(key, text, langOverride, self.driver.model, context)
 		with self._lock:
 			if gen != self.generation or not self._running:
 				return
@@ -1392,7 +1423,7 @@ class _SpeechWorker(threading.Thread):
 					schedule.started(part)
 				return True
 			isUlaw = driver.outputFormat.startswith("ulaw")
-			req, pair = self._buildRequest(key, text, langOverride, modelId)
+			req, pair = self._buildRequest(key, text, langOverride, modelId, self._context(job, part))
 			voiceId = pair[0]
 			firstUse = modelId != DEFAULT_MODEL and pair not in self._usedVoices
 			download = self._takePrefetch(req)
@@ -1401,7 +1432,9 @@ class _SpeechWorker(threading.Thread):
 					return False
 				download = self._startDownload(req, pair)
 			if following:
-				download.whenDone(lambda: self._prefetchNext(gen, following[0], langOverride))
+				download.whenDone(lambda: self._prefetchNext(
+					gen, following[0], langOverride, self._context(job, part + 1)
+				))
 			elif schedule is not None:
 				download.whenDone(schedule.downloaded)
 			# The next say all utterance is fetched once this, its last part, has arrived.
@@ -2677,6 +2710,7 @@ class SynthDriver(BaseSynthDriver):
 		They are left out of later requests, and their settings hidden."""
 		info = _modelInfo(modelId)
 		sent = set(info.settings) | ({"language_code"} if info.languageCode else set())
+		sent |= {f for f in _CONTEXT_FIELDS if f in body}
 		new = {f for f in sent if re.search(rf"\b{f}\b", detail.lower())}
 		if "apply_text_normalization" in new and body.get("apply_text_normalization") == "on":
 			# Only the value was refused, so just "on" is left out of the box.

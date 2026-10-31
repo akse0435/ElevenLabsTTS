@@ -193,28 +193,6 @@ msgstr "دسترسی به ElevenLabs برای بررسی کلید ممکن نش�
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "درایور ترکیب‌کننده گفتار که صدا را از API تبدیل متن به گفتار ElevenLabs پخش می‌کند."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"کلید API اکنون در دسته جدید ElevenLabs TTS در تنظیمات NVDA تنظیم می‌شود. کلید پیش از ذخیره با ElevenLabs بررسی می‌شود و به‌صورت رمزگذاری‌شده برای کاربر Windows شما ذخیره می‌شود. ElevenLabs تنها پس از تنظیم کلید در فهرست سینتی‌سایزرها نمایش داده می‌شود.\n"
-"اگر در حال ارتقا هستید: elevenlabs_settings.txt دیگر خوانده نمی‌شود، پس کلید خود را دوباره در دسته جدید تنظیم کنید. پس از آن می‌توانید فایل قدیمی را که کلید شما را به‌صورت متن ساده در خود دارد حذف کنید.\n"
-"گزینه جدید در تنظیمات ElevenLabs TTS: سینتی‌سایزری برای پیمایش. همه چیز را به جز خواندن همه می‌گوید، تا اعتبارهای ElevenLabs فقط صرف چیزی شود که برای خواندن انتخاب می‌کنید. فرمانی برای روشن و خاموش کردن آن را می‌توان در ژست‌های ورودی تعیین کرد.\n"
-"وقتی سینتی‌سایزری برای پیمایش بارگذاری شده است، حلقه تنظیمات، تنظیمات هر دو سینتی‌سایزر را با نام سینتی‌سایزرشان در بر دارد.\n"
-"خواندن همه دیگر بین جمله‌ها مکث نمی‌کند، در حالی که جمله بعدی از ElevenLabs دریافت می‌شود.\n"
-"هنگام خواندن همه، مکان‌نما اکنون گفتار را از نزدیک‌تر دنبال می‌کند.\n"
-"خواندن همه اکنون به ElevenLabs می‌گوید چه متنی پیش و پس از هر درخواست می‌آید، تا آهنگ گفتار از یک جمله به جمله بعدی روان شود.\n"
-"ممکن است گفتار زودتر شروع شود، چون اتصال به ElevenLabs بین گفته‌ها باز نگه داشته می‌شود.\n"
-"تنظیمات صدا اکنون فقط آنچه را مدل انتخاب‌شده پشتیبانی می‌کند نشان می‌دهند. برای Eleven v3، پایداری انتخابی میان خلاقانه، طبیعی یا پایدار است."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "بارگذاری سینتی‌سایزر برای پیمایش ممکن نشد؛ ElevenLabs برای همه گفتار استفاده می‌شود."

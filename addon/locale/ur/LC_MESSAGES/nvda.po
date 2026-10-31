@@ -194,28 +194,6 @@ msgstr "کلید کی جانچ کے لیے ElevenLabs تک رسائی نہیں �
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "اسپیچ سنتھیسائزر ڈرائیور جو ElevenLabs ٹیکسٹ ٹو اسپیچ API سے آڈیو اسٹریم کرتا ہے۔"
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API کلید اب NVDA کی ترتیبات میں ایک نئے ElevenLabs TTS زمرے میں سیٹ کی جاتی ہے۔ محفوظ کرنے سے پہلے کلید ElevenLabs سے جانچی جاتی ہے، اور آپ کے Windows صارف کے لیے خفیہ کر کے محفوظ کی جاتی ہے۔ ElevenLabs سنتھیسائزر کی فہرست میں صرف کلید سیٹ ہونے کے بعد ظاہر ہوتا ہے۔\n"
-"اگر آپ اپ گریڈ کر رہے ہیں: elevenlabs_settings.txt اب نہیں پڑھی جاتی، اس لیے نئے زمرے میں اپنی کلید دوبارہ سیٹ کریں۔ اس کے بعد آپ پرانی فائل حذف کر سکتے ہیں، جس میں آپ کی کلید سادہ متن میں ہے۔\n"
-"ElevenLabs TTS کی ترتیبات میں نیا اختیار: نیویگیشن کے لیے سنتھیسائزر۔ یہ سب پڑھیں کے علاوہ سب کچھ بولتا ہے، اس لیے ElevenLabs کریڈٹ صرف اسی پر خرچ ہوتے ہیں جو آپ پڑھنا چنتے ہیں۔ اسے آن اور آف کرنے کا حکم ان پٹ اشاروں میں تفویض کیا جا سکتا ہے۔\n"
-"جب نیویگیشن کے لیے سنتھیسائزر لوڈ ہو، تو ترتیبات کی انگوٹھی میں دونوں سنتھیسائزرز کی ترتیبات ان کے سنتھیسائزر کے نام کے ساتھ ہوتی ہیں۔\n"
-"سب پڑھیں اب جملوں کے درمیان نہیں رکتا جب اگلا جملہ ElevenLabs سے لایا جا رہا ہو۔\n"
-"سب پڑھیں کے دوران کرسر اب گفتگو کی زیادہ قریب سے پیروی کرتا ہے۔\n"
-"سب پڑھیں اب ElevenLabs کو بتاتا ہے کہ ہر درخواست سے پہلے اور بعد میں کون سا متن آتا ہے، تاکہ لہجہ ایک جملے سے اگلے میں روانی سے جائے۔\n"
-"گفتگو جلد شروع ہو سکتی ہے، کیونکہ ElevenLabs سے کنکشن بیانات کے درمیان کھلا رکھا جاتا ہے۔\n"
-"آواز کی ترتیبات اب صرف وہی دکھاتی ہیں جو منتخب ماڈل سپورٹ کرتا ہے۔ Eleven v3 کے لیے استحکام تخلیقی، قدرتی یا مستحکم میں سے ایک انتخاب ہے۔"
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "نیویگیشن کے لیے سنتھیسائزر لوڈ نہیں ہو سکا؛ تمام گفتگو کے لیے ElevenLabs استعمال ہو رہا ہے۔"

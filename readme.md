@@ -41,4 +41,4 @@ Press NVDA+shift+u to hear how many credits you've used on your ElevenLabs accou
 
 Press NVDA+shift+v to reload the list of voices and models your ElevenLabs account can use. This is handy if you've upgraded your subscription while using the add-on.
 
-There's also a command to switch between the synthesizer for navigation and ElevenLabs for all speech. It has no key by default, so assign one in NVDA's Input Gestures, under "ElevenLabs speech synthesizer". Switching back on uses the synthesizer you last chose in the settings.
+Press NVDA+shift+t to switch between the synthesizer for navigation and ElevenLabs for all speech. Switching back on uses the synthesizer you last chose in the settings.

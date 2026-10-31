@@ -193,28 +193,6 @@ msgstr "Nije moguće pristupiti ElevenLabsu radi provere ključa. Proverite inte
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Драјвер синтетизатора говора који преноси звук са ElevenLabs API-ја за претварање текста у говор."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API ključ se sada postavlja u novoj kategoriji ElevenLabs TTS u podešavanjima NVDA. Ključ se proverava kod ElevenLabsa pre čuvanja i čuva se šifrovan za vašeg Windows korisnika. ElevenLabs se pojavljuje na listi sintetizatora tek kada je ključ postavljen.\n"
-"Ako nadograđujete: elevenlabs_settings.txt se više ne čita, pa ponovo postavite ključ u novoj kategoriji. Nakon toga možete obrisati staru datoteku, koja sadrži vaš ključ kao običan tekst.\n"
-"Nova opcija u podešavanjima ElevenLabs TTS: sintetizator za navigaciju. On izgovara sve osim čitanja svega, pa se ElevenLabs krediti troše samo na ono što izaberete da čitate. Komanda za uključivanje i isključivanje može se dodeliti u Ulaznim komandama.\n"
-"Dok je sintetizator za navigaciju učitan, krug podešavanja sadrži podešavanja oba sintetizatora, nazvana po njihovom sintetizatoru.\n"
-"Čitanje svega više ne pravi pauze između rečenica dok se sledeća preuzima od ElevenLabsa.\n"
-"Tokom čitanja svega kursor sada pažljivije prati govor.\n"
-"Čitanje svega sada govori ElevenLabsu koji tekst dolazi pre i posle svakog zahteva, pa intonacija teče od jedne rečenice do sledeće.\n"
-"Govor može da počne ranije, jer veza sa ElevenLabsom ostaje otvorena između izgovora.\n"
-"Podešavanja glasa sada prikazuju samo ono što izabrani model podržava. Za Eleven v3 stabilnost je izbor između Креативно, Природно ili Стабилно."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Nije moguće učitati sintetizator za navigaciju; ElevenLabs se koristi za sav govor."

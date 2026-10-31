@@ -193,28 +193,6 @@ msgstr "ElevenLabs nu a putut fi contactat pentru verificarea cheii. Verificați
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Driver de sintetizator de voce care transmite audio de la API-ul de text în vorbire ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"Cheia API se setează acum într-o nouă categorie ElevenLabs TTS din setările NVDA. Cheia este verificată la ElevenLabs înainte de a fi salvată și este stocată criptat pentru utilizatorul tău Windows. ElevenLabs apare în lista de sintetizatoare doar după ce este setată o cheie.\n"
-"Dacă actualizezi: elevenlabs_settings.txt nu mai este citit, așa că setează din nou cheia în noua categorie. După aceea poți șterge fișierul vechi, care conține cheia ca text simplu.\n"
-"Opțiune nouă în setările ElevenLabs TTS: un sintetizator pentru navigare. Acesta rostește tot în afară de citirea continuă, astfel încât creditele ElevenLabs se consumă doar pe ce alegi să citești. O comandă pentru activarea și dezactivarea lui poate fi atribuită în Gesturi de intrare.\n"
-"Cât timp un sintetizator pentru navigare este încărcat, inelul de setări conține setările ambelor sintetizatoare, denumite după sintetizatorul lor.\n"
-"Citirea continuă nu mai face pauze între propoziții cât timp următoarea este preluată de la ElevenLabs.\n"
-"În timpul citirii continue, cursorul urmărește acum vorbirea mai îndeaproape.\n"
-"Citirea continuă îi spune acum lui ElevenLabs ce text vine înainte și după fiecare cerere, astfel încât intonația curge de la o propoziție la următoarea.\n"
-"Vorbirea poate începe mai repede, deoarece conexiunea cu ElevenLabs rămâne deschisă între enunțuri.\n"
-"Setările vocii arată acum doar ce suportă modelul ales. Pentru Eleven v3, stabilitatea este o alegere între Creativ, Natural sau Robust."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Nu s-a putut încărca un sintetizator pentru navigare; se folosește ElevenLabs pentru toată vorbirea."

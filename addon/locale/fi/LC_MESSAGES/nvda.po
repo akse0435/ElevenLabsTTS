@@ -194,28 +194,6 @@ msgstr "ElevenLabsiin ei saatu yhteyttä avaimen tarkistamiseksi. Tarkista inter
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Puhesyntetisaattoriajuri, joka suoratoistaa ääntä ElevenLabsin tekstistä puheeksi -rajapinnasta."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API-avain asetetaan nyt uudessa ElevenLabs TTS -luokassa NVDA:n asetuksissa. Avain tarkistetaan ElevenLabsilta ennen tallentamista, ja se tallennetaan salattuna Windows-käyttäjällesi. ElevenLabs näkyy syntetisaattoriluettelossa vasta, kun avain on asetettu.\n"
-"Jos päivität: elevenlabs_settings.txt-tiedostoa ei enää lueta, joten aseta avaimesi uudelleen uudessa luokassa. Sen jälkeen voit poistaa vanhan tiedoston, jossa avaimesi on tavallisena tekstinä.\n"
-"Uusi asetus ElevenLabs TTS -asetuksissa: navigoinnin syntetisaattori. Se puhuu kaiken paitsi jatkuvan luvun, joten ElevenLabs-krediittejä kuluu vain siihen, mitä valitset luettavaksi. Komento sen käyttöön ottamiseksi ja poistamiseksi voidaan määrittää Näppäinkomennot-valintaikkunassa.\n"
-"Kun navigoinnin syntetisaattori on ladattu, asetusrengas sisältää molempien syntetisaattorien asetukset syntetisaattorinsa mukaan nimettyinä.\n"
-"Jatkuva luku ei enää pidä taukoa lauseiden välillä, kun seuraavaa haetaan ElevenLabsilta.\n"
-"Jatkuvan luvun aikana kohdistin seuraa nyt puhetta tarkemmin.\n"
-"Jatkuva luku kertoo nyt ElevenLabsille, mitä tekstiä tulee kunkin pyynnön ennen ja jälkeen, joten intonaatio jatkuu sujuvasti lauseesta toiseen.\n"
-"Puhe voi alkaa aiemmin, koska yhteys ElevenLabsiin pidetään auki lausahdusten välillä.\n"
-"Ääniasetukset näyttävät nyt vain sen, mitä valittu malli tukee. Eleven v3:ssa vakaus valitaan vaihtoehdoista Luova, Luonnollinen tai Vakaa."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Navigoinnin puhesyntetisaattoria ei voitu ladata; ElevenLabsia käytetään kaikkeen puheeseen."

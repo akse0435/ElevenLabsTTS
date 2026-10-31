@@ -2,9 +2,7 @@
 # ElevenLabs speech synthesizer driver for NVDA.
 #
 # Setup: set your ElevenLabs API key in NVDA's settings, ElevenLabs TTS
-# category, then select "ElevenLabs" as the synthesizer. The key and what the
-# driver learns about the account are kept in elevenlabs_settings.json; see
-# _elevenlabsSettings.
+# category, then select "ElevenLabs" as the synthesizer.
 #
 # All speech is sent to ElevenLabs and counts towards your API usage. Speeds
 # the API can't deliver itself are made locally with sonic, which NVDA ships
@@ -66,8 +64,7 @@ CHUNK_SIZE = 4096
 # Seconds without audio before giving up. Measured worst: ~1 s real-time, ~2.3 s others.
 REQUEST_TIMEOUT = 15
 REALTIME_REQUEST_TIMEOUT = 8
-# Seconds a finished connection is kept for the next request. Reusing one saves
-# the TLS handshake before each utterance; reconnecting after a pause is cheap.
+# Seconds a finished connection is kept open, to skip the next TLS handshake.
 CONNECTION_IDLE_TIMEOUT = 60
 # One for the part playing and one for the next part's prefetch.
 MAX_IDLE_CONNECTIONS = 2
@@ -94,9 +91,8 @@ MODEL_PROBE_WORKERS = 2
 
 # One retry covers a dropped connection or a busy server without much delay.
 MAX_RETRIES = 1
-# With a navigation synthesizer, utterances in a row ElevenLabs can't reach or
-# that its servers fail before it is given up for the session. Each is spoken
-# by the navigation synthesizer meanwhile.
+# With a navigation synthesizer: failed utterances in a row before ElevenLabs
+# is given up for the session.
 MAX_TRANSIENT_FAILURES = 3
 RETRY_DELAY = 0.5
 RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
@@ -111,8 +107,7 @@ PREVIOUS_REQUEST_GRACE = 0.5
 POLL_INTERVAL = 0.05
 # Silence mid-utterance, in seconds, long enough to log.
 GAP_TO_LOG = 0.3
-# How long the speech thread waits for say all's next utterance before letting
-# the player go idle, which would hold the next request back until playback ends.
+# Seconds to wait for say all's next utterance before the player goes idle.
 SAY_ALL_IDLE_GRACE = 0.5
 
 # Long text is split between sentences; see ModelInfo.parts.
@@ -172,8 +167,7 @@ _TAG = re.compile(r"\[[^\[\]]*\]")
 _LEADING_TAG = re.compile(r"\s*\[[^\[\]]*\]")
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
-# Their names in the stability box shown instead of the slider for such models,
-# as ElevenLabs names them.
+# Their names in the stability box, as ElevenLabs names them.
 STABILITY_PRESET_NAMES = OrderedDict((
 	# Translators: a choice for stability on models that take only three values;
 	# the widest emotional range.
@@ -232,11 +226,9 @@ _EARLIER_MODELS = ("eleven_monolingual_v1", "eleven_multilingual_v1")
 _offeredModels = OrderedDict(MODELS)
 # Fields each model has refused, saved as refused_<model> in the settings file.
 _refused = {}
-# Recorded instead of apply_text_normalization when only "on" was refused, which
-# Flash and Turbo v2.5 allow only on Enterprise plans; auto and off still work.
+# Recorded when only "on" was refused, as Flash and Turbo v2.5 do below Enterprise.
 _NORMALIZATION_ON_REFUSED = "apply_text_normalization=on"
-# The text around a request, sent in say all so intonation carries across parts and
-# utterances. Not billed (measured on Flash v2.5).
+# Text around a request, sent in say all for intonation. Not billed on Flash v2.5.
 _CONTEXT_FIELDS = ("previous_text", "next_text")
 # ElevenLabs says v3 can't use them; other models that refuse them are learned.
 _NO_CONTEXT_MODELS = ("eleven_v3", "eleven_v3_conversational")
@@ -474,10 +466,7 @@ def _modelInfo(modelId):
 
 
 def _withoutDeclined(settings, model):
-	"""settings less those the model list says the model can't use.
-
-	Only an explicit false counts, and it can only take settings away, so the
-	list can't bring back one the model is known to refuse."""
+	"""settings less those the model list says the model can't use."""
 	declined = {
 		field for flag, field in (("can_use_style", "style"), ("can_use_speaker_boost", "use_speaker_boost"))
 		if model.get(flag) is False
@@ -549,8 +538,7 @@ def _splitText(text, first, later):
 
 
 def _nonSpace(text):
-	"""The characters of text other than white space, which splitting leaves alone,
-	so they tell which part an index falls in."""
+	"""Length of text without white space, which splitting leaves alone."""
 	return len(_WHITESPACE.sub("", text))
 
 
@@ -561,13 +549,36 @@ def _isSayAllRunning():
 		return False
 
 
+def _sayAllKnowsItsStart():
+	"""Whether NVDA records who started say all (startedFromScript, added in 2024.x)."""
+	global _sayAllKnowsStart
+	if _sayAllKnowsStart is None:
+		# The attribute only exists once say all has run, so readText's parameters tell.
+		try:
+			import inspect
+			_sayAllKnowsStart = "startedFromScript" in inspect.signature(
+				type(sayAll.SayAllHandler).readText
+			).parameters
+		except Exception:
+			_sayAllKnowsStart = False
+	return _sayAllKnowsStart
+
+
+_sayAllKnowsStart = None
+
+
 def _isUserSayAll():
-	"""Whether say all is reading because the user asked, rather than e.g. on page load."""
-	return _isSayAllRunning() and bool(getattr(sayAll.SayAllHandler, "startedFromScript", False))
+	"""Whether the user started say all, rather than e.g. a page load.
+	Always True for say all if NVDA can't tell."""
+	if not _isSayAllRunning():
+		return False
+	if not _sayAllKnowsItsStart():
+		return True
+	return bool(getattr(sayAll.SayAllHandler, "startedFromScript", False))
 
 
 def _unhideTags(speechSequence):
-	"""speechSequence with the brackets _hideTags swapped out put back, for another synthesizer."""
+	"""speechSequence with the brackets hidden by _hideTags put back."""
 	return [
 		item.replace(_TAG_OPEN, "[").replace(_TAG_CLOSE, "]") if isinstance(item, str) else item
 		for item in speechSequence
@@ -651,12 +662,8 @@ def _sizerWindows(item):
 
 
 def _orderVoicePanel(panel, settingIds):
-	"""Puts the driver's controls in panel in the order of settingIds, on screen and
-	in tab order.
-
-	NVDA adds the control of a setting that becomes supported after the panel was
-	built after all the others it has made, and tab order follows creation, so a
-	model change would leave e.g. the stability box after audio tags."""
+	"""Puts the driver's controls in panel in settingIds order, on screen and in tab
+	order, as NVDA adds a setting a new model supports last."""
 	import wx
 
 	sizer = panel.settingsSizer
@@ -718,9 +725,7 @@ def _fetchJson(url, key, timeout):
 
 def checkApiKey(key):
 	"""Asks ElevenLabs whether key works; None if it does, else a message for the user.
-
-	The voice list is what the driver can't start without, so that is what's asked for.
-	Blocks for up to INIT_TIMEOUT, so it must not run on the main thread."""
+	Blocks, so it must not run on the main thread."""
 	if not key.isascii() or not key.isprintable() or " " in key:
 		# Can't be sent in a header, and is no API key anyway.
 		# Translators: shown when ElevenLabs refuses the API key that was entered.
@@ -773,8 +778,7 @@ def _makePlayer(sampleRate):
 
 
 class _ConnectionPool:
-	"""Keeps finished HTTPS connections open for a while, so the next request
-	skips the TCP and TLS handshake."""
+	"""Keeps finished HTTPS connections open for a while, to skip the next handshake."""
 
 	def __init__(self):
 		self._lock = threading.Lock()
@@ -785,8 +789,7 @@ class _ConnectionPool:
 		self._loggedProxy = False
 
 	def request(self, req, timeout):
-		"""Sends req; returns (connection, response, reused), or None when a proxy
-		is set, which urlopen handles instead."""
+		"""Sends req; returns (connection, response, reused), or None if a proxy is set."""
 		if "https" in urlrequest.getproxies() and not urlrequest.proxy_bypass(req.host):
 			if not self._loggedProxy:
 				self._loggedProxy = True
@@ -810,8 +813,7 @@ class _ConnectionPool:
 				conn.close()
 				if not reused:
 					raise
-				# The server closed it without the check in _take noticing, so the
-				# request never arrived and is safe to send again.
+				# Closed by the server meanwhile, so the request never arrived; safe to resend.
 				log.debug("ElevenLabs: a kept connection was closed by the server; reconnecting.")
 			except BaseException:
 				conn.close()
@@ -858,8 +860,7 @@ class _ConnectionPool:
 			extra.close()
 
 	def _scheduleSweep(self):
-		"""Arranges for the oldest idle connection to be closed once it expires.
-		Called with the lock held."""
+		"""Closes the oldest idle connection once it expires. Called with the lock held."""
 		if self._timer is not None:
 			self._timer.cancel()
 			self._timer = None
@@ -953,8 +954,7 @@ class _Download(threading.Thread):
 			else:
 				conn, resp, self.reused = opened
 				if resp.status >= 400:
-					# Raised as urlopen would, so errors are handled the same either way.
-					# Reading the body first leaves the connection fit to reuse.
+					# Raised as urlopen would. Reading the body keeps the connection reusable.
 					body = resp.read()
 					raise HTTPError(self._req.full_url, resp.status, resp.reason, resp.headers, io.BytesIO(body))
 			while self._wanted:
@@ -985,12 +985,8 @@ class _Download(threading.Thread):
 
 
 class _IndexSchedule:
-	"""Reports an utterance's indexes as its audio plays, in say all.
-
-	The splitter can only cut between parts, so an index is reported when the part
-	its text falls in starts playing. Those after all the text, which NVDA waits for
-	before it sends the next utterance, go once the last part has fully arrived and
-	started playing, so the next utterance can be fetched while this one plays."""
+	"""Reports an utterance's indexes as the parts they fall in start playing, in say all.
+	Trailing ones go once the last part has arrived, so the next utterance comes sooner."""
 
 	def __init__(self, report, byPart, trailing):
 		self._report = report
@@ -1067,8 +1063,7 @@ class _SpeechWorker(threading.Thread):
 	def __init__(self, driver):
 		super().__init__(name="ElevenLabsSpeechWorker")
 		self.driver = driver
-		# Jobs waiting, and None once stopped. Not a queue.Queue, as say all looks
-		# at the next job before taking it.
+		# Jobs waiting; None once stopped. A deque, as say all looks at the next job.
 		self._jobs = deque()
 		self._jobsChanged = threading.Condition()
 		self.generation = 0  # incremented on cancel so stale jobs are dropped
@@ -1134,8 +1129,7 @@ class _SpeechWorker(threading.Thread):
 			return bool(self._jobs)
 
 	def _waitForNextSayAll(self, job):
-		"""True if NVDA sends more speech soon after job's trailing indexes, which it
-		waits for, are reported; they may still be in the playback buffer."""
+		"""True if NVDA sends more speech soon after job's trailing indexes are reported."""
 		# Bounded in case the player was rebuilt, which drops its callbacks.
 		deadline = max(self._playEnd or 0, time.time()) + 1
 		while not job.schedule.finished.is_set() and time.time() < deadline:
@@ -1168,13 +1162,11 @@ class _SpeechWorker(threading.Thread):
 				continue
 			if not (job.sayAll and completed):
 				# Indexes are reported even if synthesis failed, since NVDA's
-				# speech queue waits for them before moving on. In say all they
-				# are reported as the audio plays instead.
+				# speech queue waits for them. In say all they go as the audio plays.
 				self._schedule(job).flush()
 			if self._peekJob() is not None:
 				continue
-			# Idling now would hold back the next say all utterance until this
-			# one has finished playing, so it is given a moment to arrive.
+			# Idling would hold say all's next utterance back, so it gets a moment to arrive.
 			if job.sayAll and completed and self._waitForNextSayAll(job):
 				continue
 			if not self._isCurrent(job.gen):
@@ -1241,7 +1233,7 @@ class _SpeechWorker(threading.Thread):
 		self.driver._warnIfTooFast(self.driver.model)
 		self._plan(job)
 		if not job.sayAll:
-			# Say all's utterances follow one another, so a gap between them is worth logging.
+			# A gap between say all's utterances is worth logging.
 			self._playEnd = None
 		completed = False
 		try:
@@ -1280,8 +1272,7 @@ class _SpeechWorker(threading.Thread):
 			callback()
 
 	def _prefetchNextJob(self, gen):
-		"""Starts the next say all utterance's first part while this one plays.
-		False while there is no next utterance yet."""
+		"""Starts the next say all utterance's first part; False if there is none yet."""
 		job = self._peekJob()
 		if job is None:
 			return False
@@ -1302,8 +1293,7 @@ class _SpeechWorker(threading.Thread):
 
 	def _buildRequest(self, key, text, langOverride, modelId, context=(None, None)):
 		"""The speech request for text, and its (voice, model) pair.
-
-		context is (previous_text, next_text), each left out if None or refused."""
+		context is (previous_text, next_text)."""
 		driver = self.driver
 		# Language priority: NVDA's language markup > the language setting > auto.
 		lang = langOverride or driver._language
@@ -1340,8 +1330,7 @@ class _SpeechWorker(threading.Thread):
 		return text
 
 	def _textFor(self, text, modelId):
-		"""text as sent to modelId: audio tags are left out where they'd be read,
-		e.g. when the default model stands in for the chosen one."""
+		"""text as sent to modelId: audio tags are left out where they'd be read."""
 		if self.driver._tagsActive() and not _modelInfo(modelId).tags:
 			text = " ".join(_TAG.sub(" ", text).split())
 		return text
@@ -1722,8 +1711,7 @@ class SynthDriver(BaseSynthDriver):
 
 	@classmethod
 	def check(cls):
-		# Without a key it can't speak, so it isn't offered until one is set in
-		# NVDA's settings. The key is cached, so this is cheap to ask often.
+		# Not offered until an API key is set.
 		return cls._getApiKey() is not None
 
 	def __init__(self):
@@ -1754,8 +1742,8 @@ class SynthDriver(BaseSynthDriver):
 		self._modelsChecked = False
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
 		self._modelFailures = {}
-		# Set once ElevenLabs is given up: speech goes to FALLBACK_SYNTH, or with a
-		# navigation synthesizer, all of it goes there.
+		# Set once ElevenLabs is given up, and speech goes to FALLBACK_SYNTH or the
+		# navigation synthesizer.
 		self._fellBack = False
 		# Failed utterances in a row; see MAX_TRANSIENT_FAILURES.
 		self._transientFailures = 0
@@ -1816,9 +1804,9 @@ class SynthDriver(BaseSynthDriver):
 		super().terminate()
 
 	def speak(self, speechSequence):
-		speaker = self._speaker()
-		if speaker is not self:
-			speaker.speak(_unhideTags(speechSequence))
+		if self._speaker() is not self and self._navigate(
+			lambda synth: synth.speak(_unhideTags(speechSequence))
+		):
 			return
 		textParts = []
 		# (index, non-space characters before it), which places it in a part.
@@ -1855,9 +1843,7 @@ class SynthDriver(BaseSynthDriver):
 				player.stop()
 			except Exception:
 				pass
-		navigation = self._navigation.synth
-		if navigation is not None:
-			navigation.cancel()
+		self._navigate(lambda synth: synth.cancel())
 
 	def pause(self, switch):
 		if self._worker is not None:
@@ -1869,9 +1855,7 @@ class SynthDriver(BaseSynthDriver):
 				player.pause(switch)
 			except Exception:
 				pass
-		navigation = self._navigation.synth
-		if navigation is not None:
-			navigation.pause(switch)
+		self._navigate(lambda synth: synth.pause(switch))
 
 	# --- Navigation synthesizer ---
 
@@ -1884,9 +1868,26 @@ class SynthDriver(BaseSynthDriver):
 			return self
 		return navigation
 
+	def _navigate(self, action):
+		"""Runs action with the navigation synthesizer, loading it again once if it fails,
+		as some drivers' engines can be shut down meanwhile; False if none works."""
+		for attempt in range(2):
+			synth = self._navigation.synth
+			if synth is None:
+				return False
+			try:
+				action(synth)
+				return True
+			except Exception:
+				log.error(f"ElevenLabs: {synth.name} failed for navigation", exc_info=True)
+			if attempt == 0:
+				self.useNavigationSynth(synth.name)
+		self._navigation.unload()
+		self._announceNoNavigation()
+		return False
+
 	def _get_supportedCommands(self):
-		# NVDA asks while it builds speech, e.g. whether capitals can change pitch,
-		# so the navigation synthesizer's own answer applies to what it speaks.
+		# NVDA asks while building speech, so the synthesizer speaking answers.
 		speaker = self._speaker()
 		return self._supportedCommands if speaker is self else speaker.supportedCommands
 
@@ -1895,9 +1896,8 @@ class SynthDriver(BaseSynthDriver):
 		return self._fellBack and self._navigation.synth is not None
 
 	def useNavigationSynth(self, name):
-		"""Loads synthesizer name to speak outside say all, or none if name is None.
-
-		Tells the user if it can't be loaded, and returns False then."""
+		"""Loads synthesizer name to speak outside say all, or none if None.
+		False, and the user is told, if it can't be loaded."""
 		import ui
 		if not name:
 			self._navigation.unload()
@@ -1911,12 +1911,7 @@ class SynthDriver(BaseSynthDriver):
 			name = _navigation.FALLBACK_SYNTH
 		loaded = self._navigation.load(name)
 		if loaded is None:
-			queueHandler.queueFunction(
-				queueHandler.eventQueue,
-				ui.message,
-				# Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
-				_("Could not load a synthesizer for navigation; using ElevenLabs for all speech."),
-			)
+			self._announceNoNavigation()
 			return False
 		if loaded == name:
 			return True
@@ -1932,6 +1927,16 @@ class SynthDriver(BaseSynthDriver):
 		)
 		return False
 
+	@staticmethod
+	def _announceNoNavigation():
+		import ui
+		queueHandler.queueFunction(
+			queueHandler.eventQueue,
+			ui.message,
+			# Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+			_("Could not load a synthesizer for navigation; using ElevenLabs for all speech."),
+		)
+
 	def _get_navigationSynthDescription(self):
 		"""The name of the synthesizer speaking outside say all, or None."""
 		synth = self._navigation.synth
@@ -1942,11 +1947,9 @@ class SynthDriver(BaseSynthDriver):
 		On the main thread."""
 		if not self._worker._isCurrent(job.gen):
 			return
-		navigation = self._navigation.synth
-		if navigation is not None:
-			navigation.speak(_unhideTags(job.sequence))
+		if self._navigate(lambda synth: synth.speak(_unhideTags(job.sequence))):
 			return
-		# Unloaded meanwhile; NVDA still waits for the indexes.
+		# Unloaded or failing; NVDA still waits for the indexes.
 		for index, before in job.indexes:
 			synthIndexReached.notify(synth=self, index=index)
 		synthDoneSpeaking.notify(synth=self)
@@ -2035,7 +2038,7 @@ class SynthDriver(BaseSynthDriver):
 
 	@staticmethod
 	def _getApiKey():
-		# Read afresh each time, as the settings panel can set or clear it at any moment.
+		# Read each time, as the settings panel can change it.
 		return _settings.getApiKey()
 
 	# --- Error reporting ---
@@ -2043,10 +2046,9 @@ class SynthDriver(BaseSynthDriver):
 	def _fallBack(self, reason, transient=False):
 		"""Hands speech to eSpeak for this session, so NVDA is never left silent.
 
-		With a navigation synthesizer, ElevenLabs stays loaded and that one speaks
-		everything instead, without asking ElevenLabs again. A transient failure,
-		e.g. a network outage, only does so after MAX_TRANSIENT_FAILURES in a row.
-		NVDA's saved synthesizer is kept, so ElevenLabs is used again after a restart."""
+		NVDA's saved synthesizer is kept, so ElevenLabs is used again after a restart.
+		With a navigation synthesizer, that one speaks instead; transient failures
+		only count after MAX_TRANSIENT_FAILURES in a row."""
 		if self._fellBack:
 			return
 		if transient and self._navigation.synth is not None:
@@ -2879,7 +2881,7 @@ class SynthDriver(BaseSynthDriver):
 		self._presetStabilityModels.add(modelId)
 		log.debug(f"ElevenLabs: {modelId} refused the stability value; using presets.")
 		if modelId == self._modelId:
-			# The box replaces the slider, starting where the slider was, so the voice keeps its sound.
+			# The box starts at the preset nearest the slider, so the voice keeps its sound.
 			self._stabilityPreset = self._nearestStabilityPreset()
 			self._refreshGui(changedSetting="model")
 		return True
@@ -2966,7 +2968,7 @@ class SynthDriver(BaseSynthDriver):
 		)
 
 	def _get_normalization(self):
-		# What the model gets, for the box; NVDA saves the choice itself, kept for other models.
+		# Shows what the model gets; the saved choice is kept for other models.
 		if not self._configuring and self._normalization not in self._normalizationsFor(self._modelId):
 			return DEFAULT_NORMALIZATION
 		return self._normalization
@@ -3002,8 +3004,8 @@ class SynthDriver(BaseSynthDriver):
 
 	def _get_language(self):
 		# Reported to NVDA so symbol pronunciation follows the chosen language.
-		# None means "no opinion", so NVDA keeps using its own language. A model
-		# without language_code hides the box, so its choice is no opinion either.
+		# None means "no opinion", so NVDA keeps using its own language; also for a
+		# model without language_code.
 		if self._language == "auto" or not _modelInfo(self._modelId).languageCode:
 			return None
 		return self._language

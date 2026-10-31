@@ -191,28 +191,6 @@ msgstr "キーを確認するために ElevenLabs に接続できませんでし
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "ElevenLabs の音声合成 API から音声をストリーミングする音声合成ドライバーです。"
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API キーは NVDA の設定に新しく加わった ElevenLabs TTS カテゴリで設定するようになりました。キーは保存前に ElevenLabs で確認され、Windows ユーザーごとに暗号化して保存されます。ElevenLabs はキーを設定するまで音声エンジンの一覧に表示されません。\n"
-"アップグレードする場合: elevenlabs_settings.txt は読み込まれなくなったため、新しいカテゴリでキーを設定し直してください。その後、キーが平文で入っている古いファイルは削除できます。\n"
-"ElevenLabs TTS の設定に新しいオプション: ナビゲーション用の音声エンジン。すべて読み以外のすべてを読み上げるため、ElevenLabs のクレジットは読みたいものにだけ使われます。オン・オフを切り替えるコマンドは入力ジェスチャーで割り当てられます。\n"
-"ナビゲーション用の音声エンジンが読み込まれている間、設定リングには両方の音声エンジンの設定が、それぞれの音声エンジン名付きで入ります。\n"
-"すべて読みで、次の文を ElevenLabs から取得している間に文と文の間で止まらなくなりました。\n"
-"すべて読みの間、カーソルが読み上げにより正確に追従するようになりました。\n"
-"すべて読みでは、各リクエストの前後にあるテキストを ElevenLabs に伝えるようになり、抑揚が文から文へ自然につながります。\n"
-"ElevenLabs との接続を発話の合間も開いたままにするため、読み上げが早く始まることがあります。\n"
-"音声の設定には、選んだモデルが対応しているものだけが表示されるようになりました。Eleven v3 では、安定性は クリエイティブ、ナチュラル、ロバスト から選びます。"
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "ナビゲーション用の音声エンジンを読み込めませんでした。すべての読み上げに ElevenLabs を使用します。"

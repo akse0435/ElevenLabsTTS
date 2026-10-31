@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-# The synthesizer that speaks for ElevenLabs outside say all, so moving around
-# doesn't use up credits. ElevenLabs stays NVDA's synthesizer throughout and
-# hands speech to this one, which is loaded the way NVDA loads its own, with
-# the settings NVDA's config has for it, and kept loaded so that switching
-# between the two costs nothing. NVDA's settings ring then holds both
-# synthesizers' settings.
+# The synthesizer that speaks for ElevenLabs outside say all, to save credits.
+# ElevenLabs stays NVDA's synthesizer and hands speech to it.
 #
 # The leading underscore keeps NVDA from listing this module as a synthesizer.
 
@@ -31,13 +27,8 @@ FALLBACK_SYNTH = "espeak"
 
 
 class _CombinedSettingsRing(SynthSettingsRing):
-	"""NVDA's settings ring with ElevenLabs' settings and then the navigation
-	synthesizer's, each named after its synthesizer.
-
-	NVDA keeps a single ring and rebuilds it for whichever synthesizer changes
-	voice, which every synthesizer does as it loads, so this takes the ring's
-	place: every rebuild, whoever asks for it, comes here. Without a navigation
-	synthesizer it is NVDA's ring as usual, so switching synthesizers just works."""
+	"""NVDA's settings ring, holding both synthesizers' settings while there is a
+	navigation synthesizer. It replaces NVDA's ring, which every synthesizer rebuilds."""
 
 	def __init__(self, navigation):
 		self._navigation = navigation
@@ -75,8 +66,8 @@ class _CombinedSettingsRing(SynthSettingsRing):
 		else:
 			self._current = None
 		if synth is owner:
-			# A new ElevenLabs voice makes NVDA load its voice dictionary right after
-			# this, but the navigation synthesizer's applies while it is loaded.
+			# NVDA loads ElevenLabs' voice dictionary next, but the navigation
+			# synthesizer's should apply.
 			queueHandler.queueFunction(queueHandler.eventQueue, _loadVoiceDict, navigation)
 
 	def _get_currentSettingName(self):
@@ -152,16 +143,17 @@ class NavigationSynth:
 
 	def unload(self, restore=True):
 		"""Unloads the synthesizer; restore gives ElevenLabs back its settings ring
-		and voice dictionary, which isn't wanted while ElevenLabs itself unloads."""
+		and voice dictionary."""
 		synth, self.synth = self.synth, None
 		self._unregister()
 		if synth is None:
 			return
-		try:
-			synth.cancel()
-			synth.terminate()
-		except Exception:
-			log.error(f"ElevenLabs: could not unload {synth.name}", exc_info=True)
+		# Terminated even if cancel fails, e.g. for a driver whose engine was shut down.
+		for step in (synth.cancel, synth.terminate):
+			try:
+				step()
+			except Exception:
+				log.error(f"ElevenLabs: could not unload {synth.name}", exc_info=True)
 		if restore:
 			self._restoreOwner()
 

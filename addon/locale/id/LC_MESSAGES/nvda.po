@@ -194,28 +194,6 @@ msgstr "Tidak dapat menghubungi ElevenLabs untuk memeriksa kunci. Periksa koneks
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Driver penyintesis suara yang mengalirkan audio dari API teks-ke-suara ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"Kunci API sekarang diatur di kategori ElevenLabs TTS baru dalam pengaturan NVDA. Kunci diperiksa dengan ElevenLabs sebelum disimpan, dan disimpan dalam bentuk terenkripsi untuk pengguna Windows Anda. ElevenLabs hanya muncul di daftar synthesizer setelah kunci diatur.\n"
-"Jika Anda meningkatkan versi: elevenlabs_settings.txt tidak lagi dibaca, jadi atur kunci Anda lagi di kategori baru. Setelah itu Anda dapat menghapus file lama, yang berisi kunci Anda dalam teks biasa.\n"
-"Opsi baru di pengaturan ElevenLabs TTS: synthesizer untuk navigasi. Synthesizer ini mengucapkan semuanya kecuali baca semua, sehingga kredit ElevenLabs hanya terpakai untuk apa yang Anda pilih untuk dibaca. Perintah untuk menyalakan dan mematikannya dapat ditetapkan di Gestur Input.\n"
-"Selama synthesizer untuk navigasi dimuat, cincin pengaturan berisi pengaturan kedua synthesizer, dinamai sesuai synthesizer masing-masing.\n"
-"Baca semua tidak lagi berhenti di antara kalimat saat kalimat berikutnya diambil dari ElevenLabs.\n"
-"Selama baca semua, kursor kini mengikuti ucapan dengan lebih dekat.\n"
-"Baca semua kini memberi tahu ElevenLabs teks apa yang muncul sebelum dan sesudah setiap permintaan, sehingga intonasi mengalir dari satu kalimat ke kalimat berikutnya.\n"
-"Ucapan mungkin dimulai lebih cepat, karena koneksi ke ElevenLabs tetap terbuka di antara ucapan.\n"
-"Pengaturan suara kini hanya menampilkan apa yang didukung model yang dipilih. Untuk Eleven v3, stabilitas berupa pilihan Kreatif, Alami, atau Kokoh."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Tidak dapat memuat synthesizer untuk navigasi; ElevenLabs digunakan untuk semua ucapan."

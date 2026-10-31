@@ -196,28 +196,6 @@ msgstr "Kan ElevenLabs niet bereiken om de sleutel te controleren. Controleer uw
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Spraaksynthesizerstuurprogramma dat audio streamt vanaf de tekst-naar-spraak-API van ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"De API-sleutel wordt nu ingesteld in een nieuwe categorie ElevenLabs TTS in de instellingen van NVDA. De sleutel wordt bij ElevenLabs gecontroleerd voordat hij wordt opgeslagen, en wordt versleuteld opgeslagen voor uw Windows-gebruiker. ElevenLabs verschijnt pas in de lijst met synthesizers zodra er een sleutel is ingesteld.\n"
-"Als u bijwerkt: elevenlabs_settings.txt wordt niet meer gelezen, dus stel uw sleutel opnieuw in in de nieuwe categorie. Daarna kunt u het oude bestand verwijderen, waarin uw sleutel als platte tekst staat.\n"
-"Nieuwe optie in de instellingen van ElevenLabs TTS: een synthesizer voor navigatie. Die spreekt alles uit behalve alles lezen, zodat ElevenLabs-tegoed alleen wordt besteed aan wat u kiest om te lezen. Een opdracht om hem aan en uit te zetten kan worden toegewezen in Invoerhandelingen.\n"
-"Zolang een synthesizer voor navigatie geladen is, bevat de instellingenring de instellingen van beide synthesizers, genoemd naar hun synthesizer.\n"
-"Alles lezen pauzeert niet meer tussen zinnen terwijl de volgende bij ElevenLabs wordt opgehaald.\n"
-"Tijdens alles lezen volgt de cursor de spraak nu nauwkeuriger.\n"
-"Alles lezen vertelt ElevenLabs nu welke tekst voor en na elk verzoek komt, zodat de intonatie van de ene zin in de volgende overloopt.\n"
-"Spraak kan eerder beginnen, omdat de verbinding met ElevenLabs tussen uitingen open blijft.\n"
-"Steminstellingen tonen nu alleen wat het gekozen model ondersteunt. Voor Eleven v3 is stabiliteit een keuze uit Creatief, Natuurlijk of Robuust."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Kan geen synthesizer voor navigatie laden; ElevenLabs wordt voor alle spraak gebruikt."

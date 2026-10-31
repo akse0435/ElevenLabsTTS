@@ -1,7 +1,7 @@
-V1.4 (10/24/2026):
+V2.0 (10/31/2026):
 The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.
 If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.
-New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.
+New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. Press NVDA+shift+t to switch it on and off.
 While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.
 Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.
 During say all, the caret now follows the speech more closely.

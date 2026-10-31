@@ -194,28 +194,6 @@ msgstr "No s'ha puesto contactar con ElevenLabs pa comprebar a clau. Comprebe a 
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Controlador de sintetizador de voz que transmite audio dende la API de texto a voz d'ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"A clau d'API se configura agora en una nueva categoría ElevenLabs TTS d'a configuración de NVDA. A clau se comprueba con ElevenLabs antes de alzar-la, y s'alza cifrada pa o tuyo usuario de Windows. ElevenLabs nomás amaneix en a lista de sintetizadors quan s'ha configurau una clau.\n"
-"Si actualizas: elevenlabs_settings.txt ya no se leye, asinas que torna a configurar a tuya clau en a nueva categoría. Dimpués puetz borrar o fichero antigo, que contién a tuya clau en texto plano.\n"
-"Nueva opción en a configuración d'ElevenLabs TTS: un sintetizador pa la navegación. Diz tot menos lo leyer tot, asinas que os creditos d'ElevenLabs nomás se gastan en o que triyes leyer. Se puede asignar una orden pa activar-lo y desactivar-lo en Gestos d'entrada.\n"
-"Mientres que un sintetizador pa la navegación ye cargau, l'aniello de configuración contién a configuración d'os dos sintetizadors, nombrada seguntes o suyo sintetizador.\n"
-"Lo leyer tot ya no se para entre frases mientres se replega a siguient d'ElevenLabs.\n"
-"Mientres lo leyer tot, o cursor sigue agora a voz de más cerca.\n"
-"Lo leyer tot agora diz a ElevenLabs qué texto viene antes y dimpués de cada solicitut, asinas que la entonación flúe d'una frase a la siguient.\n"
-"A voz puede empecipiar antes, porque a connexión con ElevenLabs se mantién ubierta entre enunciaus.\n"
-"A configuración d'a voz agora nomás amuestra o que admite o modelo trigau. Pa Eleven v3, a estabilidat ye una tría entre Creativo, Natural u Robusto."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "No s'ha puesto cargar un sintetizador pa la navegación; s'emplega ElevenLabs pa tota la voz."

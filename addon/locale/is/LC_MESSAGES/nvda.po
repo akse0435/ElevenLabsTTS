@@ -192,28 +192,6 @@ msgstr "Ekki náðist samband við ElevenLabs til að athuga lykilinn. Athugaðu
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Talgervilsrekill sem streymir hljóði frá texta-í-tal API ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API-lykillinn er nú stilltur í nýjum ElevenLabs TTS-flokki í stillingum NVDA. Lykillinn er staðfestur hjá ElevenLabs áður en hann er vistaður og er geymdur dulkóðaður fyrir Windows-notandann þinn. ElevenLabs birtist aðeins á lista yfir talgervla þegar lykill hefur verið stilltur.\n"
-"Ef þú ert að uppfæra: elevenlabs_settings.txt er ekki lengur lesin, svo stilltu lykilinn aftur í nýja flokknum. Síðan geturðu eytt gömlu skránni, sem geymir lykilinn þinn sem venjulegan texta.\n"
-"Nýr valkostur í ElevenLabs TTS-stillingunum: talgervill fyrir leiðsögn. Hann segir allt nema lesa allt, svo ElevenLabs-inneign fer aðeins í það sem þú velur að lesa. Hægt er að úthluta skipun til að kveikja og slökkva á honum í Inntaksbendingum.\n"
-"Á meðan talgervill fyrir leiðsögn er hlaðinn inniheldur stillingahringurinn stillingar beggja talgervlanna, nefndar eftir talgervli sínum.\n"
-"Lesa allt gerir ekki lengur hlé á milli setninga á meðan sú næsta er sótt frá ElevenLabs.\n"
-"Á meðan lesa allt er í gangi fylgir bendillinn nú talinu nánar.\n"
-"Lesa allt segir ElevenLabs nú hvaða texti kemur á undan og eftir hverri beiðni, svo að tónfallið flæði frá einni setningu til þeirrar næstu.\n"
-"Tal getur hafist fyrr, þar sem tengingunni við ElevenLabs er haldið opinni á milli segða.\n"
-"Raddstillingar sýna nú aðeins það sem valið líkan styður. Fyrir Eleven v3 er stöðugleiki val á milli Skapandi, Náttúrulegt eða Stöðugt."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Ekki tókst að hlaða talgervli fyrir leiðsögn; ElevenLabs er notað fyrir allt tal."

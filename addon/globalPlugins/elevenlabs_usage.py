@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-# The ElevenLabs TTS category in NVDA's settings, where the API key and the
-# synthesizer for navigation are set, and shortcuts for the ElevenLabs synthesizer:
+# The ElevenLabs TTS category in NVDA's settings, and shortcuts for the ElevenLabs synthesizer:
 #   NVDA+Shift+U: report the credit usage for the current period.
 #   NVDA+Shift+V: check again which voices and models this account can use,
 #     e.g. after changing plan.
-#   Unassigned: switch between the synthesizer for navigation and ElevenLabs
-#     for all speech.
+#   NVDA+Shift+T: switch the synthesizer for navigation on and off.
 # All can be changed in Input Gestures, under "ElevenLabs speech synthesizer".
 
 import json
@@ -20,8 +18,8 @@ import queueHandler
 import synthDriverHandler
 import ui
 import wx
+import gui
 from gui import guiHelper
-from gui.message import DefaultButton, DialogType, MessageDialog, ReturnCode
 from gui.settingsDialogs import NVDASettingsDialog, SettingsDialog, SettingsPanel
 from logHandler import log
 from scriptHandler import script
@@ -63,9 +61,8 @@ def _elevenLabs():
 
 
 def _setNavigationSynth(name):
-	"""Saves name as the synthesizer for navigation, None for none, and loads it
-	if ElevenLabs is running. False if it couldn't be loaded, which the driver has
-	told the user."""
+	"""Saves name as the synthesizer for navigation (None for none) and loads it
+	if ElevenLabs is running. False if it couldn't be loaded."""
 	with _settings.editing() as settings:
 		if name:
 			settings["navigationSynth"] = name
@@ -76,10 +73,27 @@ def _setNavigationSynth(name):
 	return synth.useNavigationSynth(name) if synth is not None else True
 
 
+# MessageDialog was added in NVDA 2025.1; older versions use gui.messageBox.
+try:
+	from gui.message import DefaultButton, DialogType, MessageDialog, ReturnCode
+except ImportError:
+	MessageDialog = None
+
+
 def _showKeyError(parent, message):
-	MessageDialog(
-		parent, message, KEY_TITLE, dialogType=DialogType.ERROR, buttons=(DefaultButton.OK,)
-	).ShowModal()
+	if MessageDialog is not None:
+		MessageDialog(
+			parent, message, KEY_TITLE, dialogType=DialogType.ERROR, buttons=(DefaultButton.OK,)
+		).ShowModal()
+	else:
+		gui.messageBox(message, KEY_TITLE, wx.OK | wx.ICON_ERROR, parent)
+
+
+def _confirm(parent, message):
+	"""True if the user answers yes to message."""
+	if MessageDialog is not None:
+		return MessageDialog.confirm(message, KEY_TITLE, parent=parent) == ReturnCode.OK
+	return gui.messageBox(message, KEY_TITLE, wx.YES_NO | wx.ICON_QUESTION, parent) == wx.YES
 
 
 class _ApiKeyDialog(SettingsDialog):
@@ -95,9 +109,7 @@ class _ApiKeyDialog(SettingsDialog):
 			wx.TextCtrl,
 			style=wx.TE_PASSWORD,
 		)
-		# The check is reported here rather than in a progress dialog: NVDA's is a
-		# separate window that outlives done() and, when it finally closes, moves
-		# focus away from this dialog or the error message.
+		# Shown here, as NVDA's progress dialog moves focus away when it closes.
 		self._status = helper.addItem(
 			# Translators: shown and spoken while ElevenLabs checks the API key.
 			wx.StaticText(self, label=_("Checking the API key with ElevenLabs...")),
@@ -141,7 +153,7 @@ class _ApiKeyDialog(SettingsDialog):
 		wx.CallAfter(self._onChecked, key, error)
 
 	def onCancel(self, evt):
-		# The dialog is only destroyed later, so a check still running must not save the key.
+		# Destroyed later, so a check still running must not save the key.
 		self._cancelled = True
 		super().onCancel(evt)
 
@@ -185,7 +197,7 @@ class ElevenLabsSettingsPanel(SettingsPanel):
 		self._updateKeyButton()
 		saved = _settings.get("navigationSynth")
 		# None first: ElevenLabs speaks everything. NVDA's own list, so only
-		# synthesizers that can run here are offered, "No speech" among them.
+		# synthesizers that can run here are offered.
 		synths = [
 			(name, description) for name, description in synthDriverHandler.getSynthList()
 			if name != "elevenlabs"
@@ -229,13 +241,11 @@ class ElevenLabsSettingsPanel(SettingsPanel):
 			self._updateKeyButton()
 
 	def _clearKey(self):
-		answer = MessageDialog.confirm(
+		if not _confirm(
+			self,
 			# Translators: asked before the API key is removed.
 			_("Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."),
-			KEY_TITLE,
-			parent=self,
-		)
-		if answer != ReturnCode.OK:
+		):
 			return
 		if not _settings.clearApiKey():
 			# Translators: shown when the API key can't be removed.
@@ -248,7 +258,7 @@ class ElevenLabsSettingsPanel(SettingsPanel):
 			synth._fallBack("the API key was cleared.")
 
 	def onSave(self):
-		# Setting and clearing the key take effect at once; only the synthesizer is left.
+		# Key changes apply at once; only the synthesizer is left to save.
 		name = self._navigationNames[self._navigationList.GetSelection()]
 		if name != _settings.get("navigationSynth"):
 			_setNavigationSynth(name)
@@ -376,6 +386,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	@script(
 		# Translators: description of a command in Input Gestures.
 		description=_("Switches between a separate synthesizer for navigation and ElevenLabs for all speech"),
+		gesture="kb:NVDA+shift+t",
 		category=CATEGORY,
 	)
 	def script_toggleNavigationSynth(self, gesture):

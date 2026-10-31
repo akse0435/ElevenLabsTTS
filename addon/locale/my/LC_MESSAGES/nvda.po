@@ -196,28 +196,6 @@ msgstr "ကီးကို စစ်ဆေးရန် ElevenLabs သို့ �
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "ElevenLabs စာသားမှအသံ API မှ အသံကို တိုက်ရိုက်ထုတ်လွှင့်သော အသံပေါင်းစပ်ကိရိယာ ဒရိုက်ဗာ။"
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API ကီးကို ယခု NVDA ဆက်တင်များရှိ ElevenLabs TTS အမျိုးအစားအသစ်တွင် သတ်မှတ်ရပါသည်။ ကီးကို မသိမ်းမီ ElevenLabs ဖြင့် စစ်ဆေးပြီး သင့် Windows အသုံးပြုသူအတွက် ကုဒ်ဝှက်၍ သိမ်းဆည်းပါသည်။ ElevenLabs သည် ကီးသတ်မှတ်ပြီးမှသာ အသံပေါင်းစပ်စနစ်စာရင်းတွင် ပေါ်လာပါသည်။\n"
-"အဆင့်မြှင့်နေပါက- elevenlabs_settings.txt ကို မဖတ်တော့သဖြင့် အမျိုးအစားအသစ်တွင် သင့်ကီးကို ထပ်မံသတ်မှတ်ပါ။ ထို့နောက် သင့်ကီးကို စာသားရိုးရိုးဖြင့် သိမ်းထားသော ဖိုင်ဟောင်းကို ဖျက်နိုင်ပါသည်။\n"
-"ElevenLabs TTS ဆက်တင်များတွင် ရွေးချယ်စရာအသစ်- လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ်။ ၎င်းသည် အားလုံးဖတ်ခြင်းမှလွဲ၍ အားလုံးကို ပြောသဖြင့် ElevenLabs ခရက်ဒစ်များကို သင်ဖတ်ရန် ရွေးချယ်သည့်အရာအတွက်သာ သုံးပါသည်။ ၎င်းကို ဖွင့်ပိတ်ရန် အမိန့်ကို ထည့်သွင်းမှုလက်ဟန်များတွင် သတ်မှတ်နိုင်ပါသည်။\n"
-"လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ် ဖွင့်ထားစဉ် ဆက်တင်ကွင်းတွင် အသံပေါင်းစပ်စနစ်နှစ်ခုလုံး၏ ဆက်တင်များကို ၎င်းတို့၏ အသံပေါင်းစပ်စနစ်အမည်ဖြင့် ပါဝင်ပါသည်။\n"
-"နောက်ဝါကျကို ElevenLabs မှ ရယူနေစဉ် အားလုံးဖတ်ခြင်းသည် ဝါကျများကြားတွင် ရပ်နားခြင်း မရှိတော့ပါ။\n"
-"အားလုံးဖတ်နေစဉ် ကာဆာသည် ယခု စကားပြောကို ပိုမိုနီးကပ်စွာ လိုက်ပါသည်။\n"
-"အားလုံးဖတ်ခြင်းသည် ယခု တောင်းဆိုမှုတစ်ခုစီ၏ ရှေ့နှင့်နောက်တွင် မည်သည့်စာသားရှိကြောင်း ElevenLabs ကို ပြောပြသဖြင့် အသံအနိမ့်အမြင့်သည် ဝါကျတစ်ခုမှ နောက်တစ်ခုသို့ ချောမွေ့စွာ ဆက်သွားပါသည်။\n"
-"ElevenLabs နှင့် ချိတ်ဆက်မှုကို ပြောဆိုမှုများကြားတွင် ဖွင့်ထားသဖြင့် စကားပြော စောစီးစွာ စနိုင်ပါသည်။\n"
-"အသံဆက်တင်များသည် ယခု ရွေးချယ်ထားသော မော်ဒယ် ပံ့ပိုးသည့်အရာကိုသာ ပြပါသည်။ Eleven v3 အတွက် တည်ငြိမ်မှုသည် ဖန်တီးမှု၊ သဘာဝ သို့မဟုတ် တည်ငြိမ် မှ ရွေးချယ်ရပါသည်။"
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ်ကို ဖွင့်၍မရပါ။ စကားပြောအားလုံးအတွက် ElevenLabs ကို အသုံးပြုနေသည်။"

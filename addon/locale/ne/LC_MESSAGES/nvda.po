@@ -194,28 +194,6 @@ msgstr "कुञ्जी जाँच गर्न ElevenLabs मा पुग
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "ElevenLabs पाठबाट वाक् API बाट अडियो स्ट्रिम गर्ने वाक् संश्लेषक ड्राइभर।"
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API कुञ्जी अब NVDA को सेटिङहरूमा नयाँ ElevenLabs TTS श्रेणीमा सेट गरिन्छ। कुञ्जी सुरक्षित गर्नुअघि ElevenLabs सँग जाँचिन्छ, र तपाईंको Windows प्रयोगकर्ताका लागि इन्क्रिप्ट गरेर राखिन्छ। ElevenLabs कुञ्जी सेट भएपछि मात्र सिन्थेसाइजर सूचीमा देखिन्छ।\n"
-"यदि तपाईं अपग्रेड गर्दै हुनुहुन्छ भने: elevenlabs_settings.txt अब पढिँदैन, त्यसैले नयाँ श्रेणीमा आफ्नो कुञ्जी फेरि सेट गर्नुहोस्। त्यसपछि तपाईंको कुञ्जी सादा पाठमा राखिएको पुरानो फाइल मेटाउन सक्नुहुन्छ।\n"
-"ElevenLabs TTS सेटिङहरूमा नयाँ विकल्प: नेभिगेसनका लागि सिन्थेसाइजर। यसले सबै पढ्नु बाहेक सबै कुरा बोल्छ, त्यसैले ElevenLabs क्रेडिट तपाईंले पढ्न रोजेको कुरामा मात्र खर्च हुन्छ। यसलाई खोल्ने र बन्द गर्ने आदेश इनपुट जेस्चरमा तोक्न सकिन्छ।\n"
-"नेभिगेसनका लागि सिन्थेसाइजर लोड भएको बेला, सेटिङ रिङमा दुवै सिन्थेसाइजरका सेटिङहरू तिनीहरूको सिन्थेसाइजरको नाममा हुन्छन्।\n"
-"अर्को वाक्य ElevenLabs बाट ल्याइँदै गर्दा सबै पढ्नु अब वाक्यहरूबीच रोकिँदैन।\n"
-"सबै पढ्दा कर्सरले अब बोलीलाई अझ नजिकबाट पछ्याउँछ।\n"
-"सबै पढ्नुले अब ElevenLabs लाई प्रत्येक अनुरोध अघि र पछि कुन पाठ आउँछ भनेर बताउँछ, त्यसैले स्वरको उतारचढाव एउटा वाक्यबाट अर्कोमा बग्छ।\n"
-"ElevenLabs सँगको जडान उच्चारणहरूबीच खुला राखिने भएकाले बोली छिटो सुरु हुन सक्छ।\n"
-"आवाज सेटिङहरूले अब छानिएको मोडेलले समर्थन गर्ने कुरा मात्र देखाउँछन्। Eleven v3 का लागि स्थिरता सिर्जनात्मक, स्वाभाविक वा स्थिर मध्ये एक छनोट हो।"
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "नेभिगेसनका लागि सिन्थेसाइजर लोड गर्न सकिएन; सबै बोलीका लागि ElevenLabs प्रयोग भइरहेको छ।"

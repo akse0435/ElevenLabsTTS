@@ -195,28 +195,6 @@ msgstr "Түлхүүрийг шалгахын тулд ElevenLabs-тэй хол�
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "ElevenLabs-ийн текстийг яриа болгох API-аас аудиог дамжуулдаг яриа нийлэгжүүлэгчийн драйвер."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API түлхүүрийг одоо NVDA-ийн тохиргооны шинэ ElevenLabs TTS ангилалд тохируулна. Түлхүүрийг хадгалахаас өмнө ElevenLabs-аар шалгаж, таны Windows хэрэглэгчид зориулан шифрлэж хадгална. ElevenLabs нь түлхүүр тохируулсны дараа л синтезаторын жагсаалтад гарч ирнэ.\n"
-"Хэрэв та шинэчилж байгаа бол: elevenlabs_settings.txt-г цаашид уншихгүй тул түлхүүрээ шинэ ангилалд дахин тохируулна уу. Дараа нь түлхүүрийг тань энгийн текстээр агуулсан хуучин файлыг устгаж болно.\n"
-"ElevenLabs TTS тохиргооны шинэ сонголт: навигацид зориулсан синтезатор. Энэ нь бүгдийг уншихаас бусад бүх зүйлийг хэлдэг тул ElevenLabs-ийн кредит зөвхөн таны унших гэж сонгосон зүйлд зарцуулагдана. Үүнийг асаах, унтраах тушаалыг Оролтын дохионд оноож болно.\n"
-"Навигацийн синтезатор ачаалагдсан үед тохиргооны цагираг хоёр синтезаторын тохиргоог тус бүрийн синтезаторын нэрээр агуулна.\n"
-"Бүгдийг унших нь дараагийн өгүүлбэрийг ElevenLabs-аас авах хооронд өгүүлбэр хооронд зогсохоо больсон.\n"
-"Бүгдийг уншиж байх үед курсор одоо яриаг илүү ойроос дагана.\n"
-"Бүгдийг унших нь одоо хүсэлт бүрийн өмнө ба дараа ямар текст байгааг ElevenLabs-д хэлдэг тул аялга нэг өгүүлбэрээс дараагийнх руу урсана.\n"
-"ElevenLabs-тай холболт хэллэг хооронд нээлттэй байдаг тул яриа эрт эхэлж магадгүй.\n"
-"Дуу хоолойн тохиргоо одоо сонгосон загварын дэмждэг зүйлийг л харуулна. Eleven v3-ийн хувьд тогтвортой байдал нь Бүтээлч, Байгалийн эсвэл Тогтвортой-ээс сонгоно."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Навигацид зориулсан синтезатор ачаалж чадсангүй; бүх ярианд ElevenLabs ашиглаж байна."

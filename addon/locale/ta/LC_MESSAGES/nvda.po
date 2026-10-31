@@ -196,28 +196,6 @@ msgstr "விசையைச் சரிபார்க்க ElevenLabs ஐ �
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "ElevenLabs உரையிலிருந்து பேச்சு API இலிருந்து ஒலியை ஸ்ட்ரீம் செய்யும் பேச்சு ஒருங்கிணைப்பி இயக்கி."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API விசை இப்போது NVDA அமைப்புகளில் உள்ள புதிய ElevenLabs TTS வகையில் அமைக்கப்படுகிறது. சேமிப்பதற்கு முன் விசை ElevenLabs உடன் சரிபார்க்கப்பட்டு, உங்கள் Windows பயனருக்காக மறையாக்கம் செய்து சேமிக்கப்படுகிறது. விசை அமைக்கப்பட்ட பிறகே ElevenLabs பேச்சொலிப்பான் பட்டியலில் தோன்றும்.\n"
-"நீங்கள் மேம்படுத்தினால்: elevenlabs_settings.txt இனி படிக்கப்படாது, எனவே புதிய வகையில் உங்கள் விசையை மீண்டும் அமைக்கவும். பிறகு உங்கள் விசையை வெற்று உரையாகக் கொண்ட பழைய கோப்பை நீக்கலாம்.\n"
-"ElevenLabs TTS அமைப்புகளில் புதிய விருப்பம்: வழிசெலுத்தலுக்கான பேச்சொலிப்பான். இது அனைத்தையும் படி தவிர மற்ற அனைத்தையும் பேசும், எனவே ElevenLabs வரவுகள் நீங்கள் படிக்கத் தேர்ந்தெடுப்பதற்கு மட்டுமே செலவாகும். இதை இயக்கவும் அணைக்கவும் ஒரு கட்டளையை உள்ளீட்டுச் சைகைகளில் ஒதுக்கலாம்.\n"
-"வழிசெலுத்தலுக்கான பேச்சொலிப்பான் ஏற்றப்பட்டிருக்கும்போது, அமைப்புகள் வளையம் இரண்டு பேச்சொலிப்பான்களின் அமைப்புகளையும் அவற்றின் பேச்சொலிப்பான் பெயருடன் கொண்டிருக்கும்.\n"
-"அடுத்த வாக்கியம் ElevenLabs இலிருந்து பெறப்படும்போது அனைத்தையும் படி இனி வாக்கியங்களுக்கு இடையே நிறுத்தாது.\n"
-"அனைத்தையும் படிக்கும்போது, சுட்டி இப்போது பேச்சை மிக நெருக்கமாகப் பின்தொடரும்.\n"
-"அனைத்தையும் படி இப்போது ஒவ்வொரு கோரிக்கைக்கும் முன்னும் பின்னும் என்ன உரை வருகிறது என்பதை ElevenLabs க்குச் சொல்கிறது, எனவே ஒலிப்பு ஒரு வாக்கியத்திலிருந்து அடுத்ததற்கு ஓடுகிறது.\n"
-"ElevenLabs உடனான இணைப்பு பேச்சுகளுக்கு இடையே திறந்து வைக்கப்படுவதால், பேச்சு விரைவில் தொடங்கக்கூடும்.\n"
-"குரல் அமைப்புகள் இப்போது தேர்ந்தெடுத்த மாதிரி ஆதரிப்பதை மட்டுமே காட்டும். Eleven v3 க்கு, நிலைப்புத்தன்மை படைப்பாற்றல், இயல்பான அல்லது நிலையான ஆகியவற்றில் ஒரு தேர்வாகும்."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "வழிசெலுத்தலுக்கான பேச்சொலிப்பானை ஏற்ற முடியவில்லை; எல்லாப் பேச்சுக்கும் ElevenLabs பயன்படுத்தப்படுகிறது."

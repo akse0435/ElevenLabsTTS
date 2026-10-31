@@ -192,28 +192,6 @@ msgstr "ਕੁੰਜੀ ਦੀ ਜਾਂਚ ਲਈ ElevenLabs ਤੱਕ ਨਹ�
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "ਸਪੀਚ ਸਿੰਥੇਸਾਈਜ਼ਰ ਡਰਾਈਵਰ ਜੋ ElevenLabs ਟੈਕਸਟ-ਟੂ-ਸਪੀਚ API ਤੋਂ ਆਡੀਓ ਸਟ੍ਰੀਮ ਕਰਦਾ ਹੈ।"
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API ਕੁੰਜੀ ਹੁਣ NVDA ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਇੱਕ ਨਵੀਂ ElevenLabs TTS ਸ਼੍ਰੇਣੀ ਵਿੱਚ ਸੈੱਟ ਕੀਤੀ ਜਾਂਦੀ ਹੈ। ਸੰਭਾਲਣ ਤੋਂ ਪਹਿਲਾਂ ਕੁੰਜੀ ElevenLabs ਨਾਲ ਜਾਂਚੀ ਜਾਂਦੀ ਹੈ, ਅਤੇ ਤੁਹਾਡੇ Windows ਵਰਤੋਂਕਾਰ ਲਈ ਇਨਕ੍ਰਿਪਟ ਕਰਕੇ ਸਟੋਰ ਕੀਤੀ ਜਾਂਦੀ ਹੈ। ElevenLabs ਕੁੰਜੀ ਸੈੱਟ ਹੋਣ ਤੋਂ ਬਾਅਦ ਹੀ ਸਿੰਥੇਸਾਈਜ਼ਰ ਸੂਚੀ ਵਿੱਚ ਦਿਸਦਾ ਹੈ।\n"
-"ਜੇ ਤੁਸੀਂ ਅੱਪਗ੍ਰੇਡ ਕਰ ਰਹੇ ਹੋ: elevenlabs_settings.txt ਹੁਣ ਨਹੀਂ ਪੜ੍ਹੀ ਜਾਂਦੀ, ਇਸ ਲਈ ਨਵੀਂ ਸ਼੍ਰੇਣੀ ਵਿੱਚ ਆਪਣੀ ਕੁੰਜੀ ਦੁਬਾਰਾ ਸੈੱਟ ਕਰੋ। ਫਿਰ ਤੁਸੀਂ ਪੁਰਾਣੀ ਫ਼ਾਈਲ ਮਿਟਾ ਸਕਦੇ ਹੋ, ਜਿਸ ਵਿੱਚ ਤੁਹਾਡੀ ਕੁੰਜੀ ਸਾਦੇ ਪਾਠ ਵਿੱਚ ਹੈ।\n"
-"ElevenLabs TTS ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਨਵਾਂ ਵਿਕਲਪ: ਨੈਵੀਗੇਸ਼ਨ ਲਈ ਸਿੰਥੇਸਾਈਜ਼ਰ। ਇਹ ਸਭ ਪੜ੍ਹੋ ਤੋਂ ਇਲਾਵਾ ਸਭ ਕੁਝ ਬੋਲਦਾ ਹੈ, ਇਸ ਲਈ ElevenLabs ਕ੍ਰੈਡਿਟ ਸਿਰਫ਼ ਉਸ ਉੱਤੇ ਖ਼ਰਚ ਹੁੰਦੇ ਹਨ ਜੋ ਤੁਸੀਂ ਪੜ੍ਹਨਾ ਚੁਣਦੇ ਹੋ। ਇਸਨੂੰ ਚਾਲੂ ਅਤੇ ਬੰਦ ਕਰਨ ਦੀ ਕਮਾਂਡ ਇਨਪੁਟ ਸੰਕੇਤਾਂ ਵਿੱਚ ਨਿਰਧਾਰਤ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ।\n"
-"ਜਦੋਂ ਨੈਵੀਗੇਸ਼ਨ ਲਈ ਸਿੰਥੇਸਾਈਜ਼ਰ ਲੋਡ ਹੁੰਦਾ ਹੈ, ਸੈਟਿੰਗਾਂ ਰਿੰਗ ਵਿੱਚ ਦੋਵਾਂ ਸਿੰਥੇਸਾਈਜ਼ਰਾਂ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਉਹਨਾਂ ਦੇ ਸਿੰਥੇਸਾਈਜ਼ਰ ਦੇ ਨਾਮ ਨਾਲ ਹੁੰਦੀਆਂ ਹਨ।\n"
-"ਸਭ ਪੜ੍ਹੋ ਹੁਣ ਵਾਕਾਂ ਵਿਚਕਾਰ ਨਹੀਂ ਰੁਕਦਾ ਜਦੋਂ ਅਗਲਾ ਵਾਕ ElevenLabs ਤੋਂ ਲਿਆਂਦਾ ਜਾ ਰਿਹਾ ਹੁੰਦਾ ਹੈ।\n"
-"ਸਭ ਪੜ੍ਹੋ ਦੌਰਾਨ ਕਰਸਰ ਹੁਣ ਬੋਲੀ ਦਾ ਹੋਰ ਨੇੜਿਓਂ ਪਿੱਛਾ ਕਰਦਾ ਹੈ।\n"
-"ਸਭ ਪੜ੍ਹੋ ਹੁਣ ElevenLabs ਨੂੰ ਦੱਸਦਾ ਹੈ ਕਿ ਹਰ ਬੇਨਤੀ ਤੋਂ ਪਹਿਲਾਂ ਅਤੇ ਬਾਅਦ ਕਿਹੜਾ ਪਾਠ ਆਉਂਦਾ ਹੈ, ਤਾਂ ਜੋ ਸੁਰ ਇੱਕ ਵਾਕ ਤੋਂ ਅਗਲੇ ਵਿੱਚ ਵਹਿੰਦੀ ਰਹੇ।\n"
-"ਬੋਲੀ ਜਲਦੀ ਸ਼ੁਰੂ ਹੋ ਸਕਦੀ ਹੈ, ਕਿਉਂਕਿ ElevenLabs ਨਾਲ ਕਨੈਕਸ਼ਨ ਕਥਨਾਂ ਵਿਚਕਾਰ ਖੁੱਲ੍ਹਾ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ।\n"
-"ਆਵਾਜ਼ ਸੈਟਿੰਗਾਂ ਹੁਣ ਸਿਰਫ਼ ਉਹੀ ਦਿਖਾਉਂਦੀਆਂ ਹਨ ਜੋ ਚੁਣਿਆ ਮਾਡਲ ਸਮਰਥਿਤ ਕਰਦਾ ਹੈ। Eleven v3 ਲਈ ਸਥਿਰਤਾ ਰਚਨਾਤਮਕ, ਕੁਦਰਤੀ ਜਾਂ ਸਥਿਰ ਵਿੱਚੋਂ ਇੱਕ ਚੋਣ ਹੈ।"
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "ਨੈਵੀਗੇਸ਼ਨ ਲਈ ਸਿੰਥੇਸਾਈਜ਼ਰ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ; ਸਾਰੀ ਬੋਲੀ ਲਈ ElevenLabs ਵਰਤਿਆ ਜਾ ਰਿਹਾ ਹੈ।"

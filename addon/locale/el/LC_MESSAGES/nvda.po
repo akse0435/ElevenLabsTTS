@@ -197,28 +197,6 @@ msgstr "Δεν ήταν δυνατή η σύνδεση με το ElevenLabs γι
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Πρόγραμμα οδήγησης συνθέτη ομιλίας που μεταδίδει ήχο από το API μετατροπής κειμένου σε ομιλία της ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"Το κλειδί API ορίζεται πλέον σε μια νέα κατηγορία ElevenLabs TTS στις ρυθμίσεις του NVDA. Το κλειδί ελέγχεται με το ElevenLabs πριν αποθηκευτεί και αποθηκεύεται κρυπτογραφημένο για τον χρήστη σας στα Windows. Το ElevenLabs εμφανίζεται στη λίστα συνθετών μόνο όταν οριστεί κλειδί.\n"
-"Αν κάνετε αναβάθμιση: το elevenlabs_settings.txt δεν διαβάζεται πλέον, οπότε ορίστε ξανά το κλειδί σας στη νέα κατηγορία. Στη συνέχεια μπορείτε να διαγράψετε το παλιό αρχείο, που περιέχει το κλειδί σας ως απλό κείμενο.\n"
-"Νέα επιλογή στις ρυθμίσεις του ElevenLabs TTS: συνθέτης για την πλοήγηση. Εκφωνεί τα πάντα εκτός από τη συνεχή ανάγνωση, ώστε οι μονάδες του ElevenLabs να ξοδεύονται μόνο σε ό,τι επιλέγετε να διαβάσετε. Μια εντολή για την ενεργοποίηση και απενεργοποίησή του μπορεί να οριστεί στις Χειρονομίες εισόδου.\n"
-"Όσο είναι φορτωμένος συνθέτης για την πλοήγηση, ο δακτύλιος ρυθμίσεων περιέχει τις ρυθμίσεις και των δύο συνθετών, με το όνομα του συνθέτη τους.\n"
-"Η συνεχής ανάγνωση δεν κάνει πλέον παύση ανάμεσα στις προτάσεις όσο η επόμενη λαμβάνεται από το ElevenLabs.\n"
-"Κατά τη συνεχή ανάγνωση, ο δρομέας ακολουθεί πλέον πιο στενά την ομιλία.\n"
-"Η συνεχής ανάγνωση λέει πλέον στο ElevenLabs ποιο κείμενο έρχεται πριν και μετά από κάθε αίτημα, ώστε ο επιτονισμός να ρέει από τη μία πρόταση στην επόμενη.\n"
-"Η ομιλία μπορεί να ξεκινά νωρίτερα, καθώς η σύνδεση με το ElevenLabs μένει ανοιχτή ανάμεσα στις εκφωνήσεις.\n"
-"Οι ρυθμίσεις φωνής δείχνουν πλέον μόνο ό,τι υποστηρίζει το επιλεγμένο μοντέλο. Στο Eleven v3, η σταθερότητα είναι επιλογή ανάμεσα σε Δημιουργική, Φυσική ή Σταθερή."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Δεν ήταν δυνατή η φόρτωση συνθέτη για την πλοήγηση· χρησιμοποιείται το ElevenLabs για όλη την ομιλία."

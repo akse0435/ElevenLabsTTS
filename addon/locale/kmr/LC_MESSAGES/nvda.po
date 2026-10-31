@@ -195,28 +195,6 @@ msgstr "Ji bo kontrolkirina mifteyê negihîşt ElevenLabs. Girêdana xwe ya în
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Ajokerê sentezkerê axaftinê ku dengê ji API ya nivîs-bo-axaftinê ya ElevenLabs diweşîne."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"Mifteya API niha di kategoriyeke nû ya ElevenLabs TTS de di mîhengên NVDA de tê danîn. Mifte berî tomarkirinê bi ElevenLabs re tê kontrolkirin, û ji bo bikarhênerê te yê Windowsê bi şîfrekirî tê tomarkirin. ElevenLabs tenê piştî ku mifteyek hat danîn di lîsteya sentezkeran de xuya dibe.\n"
-"Heke tu nûve dikî: elevenlabs_settings.txt êdî nayê xwendin, ji ber vê yekê mifteya xwe di kategoriya nû de dîsa deyne. Paşê tu dikarî pelê kevn jê bibî, ku mifteya te wekî nivîsa sade tê de ye.\n"
-"Vebijarkeke nû di mîhengên ElevenLabs TTS de: sentezkerek ji bo navîgasyonê. Ew her tiştî dibêje ji bilî xwendina hemûyan, ji ber vê yekê krediyên ElevenLabs tenê ji bo tiştê ku tu hildibijêrî bixwînî têne xerckirin. Fermanek ji bo vekirin û girtina wê dikare di Tevgerên Têketinê de were diyarkirin.\n"
-"Dema ku sentezkerek ji bo navîgasyonê barkirî ye, xeleka mîhengan mîhengên herdu sentezkeran dihewîne, bi navê sentezkerê wan.\n"
-"Xwendina hemûyan êdî di navbera hevokan de nasekine dema ku hevoka din ji ElevenLabs tê anîn.\n"
-"Di dema xwendina hemûyan de, nîşanker niha axaftinê ji nêztir dişopîne.\n"
-"Xwendina hemûyan niha ji ElevenLabs re dibêje kîjan nivîs berî û piştî her daxwazê tê, da ku awaza dengê ji hevokekê derbasî ya din bibe.\n"
-"Dibe ku axaftin zûtir dest pê bike, ji ber ku girêdana bi ElevenLabs re di navbera axaftinan de vekirî tê hiştin.\n"
-"Mîhengên dengê niha tenê tiştê ku modela hilbijartî piştgirî dike nîşan didin. Ji bo Eleven v3, aramî hilbijartinek e di navbera Afirîner, Xwezayî an Stabîl de."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Sentezkerek ji bo navîgasyonê nehat barkirin; ElevenLabs ji bo hemû axaftinê tê bikaranîn."

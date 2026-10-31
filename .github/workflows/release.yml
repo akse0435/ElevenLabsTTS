@@ -19,6 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Only for the build; the add-on runs on the Python of the user's NVDA.
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
       - name: Install build tools
         run: |
           sudo apt-get update -y

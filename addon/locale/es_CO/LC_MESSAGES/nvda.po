@@ -195,28 +195,6 @@ msgstr "No se pudo contactar con ElevenLabs para comprobar la clave. Compruebe s
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Controlador de sintetizador de voz que transmite audio desde la API de texto a voz de ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"La clave de API ahora se configura en una nueva categoría ElevenLabs TTS de la configuración de NVDA. La clave se comprueba con ElevenLabs antes de guardarla y se guarda cifrada para su usuario de Windows. ElevenLabs solo aparece en la lista de sintetizadores cuando se ha configurado una clave.\n"
-"Si actualiza: elevenlabs_settings.txt ya no se lee, así que vuelva a configurar su clave en la nueva categoría. Después puede eliminar el archivo antiguo, que contiene su clave en texto sin cifrar.\n"
-"Nueva opción en la configuración de ElevenLabs TTS: un sintetizador para la navegación. Lo dice todo excepto verbalizar todo, de modo que los créditos de ElevenLabs solo se gastan en lo que usted elige leer. Se puede asignar una orden para activarlo y desactivarlo en Gestos de entrada.\n"
-"Mientras hay un sintetizador para la navegación cargado, el anillo de configuración contiene los ajustes de ambos sintetizadores, con el nombre de su sintetizador.\n"
-"Verbalizar todo ya no hace pausas entre frases mientras se obtiene la siguiente de ElevenLabs.\n"
-"Durante verbalizar todo, el cursor ahora sigue la voz más de cerca.\n"
-"Verbalizar todo ahora indica a ElevenLabs qué texto viene antes y después de cada solicitud, para que la entonación fluya de una frase a la siguiente.\n"
-"La voz puede empezar antes, ya que la conexión con ElevenLabs se mantiene abierta entre enunciados.\n"
-"La configuración de voz ahora solo muestra lo que admite el modelo elegido. En Eleven v3, la estabilidad es una elección entre Creativo, Natural o Robusto."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "No se pudo cargar un sintetizador para la navegación; se usa ElevenLabs para toda la voz."

@@ -195,28 +195,6 @@ msgstr "Lagama gaari karin ElevenLabs si loo hubiyo furaha. Hubi xiriirkaaga int
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Darawalka isku-darka hadalka ee codka ka soo daaya API-ga qoraal-ilaa-hadal ee ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"Furaha API hadda waxaa lagu dejiyaa qayb cusub oo ElevenLabs TTS ah oo ku jirta dejinta NVDA. Furaha waxaa lagu hubiyaa ElevenLabs ka hor inta aan la kaydin, waxaana loo kaydiyaa si qarsoon isticmaalahaaga Windows. ElevenLabs wuxuu ka muuqdaa liiska codeeyayaasha oo keliya marka fure la dejiyo.\n"
-"Haddii aad cusboonaysiinayso: elevenlabs_settings.txt lama akhriyo mar dambe, markaa furahaaga mar kale ku deji qaybta cusub. Kadib waad tirtiri kartaa faylka hore, oo furahaaga ku haya qoraal caadi ah.\n"
-"Doorasho cusub oo ku jirta dejinta ElevenLabs TTS: codeeye loogu talagalay socodka. Wuxuu ku hadlaa wax walba marka laga reebo akhri dhammaan, sidaa darteed dhibcaha ElevenLabs waxaa lagu bixiyaa oo keliya waxaad dooratay inaad akhriso. Amar lagu shido laguna damiyo waxaa lagu qoondayn karaa Dhaqdhaqaaqyada Gelinta.\n"
-"Inta codeeye socodka loogu talagalay uu shubanyahay, giraanta dejintu waxay haysaa dejinta labada codeeye, oo loogu magac daray codeeyahooda.\n"
-"Akhri dhammaan hadda kama joogsado weedhaha dhexdooda inta weedha xigta laga keenayo ElevenLabs.\n"
-"Inta lagu jiro akhri dhammaan, cursor-ku hadda si dhow ayuu u raacaa hadalka.\n"
-"Akhri dhammaan hadda wuxuu u sheegaa ElevenLabs qoraalka ka horreeya iyo kan ka dambeeya codsi kasta, si codku uga gudbo weedh una gudbo tan xigta.\n"
-"Hadalku wuu ka hor bilaaban karaa, maadaama xiriirka ElevenLabs la furo inta u dhaxaysa hadallada.\n"
-"Dejinta codku hadda waxay muujisaa oo keliya waxa moodeelka la doortay taageero. Eleven v3, xasilloonidu waa doorasho u dhaxaysa Hal-abuur, Dabiici ama Adag."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Lama soo shubi karin codeeye loogu talagalay socodka; ElevenLabs ayaa loo isticmaalayaa dhammaan hadalka."

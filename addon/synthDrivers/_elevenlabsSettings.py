@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-# The ElevenLabs add-on's own settings, kept in elevenlabs_settings.json in
-# NVDA's configuration folder. The API key is encrypted with Windows' data
-# protection (DPAPI), so only the same Windows user on the same computer can
-# read it back; everything else is what the driver has learned about the
-# account. NVDA's own config holds the voice settings as usual.
+# The add-on's own settings, in elevenlabs_settings.json in NVDA's configuration
+# folder. The API key is encrypted with DPAPI, for the current Windows user only.
 #
 # The leading underscore keeps NVDA from listing this module as a synthesizer.
 
@@ -22,11 +19,9 @@ from logHandler import log
 SETTINGS_FILENAME = "elevenlabs_settings.json"
 
 _lock = threading.RLock()
-# The parsed file, loaded on first use. Only this module writes the file, so
-# it stays in step with the disk.
+# The parsed file, loaded on first use. Only this module writes the file.
 _data = None
-# The decrypted key, so it isn't decrypted for every utterance; _UNREAD until
-# first asked for.
+# The decrypted key, cached; _UNREAD until first asked for.
 _UNREAD = object()
 _apiKey = _UNREAD
 
@@ -82,9 +77,7 @@ def get(name, default=None):
 
 @contextmanager
 def editing():
-	"""Yields the settings to change in place; they are saved afterwards.
-
-	Checks run on several threads, so edits take turns."""
+	"""Yields the settings to change in place, then saves them. Edits take turns."""
 	global _data
 	with _lock:
 		data = copy.deepcopy(_load())
@@ -117,8 +110,7 @@ class _DataBlob(ctypes.Structure):
 	_fields_ = (("cbData", wintypes.DWORD), ("pbData", ctypes.POINTER(ctypes.c_char)))
 
 
-# Own handles rather than ctypes.windll's shared ones, so the argtypes set here
-# can't clash with anyone else's.
+# Own handles, so the argtypes set here can't clash with ctypes.windll users.
 _crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
 _kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
 _blobArgs = (
@@ -140,7 +132,7 @@ _crypt32.CryptUnprotectData.restype = wintypes.BOOL
 _kernel32.LocalFree.argtypes = (ctypes.c_void_p,)
 _kernel32.LocalFree.restype = ctypes.c_void_p
 
-# Never show Windows' own prompts; NVDA may be running where nobody can answer them.
+# Never show Windows' own prompts.
 _CRYPTPROTECT_UI_FORBIDDEN = 0x1
 # Ties the encrypted key to this add-on, so other DPAPI data can't be mistaken for it.
 _ENTROPY = b"ElevenLabsTTS NVDA add-on API key"

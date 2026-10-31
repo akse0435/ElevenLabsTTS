@@ -194,28 +194,6 @@ msgstr "Fekk ikkje kontakt med ElevenLabs for å kontrollere nøkkelen. Kontroll
 msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
 msgstr "Talesyntesedrivar som straumar lyd frå tekst-til-tale-API-et til ElevenLabs."
 
-#. Translators: what's new content for the add-on version to be shown in the add-on store
-msgid ""
-"The API key is now set in a new ElevenLabs TTS category in NVDA's settings. The key is checked with ElevenLabs before it is saved, and is stored encrypted for your Windows user. ElevenLabs only appears in the synthesizer list once a key is set.\n"
-"If you are upgrading: elevenlabs_settings.txt is no longer read, so set your key again in the new category. You can then delete the old file, which holds your key in plain text.\n"
-"New option in the ElevenLabs TTS settings: a synthesizer for navigation. It speaks everything except say all, so ElevenLabs credits are only spent on what you choose to read. A command to switch it on and off can be assigned in Input Gestures.\n"
-"While a synthesizer for navigation is loaded, the settings ring holds both synthesizers' settings, named after their synthesizer.\n"
-"Say all no longer pauses between sentences while the next one is fetched from ElevenLabs.\n"
-"During say all, the caret now follows the speech more closely.\n"
-"Say all now tells ElevenLabs which text comes before and after each request, so intonation flows from one sentence to the next.\n"
-"Speech may start sooner, as the connection to ElevenLabs is kept open between utterances.\n"
-"Voice settings now only show what the chosen model supports. For Eleven v3, stability is a choice of Creative, Natural or Robust."
-msgstr ""
-"API-nøkkelen vert no sett i ein ny ElevenLabs TTS-kategori i innstillingane til NVDA. Nøkkelen vert kontrollert hos ElevenLabs før han vert lagra, og vert lagra kryptert for Windows-brukaren din. ElevenLabs vert berre vist i lista over talesyntesar når ein nøkkel er sett.\n"
-"Om du oppgraderer: elevenlabs_settings.txt vert ikkje lesen lenger, så set nøkkelen din på nytt i den nye kategorien. Deretter kan du sletta den gamle fila, som inneheld nøkkelen din i rein tekst.\n"
-"Nytt val i ElevenLabs TTS-innstillingane: ein talesyntese for navigering. Han seier alt unnateke les alt, så ElevenLabs-kredittar berre vert brukte på det du vel å lesa. Ein kommando for å slå han av og på kan tildelast i Inndatahandlingar.\n"
-"Medan ein talesyntese for navigering er lasta inn, inneheld innstillingsringen innstillingane til begge talesyntesane, namngjevne etter talesyntesen sin.\n"
-"Les alt tek ikkje lenger pause mellom setningar medan den neste vert henta frå ElevenLabs.\n"
-"Under les alt følgjer markøren no talen tettare.\n"
-"Les alt fortel no ElevenLabs kva tekst som kjem før og etter kvar førespurnad, slik at intonasjonen flyt frå éi setning til den neste.\n"
-"Talen kan starta raskare, sidan sambandet til ElevenLabs vert halde ope mellom ytringar.\n"
-"Røysteinnstillingane viser no berre det den valde modellen støttar. For Eleven v3 er stabilitet eit val mellom Kreativ, Naturleg eller Robust."
-
 #. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
 msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
 msgstr "Kunne ikkje lasta inn ein talesyntese for navigering; ElevenLabs vert brukt til all tale."

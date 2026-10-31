@@ -66,6 +66,15 @@ msgstr "켜기"
 msgid "Off"
 msgstr "끄기"
 
+msgid "Creative"
+msgstr "창의적"
+
+msgid "Natural"
+msgstr "자연스러움"
+
+msgid "Robust"
+msgstr "안정적"
+
 msgid "Split long text"
 msgstr "긴 텍스트 나누기"
 
@@ -135,3 +144,94 @@ msgstr "현재 기간의 ElevenLabs 크레딧 사용량 알림"
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "이 계정에서 사용할 수 있는 ElevenLabs 음성과 모델 다시 확인"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API 키"
+
+msgid "&API key:"
+msgstr "API 키(&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "먼저 ElevenLabs API 키를 붙여 넣으세요."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs에서 API 키를 확인하는 중..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API 키를 확인할 수 없습니다. 자세한 내용은 NVDA 로그를 확인하세요."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API 키를 저장할 수 없습니다. 자세한 내용은 NVDA 로그를 확인하세요."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "API 키 지우기(&A)"
+
+msgid "Set &API key..."
+msgstr "API 키 설정(&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API 키를 지우시겠습니까? 새 키를 설정할 때까지 ElevenLabs가 말할 수 없습니다."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API 키를 지울 수 없습니다. 자세한 내용은 NVDA 로그를 확인하세요."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs가 이 API 키를 거부했습니다. 키가 모두 복사되었는지, 음성을 읽을 권한이 있는지 확인하세요."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs가 키를 확인할 수 없습니다(HTTP {code}). 나중에 다시 시도하세요."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "키를 확인하기 위해 ElevenLabs에 연결할 수 없습니다. 인터넷 연결을 확인하고 다시 시도하세요."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs 텍스트 음성 변환 API에서 오디오를 스트리밍하는 음성 합성기 드라이버입니다."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "탐색용 신시사이저를 불러올 수 없습니다. 모든 음성에 ElevenLabs를 사용합니다."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth}을(를) 불러올 수 없습니다. 탐색에 {fallback}을(를) 사용합니다."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs를 사용할 수 없습니다. 모두 읽기는 {synth}을(를) 사용합니다."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "없음 (ElevenLabs가 모두 읽음)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "탐색용 신시사이저(&S):"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "탐색용 별도 신시사이저와 모든 음성용 ElevenLabs 사이를 전환합니다"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "탐색용 신시사이저가 선택되지 않았습니다. ElevenLabs TTS 설정에서 선택하세요"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "모든 음성에 ElevenLabs를 사용합니다."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "탐색에 {synth}을(를) 사용합니다."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

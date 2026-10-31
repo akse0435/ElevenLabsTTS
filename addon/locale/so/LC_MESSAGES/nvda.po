@@ -66,6 +66,15 @@ msgstr "Shid"
 msgid "Off"
 msgstr "Dami"
 
+msgid "Creative"
+msgstr "Hal-abuur"
+
+msgid "Natural"
+msgstr "Dabiici"
+
+msgid "Robust"
+msgstr "Adag"
+
 msgid "Split long text"
 msgstr "Kala qaybi qoraalka dheer"
 
@@ -139,3 +148,94 @@ msgstr "Soo sheeg isticmaalka dhibcaha ElevenLabs ee muddadan"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Mar kale hubi codadka iyo moodallada ElevenLabs ee akoonkani isticmaali karo"
+
+msgid "ElevenLabs API Key"
+msgstr "Furaha API ee ElevenLabs"
+
+msgid "&API key:"
+msgstr "Furaha &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Marka hore ku dheji furahaaga API ee ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Furaha API waxaa lagu hubinayaa ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Furaha API lama hubin karin. Faahfaahinta ka eeg diiwaanka NVDA."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Furaha API lama kaydin karin. Faahfaahinta ka eeg diiwaanka NVDA."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Tirtir furaha &API"
+
+msgid "Set &API key..."
+msgstr "Deji furaha &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Ma la tirtiraa furaha API ee ElevenLabs? ElevenLabs ma hadli karo ilaa fure cusub la dejiyo."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Furaha API lama tirtiri karin. Faahfaahinta ka eeg diiwaanka NVDA."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs wuu diiday furahan API. Hubi in si buuxda loo koobiyeeyay iyo in loo oggol yahay inuu akhriyo codadka."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ma hubin karin furaha (HTTP {code}). Mar kale isku day goor dambe."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Lagama gaari karin ElevenLabs si loo hubiyo furaha. Hubi xiriirkaaga internetka oo mar kale isku day."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Darawalka isku-darka hadalka ee codka ka soo daaya API-ga qoraal-ilaa-hadal ee ElevenLabs."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Lama soo shubi karin codeeye loogu talagalay socodka; ElevenLabs ayaa loo isticmaalayaa dhammaan hadalka."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Lama soo shubi karin {synth}; {fallback} ayaa loo isticmaalayaa socodka."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs lama heli karo; akhri dhammaan waxay isticmaali doontaa {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Midna (ElevenLabs ayaa wax walba ku hadla)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Codeeyaha socodka:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Wuxuu kala beddelaa codeeye gaar ah oo socodka loogu talagalay iyo ElevenLabs oo loogu talagalay dhammaan hadalka"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Lama dooran codeeye socod; ka dooro mid dejinta ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs ayaa loo isticmaalayaa dhammaan hadalka."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} ayaa loo isticmaalayaa socodka."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

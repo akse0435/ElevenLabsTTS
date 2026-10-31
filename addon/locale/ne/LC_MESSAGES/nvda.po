@@ -66,6 +66,15 @@ msgstr "सक्रिय"
 msgid "Off"
 msgstr "निष्क्रिय"
 
+msgid "Creative"
+msgstr "सिर्जनात्मक"
+
+msgid "Natural"
+msgstr "स्वाभाविक"
+
+msgid "Robust"
+msgstr "स्थिर"
+
 msgid "Split long text"
 msgstr "लामो पाठ विभाजन गर्नुहोस्"
 
@@ -138,3 +147,94 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "यो खाताले कुन ElevenLabs आवाज र मोडेलहरू प्रयोग गर्न सक्छ भनी फेरि जाँच "
 "गर्नुहोस्"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API कुञ्जी"
+
+msgid "&API key:"
+msgstr "&API कुञ्जी:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "पहिले आफ्नो ElevenLabs API कुञ्जी टाँस्नुहोस्।"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs सँग API कुञ्जी जाँच गरिँदै..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API कुञ्जी जाँच गर्न सकिएन। विवरणका लागि NVDA लग हेर्नुहोस्।"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API कुञ्जी सुरक्षित गर्न सकिएन। विवरणका लागि NVDA लग हेर्नुहोस्।"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API कुञ्जी हटाउनुहोस्"
+
+msgid "Set &API key..."
+msgstr "&API कुञ्जी सेट गर्नुहोस्..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API कुञ्जी हटाउने? नयाँ कुञ्जी सेट नभएसम्म ElevenLabs बोल्न सक्दैन।"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API कुञ्जी हटाउन सकिएन। विवरणका लागि NVDA लग हेर्नुहोस्।"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs ले यो API कुञ्जी अस्वीकार गर्‍यो। यो पूर्ण रूपमा प्रतिलिपि गरिएको छ र स्वरहरू पढ्ने अनुमति छ भनी जाँच गर्नुहोस्।"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs ले कुञ्जी जाँच गर्न सकेन (HTTP {code})। पछि फेरि प्रयास गर्नुहोस्।"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "कुञ्जी जाँच गर्न ElevenLabs मा पुग्न सकिएन। आफ्नो इन्टरनेट जडान जाँच गरी फेरि प्रयास गर्नुहोस्।"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs पाठबाट वाक् API बाट अडियो स्ट्रिम गर्ने वाक् संश्लेषक ड्राइभर।"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "नेभिगेसनका लागि सिन्थेसाइजर लोड गर्न सकिएन; सबै बोलीका लागि ElevenLabs प्रयोग भइरहेको छ।"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} लोड गर्न सकिएन; नेभिगेसनका लागि {fallback} प्रयोग भइरहेको छ।"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs उपलब्ध छैन; सबै पढ्नुले {synth} प्रयोग गर्नेछ।"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "कुनै पनि होइन (ElevenLabs ले सबै बोल्छ)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "नेभिगेसनका लागि &सिन्थेसाइजर:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "नेभिगेसनका लागि छुट्टै सिन्थेसाइजर र सबै बोलीका लागि ElevenLabs बीच बदल्छ"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "कुनै नेभिगेसन सिन्थेसाइजर छानिएको छैन; ElevenLabs TTS सेटिङहरूमा एउटा छान्नुहोस्"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "सबै बोलीका लागि ElevenLabs प्रयोग भइरहेको छ।"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "नेभिगेसनका लागि {synth} प्रयोग भइरहेको छ।"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

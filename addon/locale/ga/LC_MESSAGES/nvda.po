@@ -66,6 +66,15 @@ msgstr "Ar siúl"
 msgid "Off"
 msgstr "As"
 
+msgid "Creative"
+msgstr "Cruthaitheach"
+
+msgid "Natural"
+msgstr "Nádúrtha"
+
+msgid "Robust"
+msgstr "Láidir"
+
 msgid "Split long text"
 msgstr "Roinn téacs fada"
 
@@ -140,3 +149,94 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Seiceáil arís cé na guthanna agus na samhlacha ElevenLabs is féidir leis an "
 "gcuntas seo a úsáid"
+
+msgid "ElevenLabs API Key"
+msgstr "Eochair API ElevenLabs"
+
+msgid "&API key:"
+msgstr "Eochair &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Greamaigh d'eochair API ElevenLabs ar dtús."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Eochair API á seiceáil le ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Níorbh fhéidir an eochair API a sheiceáil. Féach ar loga NVDA le haghaidh sonraí."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Níorbh fhéidir an eochair API a shábháil. Féach ar loga NVDA le haghaidh sonraí."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Glan an eochair &API"
+
+msgid "Set &API key..."
+msgstr "Socraigh eochair &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "An bhfuil fonn ort an eochair API ElevenLabs a ghlanadh? Ní féidir le ElevenLabs labhairt go dtí go socraítear eochair nua."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Níorbh fhéidir an eochair API a ghlanadh. Féach ar loga NVDA le haghaidh sonraí."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "Dhiúltaigh ElevenLabs don eochair API seo. Seiceáil gur cóipeáladh go hiomlán í agus go bhfuil cead aici guthanna a léamh."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "Níorbh fhéidir le ElevenLabs an eochair a sheiceáil (HTTP {code}). Bain triail eile as ar ball."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Níorbh fhéidir teagmháil a dhéanamh le ElevenLabs chun an eochair a sheiceáil. Seiceáil do nasc idirlín agus bain triail eile as."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Tiománaí sintéiseora cainte a shruthaíonn fuaim ó API téacs-go-caint ElevenLabs."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Níorbh fhéidir sintéiseoir a lódáil don nascleanúint; úsáidtear ElevenLabs don chaint ar fad."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Níorbh fhéidir {synth} a lódáil; úsáidtear {fallback} don nascleanúint."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "Níl ElevenLabs ar fáil; úsáidfidh léamh iomlán {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Dada (labhraíonn ElevenLabs gach rud)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Sintéiseoir don nascleanúint:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Athraíonn idir sintéiseoir ar leith don nascleanúint agus ElevenLabs don chaint ar fad"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Níl aon sintéiseoir nascleanúna roghnaithe; roghnaigh ceann i socruithe ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "Ag úsáid ElevenLabs don chaint ar fad."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Ag úsáid {synth} don nascleanúint."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

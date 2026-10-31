@@ -66,6 +66,15 @@ msgstr "ဖွင့်"
 msgid "Off"
 msgstr "ပိတ်"
 
+msgid "Creative"
+msgstr "ဖန်တီးမှု"
+
+msgid "Natural"
+msgstr "သဘာဝ"
+
+msgid "Robust"
+msgstr "တည်ငြိမ်"
+
 msgid "Split long text"
 msgstr "ရှည်လျားသော စာသားကို ခွဲရန်"
 
@@ -140,3 +149,94 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "ဤအကောင့်က မည်သည့် ElevenLabs အသံများနှင့် မော်ဒယ်များကို အသုံးပြုနိုင်သည်ကို"
 " ထပ်မံစစ်ဆေးပါ"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API ကီး"
+
+msgid "&API key:"
+msgstr "&API ကီး:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "သင်၏ ElevenLabs API ကီးကို ဦးစွာ ကူးထည့်ပါ။"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs ဖြင့် API ကီးကို စစ်ဆေးနေသည်..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API ကီးကို စစ်ဆေး၍ မရပါ။ အသေးစိတ်အတွက် NVDA မှတ်တမ်းကို ကြည့်ပါ။"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API ကီးကို သိမ်းဆည်း၍ မရပါ။ အသေးစိတ်အတွက် NVDA မှတ်တမ်းကို ကြည့်ပါ။"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API ကီးကို ရှင်းလင်းရန်"
+
+msgid "Set &API key..."
+msgstr "&API ကီး သတ်မှတ်ရန်..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API ကီးကို ရှင်းလင်းမလား။ ကီးအသစ် သတ်မှတ်သည်အထိ ElevenLabs စကားမပြောနိုင်ပါ။"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API ကီးကို ရှင်းလင်း၍ မရပါ။ အသေးစိတ်အတွက် NVDA မှတ်တမ်းကို ကြည့်ပါ။"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs သည် ဤ API ကီးကို ငြင်းပယ်ခဲ့သည်။ ၎င်းကို အပြည့်အစုံ ကူးယူထားကြောင်းနှင့် အသံများကို ဖတ်ခွင့်ရှိကြောင်း စစ်ဆေးပါ။"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs သည် ကီးကို စစ်ဆေး၍ မရပါ (HTTP {code})။ နောက်မှ ထပ်စမ်းကြည့်ပါ။"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "ကီးကို စစ်ဆေးရန် ElevenLabs သို့ ချိတ်ဆက်၍ မရပါ။ သင်၏ အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်စမ်းကြည့်ပါ။"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs စာသားမှအသံ API မှ အသံကို တိုက်ရိုက်ထုတ်လွှင့်သော အသံပေါင်းစပ်ကိရိယာ ဒရိုက်ဗာ။"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ်ကို ဖွင့်၍မရပါ။ စကားပြောအားလုံးအတွက် ElevenLabs ကို အသုံးပြုနေသည်။"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} ကို ဖွင့်၍မရပါ။ လမ်းညွှန်ရန် {fallback} ကို အသုံးပြုနေသည်။"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs ကို အသုံးမပြုနိုင်ပါ။ အားလုံးဖတ်ခြင်းသည် {synth} ကို အသုံးပြုပါမည်။"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "မရှိ (ElevenLabs က အားလုံးကို ပြောသည်)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "လမ်းညွှန်ရန် &အသံပေါင်းစပ်စနစ်:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "လမ်းညွှန်ရန် သီးခြားအသံပေါင်းစပ်စနစ်နှင့် စကားပြောအားလုံးအတွက် ElevenLabs အကြား ပြောင်းသည်"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "လမ်းညွှန်ရန် အသံပေါင်းစပ်စနစ် ရွေးမထားပါ။ ElevenLabs TTS ဆက်တင်များတွင် တစ်ခုရွေးပါ"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "စကားပြောအားလုံးအတွက် ElevenLabs ကို အသုံးပြုနေသည်။"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "လမ်းညွှန်ရန် {synth} ကို အသုံးပြုနေသည်။"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

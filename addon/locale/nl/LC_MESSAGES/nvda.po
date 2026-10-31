@@ -66,6 +66,15 @@ msgstr "Aan"
 msgid "Off"
 msgstr "Uit"
 
+msgid "Creative"
+msgstr "Creatief"
+
+msgid "Natural"
+msgstr "Natuurlijk"
+
+msgid "Robust"
+msgstr "Robuust"
+
 msgid "Split long text"
 msgstr "Lange tekst opsplitsen"
 
@@ -140,3 +149,94 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Opnieuw controleren welke stemmen en modellen van ElevenLabs dit account kan"
 " gebruiken"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs-API-sleutel"
+
+msgid "&API key:"
+msgstr "&API-sleutel:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Plak eerst uw ElevenLabs-API-sleutel."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "API-sleutel wordt gecontroleerd bij ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "De API-sleutel kan niet worden gecontroleerd. Zie het NVDA-logboek voor details."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "De API-sleutel kan niet worden opgeslagen. Zie het NVDA-logboek voor details."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "&API-sleutel wissen"
+
+msgid "Set &API key..."
+msgstr "&API-sleutel instellen..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "De ElevenLabs-API-sleutel wissen? ElevenLabs kan niet spreken totdat er een nieuwe sleutel is ingesteld."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "De API-sleutel kan niet worden gewist. Zie het NVDA-logboek voor details."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs heeft deze API-sleutel geweigerd. Controleer of deze volledig is gekopieerd en stemmen mag lezen."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs kan de sleutel niet controleren (HTTP {code}). Probeer het later opnieuw."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Kan ElevenLabs niet bereiken om de sleutel te controleren. Controleer uw internetverbinding en probeer het opnieuw."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Spraaksynthesizerstuurprogramma dat audio streamt vanaf de tekst-naar-spraak-API van ElevenLabs."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Kan geen synthesizer voor navigatie laden; ElevenLabs wordt voor alle spraak gebruikt."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Kan {synth} niet laden; {fallback} wordt voor navigatie gebruikt."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs is niet beschikbaar; alles lezen gebruikt {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Geen (ElevenLabs spreekt alles uit)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Synthesizer voor navigatie:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Schakelt tussen een aparte synthesizer voor navigatie en ElevenLabs voor alle spraak"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Geen synthesizer voor navigatie gekozen; kies er een in de instellingen van ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "ElevenLabs wordt voor alle spraak gebruikt."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "{synth} wordt voor navigatie gebruikt."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

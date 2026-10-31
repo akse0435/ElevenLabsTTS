@@ -66,6 +66,15 @@ msgstr "இயக்கு"
 msgid "Off"
 msgstr "நிறுத்து"
 
+msgid "Creative"
+msgstr "படைப்பாற்றல்"
+
+msgid "Natural"
+msgstr "இயல்பான"
+
+msgid "Robust"
+msgstr "நிலையான"
+
 msgid "Split long text"
 msgstr "நீண்ட உரையைப் பிரி"
 
@@ -140,3 +149,94 @@ msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "இந்தக் கணக்கு எந்த ElevenLabs குரல்களையும் மாதிரிகளையும் பயன்படுத்தலாம் என "
 "மீண்டும் சரிபார்"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API விசை"
+
+msgid "&API key:"
+msgstr "API விசை (&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "முதலில் உங்கள் ElevenLabs API விசையை ஒட்டவும்."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "ElevenLabs உடன் API விசை சரிபார்க்கப்படுகிறது..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "API விசையைச் சரிபார்க்க முடியவில்லை. விவரங்களுக்கு NVDA பதிவைப் பார்க்கவும்."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "API விசையைச் சேமிக்க முடியவில்லை. விவரங்களுக்கு NVDA பதிவைப் பார்க்கவும்."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "API விசையை அழி (&A)"
+
+msgid "Set &API key..."
+msgstr "API விசையை அமை (&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "ElevenLabs API விசையை அழிக்கவா? புதிய விசை அமைக்கப்படும் வரை ElevenLabs பேச முடியாது."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "API விசையை அழிக்க முடியவில்லை. விவரங்களுக்கு NVDA பதிவைப் பார்க்கவும்."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs இந்த API விசையை நிராகரித்தது. அது முழுமையாக நகலெடுக்கப்பட்டதா, குரல்களைப் படிக்க அனுமதி உள்ளதா எனச் சரிபார்க்கவும்."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs விசையைச் சரிபார்க்க முடியவில்லை (HTTP {code}). பின்னர் மீண்டும் முயற்சிக்கவும்."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "விசையைச் சரிபார்க்க ElevenLabs ஐ அணுக முடியவில்லை. உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "ElevenLabs உரையிலிருந்து பேச்சு API இலிருந்து ஒலியை ஸ்ட்ரீம் செய்யும் பேச்சு ஒருங்கிணைப்பி இயக்கி."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "வழிசெலுத்தலுக்கான பேச்சொலிப்பானை ஏற்ற முடியவில்லை; எல்லாப் பேச்சுக்கும் ElevenLabs பயன்படுத்தப்படுகிறது."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "{synth} ஐ ஏற்ற முடியவில்லை; வழிசெலுத்தலுக்கு {fallback} பயன்படுத்தப்படுகிறது."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs கிடைக்கவில்லை; அனைத்தையும் படி {synth} ஐப் பயன்படுத்தும்."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "எதுவுமில்லை (ElevenLabs எல்லாவற்றையும் பேசும்)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "வழிசெலுத்தலுக்கான &பேச்சொலிப்பான்:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "வழிசெலுத்தலுக்கான தனிப் பேச்சொலிப்பானுக்கும் எல்லாப் பேச்சுக்குமான ElevenLabs க்கும் இடையே மாற்றுகிறது"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "வழிசெலுத்தல் பேச்சொலிப்பான் தேர்ந்தெடுக்கப்படவில்லை; ElevenLabs TTS அமைப்புகளில் ஒன்றைத் தேர்ந்தெடுக்கவும்"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "எல்லாப் பேச்சுக்கும் ElevenLabs பயன்படுத்தப்படுகிறது."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "வழிசெலுத்தலுக்கு {synth} பயன்படுத்தப்படுகிறது."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

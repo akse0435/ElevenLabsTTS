@@ -66,6 +66,15 @@ msgstr "开"
 msgid "Off"
 msgstr "关"
 
+msgid "Creative"
+msgstr "创意"
+
+msgid "Natural"
+msgstr "自然"
+
+msgid "Robust"
+msgstr "稳定"
+
 msgid "Split long text"
 msgstr "拆分长文本"
 
@@ -134,3 +143,94 @@ msgstr "报告当前周期的 ElevenLabs 额度用量"
 
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr "重新检查此账户可以使用哪些 ElevenLabs 语音和模型"
+
+msgid "ElevenLabs API Key"
+msgstr "ElevenLabs API 密钥"
+
+msgid "&API key:"
+msgstr "API 密钥(&A):"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "请先粘贴您的 ElevenLabs API 密钥。"
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "正在通过 ElevenLabs 检查 API 密钥..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "无法检查 API 密钥。详情请查看 NVDA 日志。"
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "无法保存 API 密钥。详情请查看 NVDA 日志。"
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "清除 API 密钥(&A)"
+
+msgid "Set &API key..."
+msgstr "设置 API 密钥(&A)..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "要清除 ElevenLabs API 密钥吗？在设置新密钥之前，ElevenLabs 将无法朗读。"
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "无法清除 API 密钥。详情请查看 NVDA 日志。"
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs 拒绝了此 API 密钥。请检查密钥是否完整复制，以及是否具有读取语音的权限。"
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs 无法检查该密钥 (HTTP {code})。请稍后重试。"
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "无法连接 ElevenLabs 检查密钥。请检查您的网络连接，然后重试。"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "从 ElevenLabs 文本转语音 API 流式传输音频的语音合成器驱动程序。"
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "无法加载用于导航的语音合成器；所有语音都使用 ElevenLabs。"
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "无法加载 {synth}；导航使用 {fallback}。"
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs 不可用；全文朗读将使用 {synth}。"
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "无（ElevenLabs 朗读所有内容）"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "导航语音合成器(&S):"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "在单独的导航语音合成器和用于所有语音的 ElevenLabs 之间切换"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "未选择导航语音合成器；请在 ElevenLabs TTS 设置中选择一个"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "所有语音都使用 ElevenLabs。"
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "导航使用 {synth}。"
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

@@ -66,6 +66,15 @@ msgstr "Zapnuto"
 msgid "Off"
 msgstr "Vypnuto"
 
+msgid "Creative"
+msgstr "Kreativní"
+
+msgid "Natural"
+msgstr "Přirozená"
+
+msgid "Robust"
+msgstr "Robustní"
+
 msgid "Split long text"
 msgstr "Rozdělit dlouhý text"
 
@@ -137,3 +146,94 @@ msgstr "Oznámit využití kreditů ElevenLabs v aktuálním období"
 msgid "Check again which ElevenLabs voices and models this account can use"
 msgstr ""
 "Znovu zkontrolovat, které hlasy a modely ElevenLabs může tento účet používat"
+
+msgid "ElevenLabs API Key"
+msgstr "Klíč API pro ElevenLabs"
+
+msgid "&API key:"
+msgstr "Klíč &API:"
+
+msgid "Paste your ElevenLabs API key first."
+msgstr "Nejprve vložte svůj klíč API pro ElevenLabs."
+
+msgid "Checking the API key with ElevenLabs..."
+msgstr "Ověřování klíče API u ElevenLabs..."
+
+msgid "The API key could not be checked. See the NVDA log for details."
+msgstr "Klíč API se nepodařilo ověřit. Podrobnosti najdete v protokolu NVDA."
+
+msgid "The API key could not be saved. See the NVDA log for details."
+msgstr "Klíč API se nepodařilo uložit. Podrobnosti najdete v protokolu NVDA."
+
+msgid "ElevenLabs TTS"
+msgstr "ElevenLabs TTS"
+
+msgid "Clear &API key"
+msgstr "Vymazat klíč &API"
+
+msgid "Set &API key..."
+msgstr "Nastavit klíč &API..."
+
+msgid "Clear the ElevenLabs API key? ElevenLabs can't speak until a new key is set."
+msgstr "Vymazat klíč API pro ElevenLabs? ElevenLabs nebude moci mluvit, dokud nenastavíte nový klíč."
+
+msgid "The API key could not be cleared. See the NVDA log for details."
+msgstr "Klíč API se nepodařilo vymazat. Podrobnosti najdete v protokolu NVDA."
+
+msgid "ElevenLabs rejected this API key. Check that it was copied in full and that it is allowed to read voices."
+msgstr "ElevenLabs tento klíč API odmítl. Zkontrolujte, zda byl zkopírován celý a zda smí číst hlasy."
+
+msgid "ElevenLabs could not check the key (HTTP {code}). Try again later."
+msgstr "ElevenLabs nemohl klíč ověřit (HTTP {code}). Zkuste to znovu později."
+
+msgid "Could not reach ElevenLabs to check the key. Check your internet connection and try again."
+msgstr "Nepodařilo se spojit s ElevenLabs kvůli ověření klíče. Zkontrolujte připojení k internetu a zkuste to znovu."
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid "Speech synthesizer driver that streams audio from the ElevenLabs text-to-speech API."
+msgstr "Ovladač hlasového syntetizéru, který streamuje zvuk z API pro převod textu na řeč ElevenLabs."
+
+#. Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+msgid "Could not load a synthesizer for navigation; using ElevenLabs for all speech."
+msgstr "Nelze načíst syntezátor pro navigaci; pro veškerou řeč se používá ElevenLabs."
+
+#. Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+#. e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+msgid "Could not load {synth}; using {fallback} for navigation."
+msgstr "Nelze načíst {synth}; pro navigaci se používá {fallback}."
+
+#. Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+#. for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+msgid "ElevenLabs is unavailable; say all will use {synth}."
+msgstr "ElevenLabs není k dispozici; plynulé čtení bude používat {synth}."
+
+#. Translators: the choice in the ElevenLabs TTS settings for using no other synthesizer.
+msgid "None (ElevenLabs speaks everything)"
+msgstr "Žádný (ElevenLabs říká vše)"
+
+#. Translators: label of the box in the ElevenLabs TTS settings choosing the synthesizer
+#. that speaks everything except say all, so only say all uses ElevenLabs credits.
+msgid "&Synthesizer for navigation:"
+msgstr "&Syntezátor pro navigaci:"
+
+#. Translators: description of a command in Input Gestures.
+msgid "Switches between a separate synthesizer for navigation and ElevenLabs for all speech"
+msgstr "Přepíná mezi samostatným syntezátorem pro navigaci a ElevenLabs pro veškerou řeč"
+
+#. Translators: spoken when switching to a navigation synthesizer before one was ever chosen.
+msgid "No navigation synthesizer chosen; choose one in ElevenLabs TTS settings"
+msgstr "Není zvolen žádný syntezátor pro navigaci; zvolte jej v nastavení ElevenLabs TTS"
+
+#. Translators: spoken when ElevenLabs goes back to speaking everything.
+msgid "Using ElevenLabs for all speech."
+msgstr "Pro veškerou řeč se používá ElevenLabs."
+
+#. Translators: spoken when a separate synthesizer takes over everything but say all,
+#. e.g. "Using eSpeak NG for navigation."
+msgid "Using {synth} for navigation."
+msgstr "Pro navigaci se používá {synth}."
+
+#. Translators: a setting in the settings ring while a synthesizer for navigation is
+#. loaded, so either synthesizer's can be told apart, e.g. "eSpeak NG rate".
+msgid "{synth} {setting}"
+msgstr "{synth} {setting}"

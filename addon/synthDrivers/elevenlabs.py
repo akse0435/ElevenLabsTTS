@@ -1,26 +1,27 @@
 # -*- coding: utf-8 -*-
 # ElevenLabs speech synthesizer driver for NVDA.
 #
-# Setup: installing the add-on creates elevenlabs_settings.txt in NVDA's
-# configuration folder (usually %APPDATA%\nvda). Put your ElevenLabs API key
-# after the equals sign on its api_key line, restart NVDA and select
-# "ElevenLabs" as the synthesizer. The same file holds the driver's other
-# settings, and a key in the older elevenlabs_api_key.txt is moved into it.
+# Setup: set your ElevenLabs API key in NVDA's settings, ElevenLabs TTS
+# category, then select "ElevenLabs" as the synthesizer.
 #
 # All speech is sent to ElevenLabs and counts towards your API usage. Speeds
 # the API can't deliver itself are made locally with sonic, which NVDA ships
 # from 2025.1 onwards, hence the minimum version.
 
 import array
+import bisect
 import hashlib
+import http.client
+import io
 import json
-import os
 import queue
 import re
+import select
 import struct
 import threading
 import time
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict, deque, namedtuple
+from itertools import accumulate
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from ctypes import c_short
@@ -38,6 +39,7 @@ from autoSettingsUtils.driverSetting import (
 )
 from autoSettingsUtils.utils import StringParameterInfo
 from logHandler import log
+from speech import sayAll
 from speech.commands import IndexCommand, LangChangeCommand
 from synthDriverHandler import (
 	SynthDriver as BaseSynthDriver,
@@ -46,6 +48,8 @@ from synthDriverHandler import (
 	synthDoneSpeaking,
 	synthIndexReached,
 )
+from synthDrivers import _elevenlabsNavigation as _navigation
+from synthDrivers import _elevenlabsSettings as _settings
 
 try:
 	import addonHandler
@@ -60,6 +64,10 @@ CHUNK_SIZE = 4096
 # Seconds without audio before giving up. Measured worst: ~1 s real-time, ~2.3 s others.
 REQUEST_TIMEOUT = 15
 REALTIME_REQUEST_TIMEOUT = 8
+# Seconds a finished connection is kept open, to skip the next TLS handshake.
+CONNECTION_IDLE_TIMEOUT = 60
+# One for the part playing and one for the next part's prefetch.
+MAX_IDLE_CONNECTIONS = 2
 # Timeout for the checks run while NVDA waits for the synthesizer to load. If
 # they fail, NVDA falls back to another synthesizer.
 INIT_TIMEOUT = 8
@@ -72,7 +80,7 @@ PROBE_WORKERS = 4
 MAX_PROBED_VOICES = 100
 # Bumped whenever a check changes, so results cached by an older version are redone.
 VOICE_CHECK_VERSION = 2
-MODEL_CHECK_VERSION = 1
+MODEL_CHECK_VERSION = 2
 # Voices tried at start up before giving up, which bounds how long NVDA waits.
 MAX_STARTUP_TRIES = 8
 # Upper bounds on each check, so NVDA is never held back indefinitely.
@@ -83,6 +91,9 @@ MODEL_PROBE_WORKERS = 2
 
 # One retry covers a dropped connection or a busy server without much delay.
 MAX_RETRIES = 1
+# With a navigation synthesizer: failed utterances in a row before ElevenLabs
+# is given up for the session.
+MAX_TRANSIENT_FAILURES = 3
 RETRY_DELAY = 0.5
 RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
 # v4 trains a voice the first time it is used with it, which can take well over
@@ -96,6 +107,8 @@ PREVIOUS_REQUEST_GRACE = 0.5
 POLL_INTERVAL = 0.05
 # Silence mid-utterance, in seconds, long enough to log.
 GAP_TO_LOG = 0.3
+# Seconds to wait for say all's next utterance before the player goes idle.
+SAY_ALL_IDLE_GRACE = 0.5
 
 # Long text is split between sentences; see ModelInfo.parts.
 _SENTENCE_END = re.compile(r"(?<=[.!?\u2026])\s+|\n+")
@@ -154,6 +167,20 @@ _TAG = re.compile(r"\[[^\[\]]*\]")
 _LEADING_TAG = re.compile(r"\s*\[[^\[\]]*\]")
 # The only stability values v3 accepts. Also used for any model that refuses others.
 STABILITY_PRESETS = (0.0, 0.5, 1.0)
+# Their names in the stability box, as ElevenLabs names them.
+STABILITY_PRESET_NAMES = OrderedDict((
+	# Translators: a choice for stability on models that take only three values;
+	# the widest emotional range.
+	("creative", _("Creative")),
+	# Translators: a choice for stability on models that take only three values;
+	# balanced and closest to the original voice.
+	("natural", _("Natural")),
+	# Translators: a choice for stability on models that take only three values;
+	# very steady, but less responsive to direction.
+	("robust", _("Robust")),
+))
+STABILITY_PRESET_VALUES = dict(zip(STABILITY_PRESET_NAMES, STABILITY_PRESETS))
+DEFAULT_STABILITY_PRESET = "natural"
 
 # What a model accepts: whether it takes language_code, and which voice_settings
 # and apply_text_normalization. Turbo takes the same as Flash, which ElevenLabs
@@ -199,8 +226,14 @@ _EARLIER_MODELS = ("eleven_monolingual_v1", "eleven_multilingual_v1")
 _offeredModels = OrderedDict(MODELS)
 # Fields each model has refused, saved as refused_<model> in the settings file.
 _refused = {}
+# Recorded when only "on" was refused, as Flash and Turbo v2.5 do below Enterprise.
+_NORMALIZATION_ON_REFUSED = "apply_text_normalization=on"
+# Text around a request, sent in say all for intonation. Not billed on Flash v2.5.
+_CONTEXT_FIELDS = ("previous_text", "next_text")
+# ElevenLabs says v3 can't use them; other models that refuse them are learned.
+_NO_CONTEXT_MODELS = ("eleven_v3", "eleven_v3_conversational")
 # Fields a refusal may name; only those a model was sent are recorded.
-_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS
+_LEARNABLE_FIELDS = ("language_code",) + _ALL_SETTINGS + (_NORMALIZATION_ON_REFUSED,) + _CONTEXT_FIELDS
 # Models known to take only the stability presets.
 PRESET_STABILITY_MODELS = ("eleven_v3", "eleven_v3_conversational")
 # The voice_settings name behind each slider and checkbox. Only those the chosen
@@ -213,22 +246,8 @@ _SETTING_API_NAMES = {
 	"normalization": "apply_text_normalization",
 }
 
-SETTINGS_FILENAME = "elevenlabs_settings.txt"
-# Files used before the settings file existed; read once and then migrated.
-LEGACY_KEY_FILENAME = "elevenlabs_api_key.txt"
-LEGACY_FORMAT_FILENAME = "elevenlabs_output_format.txt"
-SETTINGS_HEADER = (
-	"# Settings for the ElevenLabs NVDA add-on, one name = value per line.",
-	"# api_key: your ElevenLabs API key. Paste it after the equals sign below.",
-	"# output_format: audio format the driver negotiated with your plan.",
-	"# unusable_voices, voice_check: voices this account cannot generate with,",
-	"# and a fingerprint of the account state they were worked out for.",
-	"# unusable_voices_<model>, voice_check_<model>: the same for other models.",
-	"# unusable_models, model_check: the same for models.",
-	"# refused_<model>: request fields a model has refused.",
-	"# check_voices = no turns the voice check off.",
-	"# Remove a line to work that setting out again.",
-)
+# Where to set the API key, for log messages.
+KEY_LOCATION = "NVDA's settings, ElevenLabs TTS category"
 
 # Fallback voice (Rachel), used until the real voice list arrives.
 FALLBACK_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
@@ -362,134 +381,6 @@ def _isOutputFormatRejection(detail):
 	return "output_format" in detail or "output format" in detail
 
 
-def _configFilePath(fileName):
-	return os.path.join(globalVars.appArgs.configPath, fileName)
-
-
-def _readLines(fileName):
-	try:
-		with open(_configFilePath(fileName), "r", encoding="utf-8-sig") as f:
-			return f.read().splitlines()
-	except OSError:
-		return None
-
-
-def _readSettings():
-	"""Reads the settings file into a dict of lower case names to values."""
-	settings = {}
-	for line in _readLines(SETTINGS_FILENAME) or ():
-		line = line.strip()
-		if not line or line.startswith("#"):
-			continue
-		if "=" in line:
-			name, _sep, value = line.partition("=")
-			settings[name.strip().lower()] = value.strip()
-		elif "api_key" not in settings:
-			# A line with no name is taken as the key, so the old key file still
-			# works if it is simply renamed.
-			settings["api_key"] = line
-	return settings
-
-
-# Checks run on several threads, so writes take turns.
-_settingsLock = threading.Lock()
-
-
-def _writeSetting(name, value):
-	"""Rewrites one line of the settings file, leaving the rest untouched."""
-	with _settingsLock:
-		return _writeSettingNow(name, value)
-
-
-def _writeSettingNow(name, value):
-	lines = _readLines(SETTINGS_FILENAME)
-	if lines is None:
-		lines = list(SETTINGS_HEADER)
-	newLine = f"{name} = {value}"
-	for index, line in enumerate(lines):
-		if "=" in line and not line.strip().startswith("#") \
-				and line.partition("=")[0].strip().lower() == name:
-			lines[index] = newLine
-			break
-	else:
-		lines.append(newLine)
-	try:
-		with open(_configFilePath(SETTINGS_FILENAME), "w", encoding="utf-8") as f:
-			f.write("\n".join(lines) + "\n")
-		return True
-	except OSError:
-		log.debugWarning(f"Could not save {name} to {SETTINGS_FILENAME}", exc_info=True)
-		return False
-
-
-def _ensureSettingsFile():
-	"""Makes sure the settings file exists and has a line ready for the key.
-
-	Runs on every start, so it also covers a copied add-on or a deleted file.
-	An existing file is never overwritten, only added to."""
-	path = _configFilePath(SETTINGS_FILENAME)
-	lines = _readLines(SETTINGS_FILENAME)
-	if lines is None:
-		try:
-			with open(path, "w", encoding="utf-8") as f:
-				# The trailing space is deliberate, so the key can be typed or
-				# pasted straight after it without adding one first.
-				f.write("\n".join(SETTINGS_HEADER) + "\napi_key = \n")
-			log.info(f"ElevenLabs: created {path}; add your API key to the api_key line.")
-		except OSError:
-			log.error(f"ElevenLabs: could not create {path}", exc_info=True)
-		return path
-	if "api_key" not in _readSettings():
-		# The file is there but has nothing to paste a key into, so give it one.
-		_writeSetting("api_key", "")
-	return path
-
-
-def _readApiKey():
-	key = _readSettings().get("api_key")
-	if key:
-		return key
-	# Falls back to the old file if the settings file has no key yet, or if it
-	# could not be written when the key was migrated.
-	for line in _readLines(LEGACY_KEY_FILENAME) or ():
-		line = line.strip()
-		if line:
-			return line
-	return None
-
-
-def invalidateChecks():
-	"""Forgets the recorded voice and model checks, so the next load redoes them.
-
-	For when the synthesizer is not running and there is nothing to check against."""
-	names = {"voice_check", "model_check"}
-	names.update(n for n in _readSettings() if n.startswith("voice_check_"))
-	return all([_writeSetting(name, "") for name in sorted(names)])
-
-
-def _migrateLegacyFiles():
-	"""Moves the old separate key and format files into the settings file."""
-	settings = _readSettings()
-	migrated = []
-	if "api_key" not in settings:
-		for line in _readLines(LEGACY_KEY_FILENAME) or ():
-			line = line.strip()
-			if line and _writeSetting("api_key", line):
-				migrated.append(LEGACY_KEY_FILENAME)
-			break
-	if "output_format" not in settings:
-		for line in _readLines(LEGACY_FORMAT_FILENAME) or ():
-			line = line.strip()
-			if line and _writeSetting("output_format", line):
-				migrated.append(LEGACY_FORMAT_FILENAME)
-			break
-	if migrated:
-		log.info(
-			f"ElevenLabs: moved {', '.join(migrated)} into {SETTINGS_FILENAME}; "
-			"the old file(s) are no longer used and can be deleted."
-		)
-
-
 class ElevenLabsUnavailable(Exception):
 	"""The synthesizer cannot be used, so NVDA should fall back to another one."""
 
@@ -574,6 +465,15 @@ def _modelInfo(modelId):
 	return info
 
 
+def _withoutDeclined(settings, model):
+	"""settings less those the model list says the model can't use."""
+	declined = {
+		field for flag, field in (("can_use_style", "style"), ("can_use_speaker_boost", "use_speaker_boost"))
+		if model.get(flag) is False
+	}
+	return tuple(name for name in settings if name not in declined)
+
+
 def _modelDisplayName(info):
 	if info.englishOnly:
 		# Translators: a model that only speaks English; {name} is its name.
@@ -592,13 +492,6 @@ def _languageName(langId, englishName):
 		return languageHandler.getLanguageDescription(langId) or englishName
 	except Exception:
 		return englishName
-
-
-def _voiceCheckKeys(modelId):
-	"""Settings lines with a model's voice check; the default model keeps the old names."""
-	if modelId == DEFAULT_MODEL:
-		return "unusable_voices", "voice_check"
-	return f"unusable_voices_{modelId}", f"voice_check_{modelId}"
 
 
 def _requestTimeout(modelId):
@@ -644,6 +537,54 @@ def _splitText(text, first, later):
 	return _group(pieces, later, first) or [text]
 
 
+def _nonSpace(text):
+	"""Length of text without white space, which splitting leaves alone."""
+	return len(_WHITESPACE.sub("", text))
+
+
+def _isSayAllRunning():
+	try:
+		return sayAll.SayAllHandler is not None and sayAll.SayAllHandler.isRunning()
+	except Exception:
+		return False
+
+
+def _sayAllKnowsItsStart():
+	"""Whether NVDA records who started say all (startedFromScript, added in 2024.x)."""
+	global _sayAllKnowsStart
+	if _sayAllKnowsStart is None:
+		# The attribute only exists once say all has run, so readText's parameters tell.
+		try:
+			import inspect
+			_sayAllKnowsStart = "startedFromScript" in inspect.signature(
+				type(sayAll.SayAllHandler).readText
+			).parameters
+		except Exception:
+			_sayAllKnowsStart = False
+	return _sayAllKnowsStart
+
+
+_sayAllKnowsStart = None
+
+
+def _isUserSayAll():
+	"""Whether the user started say all, rather than e.g. a page load.
+	Always True for say all if NVDA can't tell."""
+	if not _isSayAllRunning():
+		return False
+	if not _sayAllKnowsItsStart():
+		return True
+	return bool(getattr(sayAll.SayAllHandler, "startedFromScript", False))
+
+
+def _unhideTags(speechSequence):
+	"""speechSequence with the brackets hidden by _hideTags put back."""
+	return [
+		item.replace(_TAG_OPEN, "[").replace(_TAG_CLOSE, "]") if isinstance(item, str) else item
+		for item in speechSequence
+	]
+
+
 def _hideTags(text):
 	"""Swaps the brackets of audio tags in text for characters NVDA keeps."""
 	def hide(match):
@@ -669,7 +610,7 @@ def _installTagFilter():
 	def processText(locale, text, *args, **kwargs):
 		try:
 			synth = getSynth()
-			if getattr(synth, "name", None) == "elevenlabs" and synth.audioTags \
+			if getattr(synth, "name", None) == "elevenlabs" and synth._tagsActive() \
 					and ("[" in text or "]" in text):
 				text = _hideTags(text)
 		except Exception:
@@ -705,6 +646,52 @@ def _openVoicePanels():
 			pending.extend(window.GetChildren())
 
 
+def _sizerWindows(item):
+	"""The windows of a control or labelled control sizer, in order."""
+	import wx
+
+	if isinstance(item, wx.Window):
+		return [item]
+	windows = []
+	for child in item.GetChildren():
+		if child.IsWindow():
+			windows.append(child.GetWindow())
+		elif child.IsSizer():
+			windows.extend(_sizerWindows(child.GetSizer()))
+	return windows
+
+
+def _orderVoicePanel(panel, settingIds):
+	"""Puts the driver's controls in panel in settingIds order, on screen and in tab
+	order, as NVDA adds a setting a new model supports last."""
+	import wx
+
+	sizer = panel.settingsSizer
+	items = [panel.sizerDict[sid] for sid in settingIds if sid in panel.sizerDict]
+	positions = {}
+	for index, child in enumerate(sizer.GetChildren()):
+		positions[id(child.GetWindow() or child.GetSizer())] = index
+	if len(items) < 2 or any(id(item) not in positions for item in items):
+		return
+	# NVDA keeps them together, before its own voice options; keep that block in place.
+	start = min(positions[id(item)] for item in items)
+	if [positions[id(item)] for item in items] != list(range(start, start + len(items))):
+		for index, item in enumerate(items):
+			shown = sizer.IsShown(item)
+			sizer.Detach(item)
+			# As NVDA inserts them.
+			sizer.Insert(start + index, item, border=10, flag=wx.BOTTOM)
+			sizer.Show(item, shown)
+	windows = [w for item in items for w in _sizerWindows(item)]
+	siblings = list(windows[0].GetParent().GetChildren())
+	first = min(windows, key=siblings.index)
+	if first is not windows[0]:
+		windows[0].MoveBeforeInTabOrder(first)
+	for previous, window in zip(windows, windows[1:]):
+		window.MoveAfterInTabOrder(previous)
+	sizer.Layout()
+
+
 def _fetchJson(url, key, timeout):
 	"""GETs a JSON document, raising ElevenLabsUnavailable with a readable reason."""
 	req = urlrequest.Request(url, headers={
@@ -726,14 +713,48 @@ def _fetchJson(url, key, timeout):
 			pass
 		if e.code in (401, 403):
 			raise ElevenLabsUnavailable(
-				f"ElevenLabs rejected the API key (HTTP {e.code}). Check the api_key line "
-				f"in {SETTINGS_FILENAME}. {detail}"
+				f"ElevenLabs rejected the API key (HTTP {e.code}). Set it again in "
+				f"{KEY_LOCATION}. {detail}"
 			)
 		raise ElevenLabsUnavailable(f"ElevenLabs returned HTTP {e.code} for {url}. {detail}")
 	except (URLError, OSError) as e:
 		raise ElevenLabsUnavailable(f"Could not reach ElevenLabs: {e}")
 	except ValueError as e:
 		raise ElevenLabsUnavailable(f"ElevenLabs sent a response that could not be read: {e}")
+
+
+def checkApiKey(key):
+	"""Asks ElevenLabs whether key works; None if it does, else a message for the user.
+	Blocks, so it must not run on the main thread."""
+	if not key.isascii() or not key.isprintable() or " " in key:
+		# Can't be sent in a header, and is no API key anyway.
+		# Translators: shown when ElevenLabs refuses the API key that was entered.
+		return _(
+			"ElevenLabs rejected this API key. Check that it was copied in full and "
+			"that it is allowed to read voices."
+		)
+	req = urlrequest.Request(f"{API_BASE}/v1/voices", headers={
+		"xi-api-key": key,
+		"Accept": "application/json",
+	})
+	try:
+		with urlrequest.urlopen(req, timeout=INIT_TIMEOUT) as resp:
+			resp.read()
+		return None
+	except HTTPError as e:
+		log.debug(f"ElevenLabs: the API key was refused (HTTP {e.code}).")
+		if e.code in (401, 403):
+			# Translators: shown when ElevenLabs refuses the API key that was entered.
+			return _(
+				"ElevenLabs rejected this API key. Check that it was copied in full and "
+				"that it is allowed to read voices."
+			)
+		# Translators: shown when the API key can't be checked; {code} is an HTTP status code.
+		return _("ElevenLabs could not check the key (HTTP {code}). Try again later.").format(code=e.code)
+	except (URLError, OSError) as e:
+		log.debug(f"ElevenLabs: could not reach ElevenLabs to check the API key: {e}")
+		# Translators: shown when ElevenLabs can't be reached to check the API key.
+		return _("Could not reach ElevenLabs to check the key. Check your internet connection and try again.")
 
 
 def _makePlayer(sampleRate):
@@ -756,15 +777,134 @@ def _makePlayer(sampleRate):
 	return nvwave.WavePlayer(**kwargs)
 
 
+class _ConnectionPool:
+	"""Keeps finished HTTPS connections open for a while, to skip the next handshake."""
+
+	def __init__(self):
+		self._lock = threading.Lock()
+		# (host, connection, time.monotonic() when it was last finished), oldest first.
+		self._idle = []
+		self._timer = None
+		self._closed = False
+		self._loggedProxy = False
+
+	def request(self, req, timeout):
+		"""Sends req; returns (connection, response, reused), or None if a proxy is set."""
+		if "https" in urlrequest.getproxies() and not urlrequest.proxy_bypass(req.host):
+			if not self._loggedProxy:
+				self._loggedProxy = True
+				log.debug("ElevenLabs: a proxy is set, so connections are not kept open.")
+			return None
+		headers = dict(req.header_items())
+		# urlopen sends one, and a request without it could be treated as a bot.
+		headers.setdefault("User-agent", f"Python-urllib/{urlrequest.__version__}")
+		while True:
+			conn = self._take(req.host)
+			reused = conn is not None
+			if reused:
+				conn.timeout = timeout
+				conn.sock.settimeout(timeout)
+			else:
+				conn = http.client.HTTPSConnection(req.host, timeout=timeout)
+			try:
+				conn.request(req.get_method(), req.selector, req.data, headers)
+				return conn, conn.getresponse(), reused
+			except (http.client.BadStatusLine, ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+				conn.close()
+				if not reused:
+					raise
+				# Closed by the server meanwhile, so the request never arrived; safe to resend.
+				log.debug("ElevenLabs: a kept connection was closed by the server; reconnecting.")
+			except BaseException:
+				conn.close()
+				raise
+
+	def _take(self, host):
+		"""The most recently used idle connection to host that is still open, or None."""
+		now = time.monotonic()
+		with self._lock:
+			while self._idle:
+				idleHost, conn, since = self._idle.pop()
+				if idleHost == host and now - since < CONNECTION_IDLE_TIMEOUT and self._isOpen(conn):
+					self._scheduleSweep()
+					return conn
+				conn.close()
+			self._scheduleSweep()
+		return None
+
+	@staticmethod
+	def _isOpen(conn):
+		# An idle connection has nothing to read unless the server closed it.
+		if conn.sock is None:
+			return False
+		try:
+			readable, _, _ = select.select([conn.sock], [], [], 0)
+		except (OSError, ValueError):
+			return False
+		return not readable
+
+	def release(self, host, conn, resp):
+		"""Keeps conn for the next request if resp was read to the end, else closes it."""
+		if not resp.isclosed() or resp.will_close or conn.sock is None:
+			conn.close()
+			return
+		with self._lock:
+			if self._closed:
+				dropped = [conn]
+			else:
+				self._idle.append((host, conn, time.monotonic()))
+				dropped = [entry[1] for entry in self._idle[:-MAX_IDLE_CONNECTIONS]]
+				del self._idle[:-MAX_IDLE_CONNECTIONS]
+				self._scheduleSweep()
+		for extra in dropped:
+			extra.close()
+
+	def _scheduleSweep(self):
+		"""Closes the oldest idle connection once it expires. Called with the lock held."""
+		if self._timer is not None:
+			self._timer.cancel()
+			self._timer = None
+		if not self._idle:
+			return
+		delay = self._idle[0][2] + CONNECTION_IDLE_TIMEOUT - time.monotonic()
+		self._timer = threading.Timer(max(delay, 0), self._sweep)
+		self._timer.daemon = True
+		self._timer.start()
+
+	def _sweep(self):
+		now = time.monotonic()
+		with self._lock:
+			expired = [entry for entry in self._idle if now - entry[2] >= CONNECTION_IDLE_TIMEOUT]
+			self._idle = [entry for entry in self._idle if entry not in expired]
+			self._scheduleSweep()
+		for _, conn, _ in expired:
+			conn.close()
+		if expired:
+			log.debug(f"ElevenLabs: closed {len(expired)} connection(s) unused for {CONNECTION_IDLE_TIMEOUT} s.")
+
+	def closeAll(self):
+		with self._lock:
+			self._closed = True
+			idle, self._idle = self._idle, []
+			if self._timer is not None:
+				self._timer.cancel()
+				self._timer = None
+		for _, conn, _ in idle:
+			conn.close()
+
+
 class _Download(threading.Thread):
 	"""One request on a thread of its own, so speech can move on without waiting for it."""
 
 	daemon = True
 
-	def __init__(self, req, timeout):
+	def __init__(self, req, timeout, pool=None):
 		super().__init__(name="ElevenLabsDownload")
 		self._req = req
 		self._timeout = timeout
+		self._pool = pool
+		# Whether the request went over a connection kept from an earlier one.
+		self.reused = False
 		self._onDone = None
 		self._done = False
 		self._doneLock = threading.Lock()
@@ -780,6 +920,12 @@ class _Download(threading.Thread):
 	def abandon(self):
 		"""Stops passing audio on; the connection closes when the server next answers."""
 		self._wanted = False
+
+	@property
+	def done(self):
+		"""Whether all audio has arrived."""
+		with self._doneLock:
+			return self._done
 
 	def whenDone(self, callback):
 		"""Calls callback once all audio has arrived, now if it already has."""
@@ -800,23 +946,113 @@ class _Download(threading.Thread):
 				log.error("ElevenLabs: could not fetch the next part", exc_info=True)
 
 	def run(self):
+		conn = resp = None
 		try:
-			with urlrequest.urlopen(self._req, timeout=self._timeout) as resp:
-				while self._wanted:
-					chunk = resp.read(CHUNK_SIZE)
-					if not chunk:
-						break
-					if self.firstAudio is None:
-						self.firstAudio = time.time()
-					self.chunks.put(chunk)
-				else:
-					return
+			opened = self._pool.request(self._req, self._timeout) if self._pool is not None else None
+			if opened is None:
+				resp = urlrequest.urlopen(self._req, timeout=self._timeout)
+			else:
+				conn, resp, self.reused = opened
+				if resp.status >= 400:
+					# Raised as urlopen would. Reading the body keeps the connection reusable.
+					body = resp.read()
+					raise HTTPError(self._req.full_url, resp.status, resp.reason, resp.headers, io.BytesIO(body))
+			while self._wanted:
+				chunk = resp.read(CHUNK_SIZE)
+				if not chunk:
+					break
+				if self.firstAudio is None:
+					self.firstAudio = time.time()
+				self.chunks.put(chunk)
+			else:
+				return
+		except http.client.HTTPException as e:
+			# E.g. a connection cut off mid-answer, which counts as a network error.
+			self.chunks.put(URLError(e))
+			return
 		except Exception as e:
 			self.chunks.put(e)
 			return
+		finally:
+			# Kept only if read to the end; an abandoned answer closes the connection.
+			if conn is not None:
+				self._pool.release(self._req.host, conn, resp)
+			elif resp is not None:
+				resp.close()
 		# Before b"", so the next part starts before this one ends.
 		self._finish()
 		self.chunks.put(b"")
+
+
+class _IndexSchedule:
+	"""Reports an utterance's indexes as the parts they fall in start playing, in say all.
+	Trailing ones go once the last part has arrived, so the next utterance comes sooner."""
+
+	def __init__(self, report, byPart, trailing):
+		self._report = report
+		self._lock = threading.Lock()
+		# Indexes not yet reported, one list per part and the trailing ones last.
+		self._pending = [list(indexes) for indexes in byPart] + [list(trailing)]
+		self._lastPart = len(byPart) - 1
+		# The last part whose audio has started playing.
+		self._started = -1
+		self._downloaded = False
+		# Set once the trailing indexes are reported.
+		self.finished = threading.Event()
+
+	def started(self, part):
+		with self._lock:
+			self._started = max(self._started, part)
+			self._reportUpTo(part)
+			self._checkTrailing()
+
+	def downloaded(self):
+		with self._lock:
+			self._downloaded = True
+			self._checkTrailing()
+
+	def flush(self):
+		"""Reports every index not yet reported, e.g. when synthesis failed."""
+		with self._lock:
+			self._reportUpTo(len(self._pending) - 1)
+
+	def _checkTrailing(self):
+		if self._downloaded and self._started >= self._lastPart:
+			self._reportUpTo(len(self._pending) - 1)
+
+	def _reportUpTo(self, slot):
+		for i in range(slot + 1):
+			pending, self._pending[i] = self._pending[i], []
+			for index in pending:
+				self._report(index)
+		if slot == len(self._pending) - 1:
+			self.finished.set()
+
+
+class _Job:
+	"""One utterance from NVDA, as the speech thread works through it."""
+
+	__slots__ = (
+		"gen", "sequence", "text", "indexes", "langOverride", "sayAll", "parts", "schedule", "fed", "previous",
+	)
+
+	def __init__(self, gen, sequence, text, indexes, langOverride, sayAll):
+		self.gen = gen
+		# As NVDA sent it, for the navigation synthesizer if ElevenLabs can't speak it.
+		self.sequence = sequence
+		self.text = text
+		# (index, non-space characters of text before it)
+		self.indexes = indexes
+		self.langOverride = langOverride
+		# Spoken while say all was running.
+		self.sayAll = sayAll
+		# Set by _SpeechWorker._plan.
+		self.parts = None
+		self.schedule = None
+		# The last part of the say all utterance before it, sent as context.
+		self.previous = None
+		# Whether any of its audio reached the player.
+		self.fed = False
 
 
 class _SpeechWorker(threading.Thread):
@@ -827,7 +1063,9 @@ class _SpeechWorker(threading.Thread):
 	def __init__(self, driver):
 		super().__init__(name="ElevenLabsSpeechWorker")
 		self.driver = driver
-		self.queue = queue.Queue()
+		# Jobs waiting; None once stopped. A deque, as say all looks at the next job.
+		self._jobs = deque()
+		self._jobsChanged = threading.Condition()
 		self.generation = 0  # incremented on cancel so stale jobs are dropped
 		self._lock = threading.Lock()
 		self._running = True
@@ -840,89 +1078,231 @@ class _SpeechWorker(threading.Thread):
 		self._prefetch = None
 		# (generation, tag): the last audio tag spoken, until speech is cancelled.
 		self._carriedTag = (None, None)
+		# (generation, text): the last part of the last say all utterance planned.
+		self._lastSayAllPart = (None, None)
 		# When the audio fed so far should end playing; None before the first feed.
 		self._playEnd = None
+		self._connections = _ConnectionPool()
 		self.start()
 
-	def enqueue(self, text, indexes, langOverride=None):
+	def enqueue(self, sequence, text, indexes, langOverride=None, sayAll=False):
 		with self._lock:
 			gen = self.generation
-		self.queue.put((gen, text, indexes, langOverride))
+		with self._jobsChanged:
+			self._jobs.append(_Job(gen, sequence, text, indexes, langOverride, sayAll))
+			self._jobsChanged.notify()
 
 	def cancelAll(self):
 		with self._lock:
 			self.generation += 1
 		self._dropPrefetch()
-		# Empty the queue.
-		try:
-			while True:
-				self.queue.get_nowait()
-		except queue.Empty:
-			pass
+		with self._jobsChanged:
+			self._jobs.clear()
 
 	def stop(self):
 		self._running = False
 		self.cancelAll()
-		self.queue.put(None)
+		self._connections.closeAll()
+		with self._jobsChanged:
+			self._jobs.append(None)
+			self._jobsChanged.notify()
 
 	def _isCurrent(self, gen):
 		with self._lock:
 			return gen == self.generation and self._running
 
+	def _takeJob(self):
+		with self._jobsChanged:
+			while not self._jobs:
+				self._jobsChanged.wait()
+			return self._jobs.popleft()
+
+	def _peekJob(self):
+		with self._jobsChanged:
+			return self._jobs[0] if self._jobs else None
+
+	def _waitForJob(self, timeout):
+		"""True if a job is waiting, or arrives within timeout."""
+		with self._jobsChanged:
+			if not self._jobs:
+				self._jobsChanged.wait(timeout)
+			return bool(self._jobs)
+
+	def _waitForNextSayAll(self, job):
+		"""True if NVDA sends more speech soon after job's trailing indexes are reported."""
+		# Bounded in case the player was rebuilt, which drops its callbacks.
+		deadline = max(self._playEnd or 0, time.time()) + 1
+		while not job.schedule.finished.is_set() and time.time() < deadline:
+			if self._waitForJob(POLL_INTERVAL):
+				return True
+			if not self._isCurrent(job.gen):
+				return False
+		return self._waitForJob(SAY_ALL_IDLE_GRACE)
+
 	def run(self):
 		while True:
-			item = self.queue.get()
-			if item is None:
+			job = self._takeJob()
+			if job is None:
 				return
-			gen, text, indexes, langOverride = item
-			if not self._isCurrent(gen):
+			if not self._isCurrent(job.gen):
+				continue
+			if self.driver._isGivenUp():
+				# Queued before ElevenLabs was given up, so it isn't asked again.
+				self._handOver(job)
 				continue
 			completed = False
 			try:
-				completed = self._speakParts(gen, text, langOverride)
+				completed = self._speakJob(job)
 			except Exception:
 				log.error("Unexpected error in the ElevenLabs driver", exc_info=True)
-			if self._isCurrent(gen):
+			if not self._isCurrent(job.gen):
+				continue
+			if not completed and not job.fed and self.driver._navigation.synth is not None:
+				self._handOver(job)
+				continue
+			if not (job.sayAll and completed):
 				# Indexes are reported even if synthesis failed, since NVDA's
-				# speech queue waits for them before moving on.
-				for index in indexes:
-					synthIndexReached.notify(synth=self.driver, index=index)
-				if self.queue.empty():
-					player = self.driver._player
-					if completed and player is not None:
-						try:
-							player.idle()
-						except Exception:
-							pass
-					synthDoneSpeaking.notify(synth=self.driver)
+				# speech queue waits for them. In say all they go as the audio plays.
+				self._schedule(job).flush()
+			if self._peekJob() is not None:
+				continue
+			# Idling would hold say all's next utterance back, so it gets a moment to arrive.
+			if job.sayAll and completed and self._waitForNextSayAll(job):
+				continue
+			if not self._isCurrent(job.gen):
+				continue
+			player = self.driver._player
+			if completed and player is not None:
+				try:
+					player.idle()
+				except Exception:
+					pass
+			# Everything has played, so any index still waiting is reached.
+			self._schedule(job).flush()
+			synthDoneSpeaking.notify(synth=self.driver)
 
-	def _speakParts(self, gen, text, langOverride):
-		"""Speaks text, in parts when splitting is on."""
+	def _schedule(self, job):
+		"""job's indexes; planned here if the job failed before it got that far."""
+		if job.schedule is None:
+			job.schedule = _IndexSchedule(self._reporter(job.gen), [], [index for index, before in job.indexes])
+		return job.schedule
+
+	def _reporter(self, gen):
+		def report(index):
+			if self._isCurrent(gen):
+				synthIndexReached.notify(synth=self.driver, index=index)
+		return report
+
+	def _plan(self, job):
+		"""Splits job's text into parts and works out which part each index goes with."""
+		if job.parts is not None:
+			return
 		modelId = self.driver.model
-		self.driver._warnIfTooFast(modelId)
-		parts = _splitText(text, *_modelInfo(modelId).parts) if self.driver.splitText else [text]
+		parts = _splitText(job.text, *_modelInfo(modelId).parts) if self.driver.splitText else [job.text]
 		# Joined screen lines can hold double spaces, which v3 may speak as a breath.
 		parts = [p for p in (" ".join(p.split()) for p in parts) if p]
-		if self.driver.audioTags and _modelInfo(modelId).tags:
-			parts = [self._withTag(gen, p) for p in parts]
-			# Tags alone are refused (HTTP 400), but still carry over to the next text.
-			parts = [p for p in parts if _TAG.sub("", p).strip()]
-		self._playEnd = None
+		ends = list(accumulate(_nonSpace(p) for p in parts))
+		byPart = [[] for _ in parts]
+		trailing = []
+		for index, before in job.indexes:
+			# The part whose text ends after the index, so it is reported as that part starts.
+			part = bisect.bisect_right(ends, before)
+			(byPart[part] if part < len(parts) else trailing).append(index)
+		if self.driver._tagsActive() and _modelInfo(modelId).tags:
+			parts = [self._withTag(job.gen, p) for p in parts]
+			# Tags alone are refused (HTTP 400), but still carry over to the next text,
+			# and so do their indexes.
+			keptParts, keptIndexes, carried = [], [], []
+			for text, indexes in zip(parts, byPart):
+				carried += indexes
+				if _TAG.sub("", text).strip():
+					keptParts.append(text)
+					keptIndexes.append(carried)
+					carried = []
+			parts, byPart, trailing = keptParts, keptIndexes, carried + trailing
+		if job.sayAll and parts:
+			# Jobs are planned in the order they're spoken, so this is the one before.
+			lastGen, lastPart = self._lastSayAllPart
+			job.previous = lastPart if lastGen == job.gen else None
+			self._lastSayAllPart = (job.gen, parts[-1])
+		job.parts = parts
+		job.schedule = _IndexSchedule(self._reporter(job.gen), byPart, trailing)
+
+	def _speakJob(self, job):
+		"""Speaks job, in parts when splitting is on."""
+		self.driver._warnIfTooFast(self.driver.model)
+		self._plan(job)
+		if not job.sayAll:
+			# A gap between say all's utterances is worth logging.
+			self._playEnd = None
+		completed = False
 		try:
-			for i, part in enumerate(parts):
-				if not self._synthesize(gen, part, langOverride, parts[i + 1:]):
+			for i, part in enumerate(job.parts):
+				if not self._synthesize(job.gen, part, job.langOverride, job.parts[i + 1:], job, i):
 					return False
+			if job.sayAll and not job.parts:
+				# Only indexes, or only audio tags: reached once what came before has played.
+				self._afterPlayed(job.schedule.downloaded)
+			elif job.sayAll:
+				job.schedule.downloaded()
+			completed = True
 			return True
 		finally:
-			self._dropPrefetch()
+			# What is left after a success is the next say all utterance's first part.
+			if not completed:
+				self._dropPrefetch()
 
-	def _buildRequest(self, key, text, langOverride, modelId):
-		"""The speech request for text, and its (voice, model) pair."""
+	def _handOver(self, job):
+		"""Has the navigation synthesizer speak job, once ElevenLabs' audio before it has played."""
+		self._afterPlayed(lambda: queueHandler.queueFunction(
+			queueHandler.eventQueue, self.driver._speakInstead, job
+		))
+
+	def _afterPlayed(self, callback):
+		"""Calls callback once the audio fed so far has played."""
+		player = self.driver._player
+		if player is None:
+			callback()
+			return
+		try:
+			# A single silent sample, only to be told when playback gets there.
+			player.feed(b"\0\0", onDone=callback)
+		except Exception:
+			log.debugWarning("ElevenLabs: could not wait for playback", exc_info=True)
+			callback()
+
+	def _prefetchNextJob(self, gen):
+		"""Starts the next say all utterance's first part; False if there is none yet."""
+		job = self._peekJob()
+		if job is None:
+			return False
+		if job.gen == gen and job.sayAll:
+			self._plan(job)
+			if job.parts:
+				self._prefetchNext(gen, job.parts[0], job.langOverride, self._context(job, 0))
+		return True
+
+	@staticmethod
+	def _context(job, part):
+		"""(previous_text, next_text) for job's part; only say all has any."""
+		if job is None or not job.sayAll or not job.parts:
+			return (None, None)
+		previous = job.parts[part - 1] if part > 0 else job.previous
+		following = job.parts[part + 1] if part + 1 < len(job.parts) else None
+		return (previous, following)
+
+	def _buildRequest(self, key, text, langOverride, modelId, context=(None, None)):
+		"""The speech request for text, and its (voice, model) pair.
+		context is (previous_text, next_text)."""
 		driver = self.driver
 		# Language priority: NVDA's language markup > the language setting > auto.
 		lang = langOverride or driver._language
 		voiceId = driver.synthesisVoice
 		body = driver._requestBody(self._textFor(text, modelId), lang, modelId)
+		if modelId not in _NO_CONTEXT_MODELS:
+			for field, value in zip(_CONTEXT_FIELDS, context):
+				if value and field not in _refused.get(modelId, ()):
+					body[field] = self._textFor(value, modelId)
 		req = urlrequest.Request(
 			f"{API_BASE}/v1/text-to-speech/{voiceId}/stream"
 			f"?output_format={driver.outputFormat}",
@@ -951,23 +1331,25 @@ class _SpeechWorker(threading.Thread):
 
 	def _textFor(self, text, modelId):
 		"""text as sent to modelId: audio tags are left out where they'd be read."""
-		if self.driver.audioTags and not _modelInfo(modelId).tags:
+		if self.driver._tagsActive() and not _modelInfo(modelId).tags:
 			text = " ".join(_TAG.sub(" ", text).split())
 		return text
 
 	def _startDownload(self, req, pair):
 		firstUse = pair[1] != DEFAULT_MODEL and pair not in self._usedVoices
-		download = _Download(req, FIRST_USE_TIMEOUT if firstUse else _requestTimeout(pair[1]))
+		download = _Download(
+			req, FIRST_USE_TIMEOUT if firstUse else _requestTimeout(pair[1]), self._connections
+		)
 		log.debug(f"ElevenLabs: request to {_modelInfo(pair[1]).name}: {json.loads(req.data)['text'][:200]!r}")
 		self._download = self._pending[pair] = download
 		return download
 
-	def _prefetchNext(self, gen, text, langOverride):
+	def _prefetchNext(self, gen, text, langOverride, context=(None, None)):
 		"""Starts the next part's download while the current part plays."""
 		key = self.driver._getApiKey()
 		if not key:
 			return
-		req, pair = self._buildRequest(key, text, langOverride, self.driver.model)
+		req, pair = self._buildRequest(key, text, langOverride, self.driver.model, context)
 		with self._lock:
 			if gen != self.generation or not self._running:
 				return
@@ -1005,14 +1387,15 @@ class _SpeechWorker(threading.Thread):
 		if download is not None:
 			download.abandon()
 
-	def _synthesize(self, gen, text, langOverride=None, following=()):
+	def _synthesize(self, gen, text, langOverride=None, following=(), job=None, part=0):
+		"""Speaks one part; job and part place its indexes in say all."""
 		driver = self.driver
+		schedule = job.schedule if job is not None and job.sayAll else None
 		key = driver._getApiKey()
 		if not key:
 			driver.reportError(
 				"nokey",
-				f"The ElevenLabs API key is no longer readable. Check the api_key line in "
-				f"{SETTINGS_FILENAME} in NVDA's configuration folder.",
+				f"No ElevenLabs API key is set. Set one in {KEY_LOCATION}.",
 			)
 			return False
 		modelId = driver.model
@@ -1025,9 +1408,11 @@ class _SpeechWorker(threading.Thread):
 				return False
 			if not self._textFor(text, modelId):
 				# Only audio tags, which this model would read aloud.
+				if schedule is not None:
+					schedule.started(part)
 				return True
 			isUlaw = driver.outputFormat.startswith("ulaw")
-			req, pair = self._buildRequest(key, text, langOverride, modelId)
+			req, pair = self._buildRequest(key, text, langOverride, modelId, self._context(job, part))
 			voiceId = pair[0]
 			firstUse = modelId != DEFAULT_MODEL and pair not in self._usedVoices
 			download = self._takePrefetch(req)
@@ -1036,7 +1421,13 @@ class _SpeechWorker(threading.Thread):
 					return False
 				download = self._startDownload(req, pair)
 			if following:
-				download.whenDone(lambda: self._prefetchNext(gen, following[0], langOverride))
+				download.whenDone(lambda: self._prefetchNext(
+					gen, following[0], langOverride, self._context(job, part + 1)
+				))
+			elif schedule is not None:
+				download.whenDone(schedule.downloaded)
+			# The next say all utterance is fetched once this, its last part, has arrived.
+			prefetchNextJob = schedule is not None and not following
 			player = sonic = None
 			fedAudio = False
 			received = 0  # bytes of 16 bit audio, before sonic
@@ -1057,7 +1448,8 @@ class _SpeechWorker(threading.Thread):
 						if download.firstAudio is not None:
 							log.debug(
 								f"ElevenLabs: {_modelInfo(modelId).name} first audio after "
-								f"{download.firstAudio - download.started:.2f} s, {len(text)} chars"
+								f"{download.firstAudio - download.started:.2f} s, {len(text)} chars, "
+								f"{'kept' if download.reused else 'new'} connection"
 								f"{', first use of voice ' + voiceId if firstUse else ''}."
 							)
 						player = driver._getPlayer()
@@ -1083,14 +1475,15 @@ class _SpeechWorker(threading.Thread):
 					if not chunk:
 						continue
 					self._trackPlayback(len(chunk), modelId, text)
-					# feed blocks until there is room in the playback buffer
-					player.feed(chunk)
+					self._feed(player, chunk, schedule, part, not fedAudio)
 					fedAudio = True
+					if prefetchNextJob and download.done:
+						prefetchNextJob = not self._prefetchNextJob(gen)
 				if sonic is not None:
 					chunk = _sonicDrain(sonic)
 					if chunk:
 						self._trackPlayback(len(chunk), modelId, text)
-						player.feed(chunk)
+						self._feed(player, chunk, schedule, part, not fedAudio)
 						fedAudio = True
 			except HTTPError as e:
 				detail = _REQUEST_ID_PATTERN.sub("", self._readErrorDetail(e))
@@ -1099,9 +1492,6 @@ class _SpeechWorker(threading.Thread):
 				if modelId == DEFAULT_MODEL and e.code == 403 and _isOutputFormatRejection(detail) \
 						and driver._useNextOutputFormat():
 					continue
-				if e.code == 401:
-					# The key may have been edited; read it again next time.
-					driver._forgetApiKey()
 				if e.code in RETRY_STATUS_CODES and not fedAudio and retries < MAX_RETRIES:
 					retries += 1
 					if self._waitBeforeRetry(gen):
@@ -1112,7 +1502,8 @@ class _SpeechWorker(threading.Thread):
 						and driver._usePresetStability(modelId):
 					continue
 				# A field the model won't take is left out from now on.
-				if not fedAudio and _isRefusal(e.code) and driver._refuseFields(modelId, detail):
+				if not fedAudio and _isRefusal(e.code) \
+						and driver._refuseFields(modelId, detail, json.loads(req.data)):
 					continue
 				refusal = _classifyRefusal(e.code, detail) if not fedAudio else None
 				# Out of credits, or the key no longer works: no model can speak.
@@ -1143,7 +1534,7 @@ class _SpeechWorker(threading.Thread):
 						continue
 				# The service itself keeps failing, even after a retry.
 				if not fedAudio and e.code >= 500:
-					driver._fallBack(f"ElevenLabs keeps failing (HTTP {e.code}). {detail.strip()}")
+					driver._fallBack(f"ElevenLabs keeps failing (HTTP {e.code}). {detail.strip()}", transient=True)
 					return False
 				driver.reportError(f"http{e.code}", f"ElevenLabs API error {e.code}: {detail}")
 				return False
@@ -1163,18 +1554,31 @@ class _SpeechWorker(threading.Thread):
 					return False
 				# Both tries failed, so ElevenLabs can't be reached.
 				if not fedAudio:
-					driver._fallBack(f"ElevenLabs could not be reached: {e}")
+					driver._fallBack(f"ElevenLabs could not be reached: {e}", transient=True)
 					return False
 				driver.reportError("network", f"ElevenLabs network error: {e}")
 				return False
 			finally:
 				download.abandon()
+				if fedAudio and job is not None:
+					job.fed = True
 			log.debug(
 				f"ElevenLabs: {_modelInfo(modelId).name} returned "
 				f"{received / (2.0 * OUTPUT_FORMATS[driver._formatIndex][1]):.2f} s of audio for {len(text)} chars."
 			)
+			if schedule is not None and not fedAudio:
+				schedule.started(part)
 			driver._onSynthesisSucceeded()
 			return True
+
+	@staticmethod
+	def _feed(player, chunk, schedule, part, first):
+		"""Feeds chunk; the first of a say all part reports the part's indexes once played."""
+		# feed blocks until there is room in the playback buffer
+		if schedule is not None and first:
+			player.feed(chunk, onDone=lambda: schedule.started(part))
+		else:
+			player.feed(chunk)
 
 	def _waitBeforeRetry(self, gen):
 		time.sleep(RETRY_DELAY)
@@ -1235,6 +1639,16 @@ class SynthDriver(BaseSynthDriver):
 			# Translators: name of a setting in the settings ring.
 			displayName=_("Stability"),
 		),
+		# Shown instead of the slider for models that take only STABILITY_PRESETS.
+		DriverSetting(
+			"stabilityPreset",
+			# Translators: label of the stability slider, or of the box that replaces it, in voice settings.
+			pgettext("label", "Stabilit&y"),
+			availableInSettingsRing=True,
+			defaultVal=DEFAULT_STABILITY_PRESET,
+			# Translators: name of a setting in the settings ring.
+			displayName=_("Stability"),
+		),
 		NumericDriverSetting(
 			"clarity",
 			# Translators: label of a slider in voice settings.
@@ -1290,16 +1704,15 @@ class SynthDriver(BaseSynthDriver):
 			displayName=_("Audio tags"),
 		),
 	)
-	supportedCommands = {IndexCommand, LangChangeCommand}
+	_supportedCommands = {IndexCommand, LangChangeCommand}
 	supportedNotifications = {synthIndexReached, synthDoneSpeaking}
 	# Above zero while NVDA sets up, loads or saves settings; see _allSettingsVisible.
 	_configuring = 0
 
 	@classmethod
 	def check(cls):
-		# Always listed, so a user who hasn't set up a key yet gets a clear
-		# explanation on selecting it rather than a missing entry.
-		return True
+		# Not offered until an API key is set.
+		return cls._getApiKey() is not None
 
 	def __init__(self):
 		super().__init__()
@@ -1311,6 +1724,8 @@ class SynthDriver(BaseSynthDriver):
 		self._rateBoost = False
 		self._volume = 100
 		self._stability = DEFAULT_STABILITY
+		# Kept apart from the slider's value, so each survives the other's model.
+		self._stabilityPreset = DEFAULT_STABILITY_PRESET
 		self._clarity = DEFAULT_CLARITY
 		self._style = DEFAULT_STYLE
 		self._speakerBoost = DEFAULT_SPEAKER_BOOST
@@ -1327,13 +1742,17 @@ class SynthDriver(BaseSynthDriver):
 		self._modelsChecked = False
 		self._presetStabilityModels = set(PRESET_STABILITY_MODELS)
 		self._modelFailures = {}
-		# Set once speech has been handed to FALLBACK_SYNTH.
+		# Set once ElevenLabs is given up, and speech goes to FALLBACK_SYNTH or the
+		# navigation synthesizer.
 		self._fellBack = False
+		# Failed utterances in a row; see MAX_TRANSIENT_FAILURES.
+		self._transientFailures = 0
+		# Speaks outside say all, when the user has chosen one.
+		self._navigation = _navigation.NavigationSynth(self)
 		# Models already warned as too slow for the speed.
 		self._speedWarned = set()
 		self._tier = ""
 		self._formatIndex = 0
-		self._apiKey = None
 		self._loggedErrors = {}
 		# What the settings file already says, so it is only rewritten on a change.
 		self._recordedFormat = None
@@ -1347,7 +1766,6 @@ class SynthDriver(BaseSynthDriver):
 		self._worker = None
 		self._probeThread = None
 		self._probeStop = threading.Event()
-		_migrateLegacyFiles()
 		self._loadOutputFormat()
 		self._migrateLegacyVariantSetting()
 		self._loadSavedModel()
@@ -1370,6 +1788,10 @@ class SynthDriver(BaseSynthDriver):
 			f"{len(_offeredModels) - len(self._unusableModels)} model(s), "
 			f"plan {self._tier or 'unknown'}, audio {self.outputFormat}."
 		)
+		# Last, as nothing after it may fail and leave it loaded.
+		navigationSynth = _settings.get("navigationSynth")
+		if navigationSynth:
+			self.useNavigationSynth(navigationSynth)
 
 	def terminate(self):
 		self.cancel()
@@ -1377,31 +1799,41 @@ class SynthDriver(BaseSynthDriver):
 		if self._worker is not None:
 			self._worker.stop()
 		self._closePlayer()
+		self._navigation.unload(restore=False)
 		# Saves the current settings and unregisters the config save action.
 		super().terminate()
 
 	def speak(self, speechSequence):
+		if self._speaker() is not self and self._navigate(
+			lambda synth: synth.speak(_unhideTags(speechSequence))
+		):
+			return
 		textParts = []
+		# (index, non-space characters before it), which places it in a part.
 		indexes = []
+		before = 0
 		langOverride = None
 		for item in speechSequence:
 			if isinstance(item, str):
 				textParts.append(item)
+				before += _nonSpace(item)
 			elif isinstance(item, IndexCommand):
-				indexes.append(item.index)
+				indexes.append((item.index, before))
 			elif isinstance(item, LangChangeCommand):
 				# NVDA sends e.g. "en_US"; only the language part is used. None,
 				# or a language the API lacks, means the language setting.
 				code = (item.lang or "").split("_")[0].lower()
 				langOverride = code if code in LANGUAGES and code != "auto" else None
 		text = " ".join(textParts).replace(_TAG_OPEN, "[").replace(_TAG_CLOSE, "]").strip()
-		if not text:
+		inSayAll = _isSayAllRunning()
+		# In say all, earlier speech may still be playing, so indexes wait their turn.
+		if not text and not inSayAll:
 			# No text, but indexes must still be reported as reached.
-			for index in indexes:
+			for index, before in indexes:
 				synthIndexReached.notify(synth=self, index=index)
 			synthDoneSpeaking.notify(synth=self)
 			return
-		self._worker.enqueue(text, indexes, langOverride)
+		self._worker.enqueue(speechSequence, text, indexes, langOverride, inSayAll)
 
 	def cancel(self):
 		self._worker.cancelAll()
@@ -1411,6 +1843,7 @@ class SynthDriver(BaseSynthDriver):
 				player.stop()
 			except Exception:
 				pass
+		self._navigate(lambda synth: synth.cancel())
 
 	def pause(self, switch):
 		if self._worker is not None:
@@ -1422,17 +1855,136 @@ class SynthDriver(BaseSynthDriver):
 				player.pause(switch)
 			except Exception:
 				pass
+		self._navigate(lambda synth: synth.pause(switch))
+
+	# --- Navigation synthesizer ---
+
+	def _speaker(self):
+		"""The synthesizer for speech now: the navigation one, unless ElevenLabs reads a say all."""
+		# Not there yet while the base class sets up.
+		holder = getattr(self, "_navigation", None)
+		navigation = holder.synth if holder is not None else None
+		if navigation is None or (not self._fellBack and _isUserSayAll()):
+			return self
+		return navigation
+
+	def _navigate(self, action):
+		"""Runs action with the navigation synthesizer, loading it again once if it fails,
+		as some drivers' engines can be shut down meanwhile; False if none works."""
+		for attempt in range(2):
+			synth = self._navigation.synth
+			if synth is None:
+				return False
+			try:
+				action(synth)
+				return True
+			except Exception:
+				log.error(f"ElevenLabs: {synth.name} failed for navigation", exc_info=True)
+			if attempt == 0:
+				self.useNavigationSynth(synth.name)
+		self._navigation.unload()
+		self._announceNoNavigation()
+		return False
+
+	def _get_supportedCommands(self):
+		# NVDA asks while building speech, so the synthesizer speaking answers.
+		speaker = self._speaker()
+		return self._supportedCommands if speaker is self else speaker.supportedCommands
+
+	def _isGivenUp(self):
+		"""True once ElevenLabs is given up and the navigation synthesizer speaks instead."""
+		return self._fellBack and self._navigation.synth is not None
+
+	def useNavigationSynth(self, name):
+		"""Loads synthesizer name to speak outside say all, or none if None.
+		False, and the user is told, if it can't be loaded."""
+		import ui
+		if not name:
+			self._navigation.unload()
+			if self._fellBack:
+				# Nothing is left for ElevenLabs to hand speech to.
+				self._fellBack = False
+				self._fallBack("it was given up and there is no navigation synthesizer any more.")
+			return True
+		if name == self.name:
+			log.error("ElevenLabs: can't be its own navigation synthesizer.")
+			name = _navigation.FALLBACK_SYNTH
+		loaded = self._navigation.load(name)
+		if loaded is None:
+			self._announceNoNavigation()
+			return False
+		if loaded == name:
+			return True
+		queueHandler.queueFunction(
+			queueHandler.eventQueue,
+			ui.message,
+			# Translators: spoken when the synthesizer chosen for navigation can't be loaded,
+			# e.g. "Could not load Microsoft OneCore; using eSpeak NG for navigation."
+			_("Could not load {synth}; using {fallback} for navigation.").format(
+				synth=_navigation.describe(name),
+				fallback=self._navigation.synth.description,
+			),
+		)
+		return False
+
+	@staticmethod
+	def _announceNoNavigation():
+		import ui
+		queueHandler.queueFunction(
+			queueHandler.eventQueue,
+			ui.message,
+			# Translators: spoken when neither the synthesizer chosen for navigation nor eSpeak can be loaded.
+			_("Could not load a synthesizer for navigation; using ElevenLabs for all speech."),
+		)
+
+	def _get_navigationSynthDescription(self):
+		"""The name of the synthesizer speaking outside say all, or None."""
+		synth = self._navigation.synth
+		return synth.description if synth is not None else None
+
+	def _speakInstead(self, job):
+		"""Speaks job, which ElevenLabs couldn't, with the navigation synthesizer.
+		On the main thread."""
+		if not self._worker._isCurrent(job.gen):
+			return
+		if self._navigate(lambda synth: synth.speak(_unhideTags(job.sequence))):
+			return
+		# Unloaded or failing; NVDA still waits for the indexes.
+		for index, before in job.indexes:
+			synthIndexReached.notify(synth=self, index=index)
+		synthDoneSpeaking.notify(synth=self)
+
+	def retryAfterFallBack(self):
+		"""Tries ElevenLabs again after it was given up, e.g. with a new API key."""
+		if not self._fellBack or self._navigation.synth is None:
+			return
+		self._fellBack = False
+		self._transientFailures = 0
+		log.info("ElevenLabs: trying ElevenLabs again for say all.")
 
 	# --- Settings shown in NVDA ---
 
 	def _get_supportedSettings(self):
 		if self._configuring:
 			return self._allSettings
-		accepted = _modelInfo(self._modelId).settings
+		info = _modelInfo(self._modelId)
+		presets = self._modelId in self._presetStabilityModels
+		# Shown only if the model takes them, besides the voice_settings in _SETTING_API_NAMES.
+		shown = {
+			LANGUAGE_SETTING_ID: info.languageCode,
+			"audioTags": info.tags,
+			"stability": "stability" in info.settings and not presets,
+			"stabilityPreset": "stability" in info.settings and presets,
+		}
 		return tuple(
 			s for s in self._allSettings
-			if s.id not in _SETTING_API_NAMES or _SETTING_API_NAMES[s.id] in accepted
+			if shown.get(s.id, True)
+			and (s.id not in _SETTING_API_NAMES or _SETTING_API_NAMES[s.id] in info.settings)
 		)
+
+	def _tagsActive(self):
+		"""Whether audio tags are on for the chosen model; its checkbox is hidden for others."""
+		return self._audioTags and _modelInfo(self._modelId).tags
 
 	@contextmanager
 	def _allSettingsVisible(self):
@@ -1475,6 +2027,7 @@ class SynthDriver(BaseSynthDriver):
 				if changedSetting:
 					for panel in _openVoicePanels():
 						panel.updateDriverSettings(changedSetting=changedSetting)
+						_orderVoicePanel(panel, [s.id for s in self._allSettings])
 			except Exception:
 				log.debugWarning("ElevenLabs: could not refresh NVDA's settings", exc_info=True)
 
@@ -1483,31 +2036,50 @@ class SynthDriver(BaseSynthDriver):
 
 	# --- API key ---
 
-	def _getApiKey(self):
-		"""Returns the cached key, reading the settings file only when needed."""
-		if self._apiKey is None:
-			self._apiKey = _readApiKey()
-		return self._apiKey
-
-	def _forgetApiKey(self):
-		self._apiKey = None
+	@staticmethod
+	def _getApiKey():
+		# Read each time, as the settings panel can change it.
+		return _settings.getApiKey()
 
 	# --- Error reporting ---
 
-	def _fallBack(self, reason):
+	def _fallBack(self, reason, transient=False):
 		"""Hands speech to eSpeak for this session, so NVDA is never left silent.
 
-		NVDA's saved synthesizer is kept, so ElevenLabs is used again after a restart."""
+		NVDA's saved synthesizer is kept, so ElevenLabs is used again after a restart.
+		With a navigation synthesizer, that one speaks instead; transient failures
+		only count after MAX_TRANSIENT_FAILURES in a row."""
 		if self._fellBack:
 			return
+		if transient and self._navigation.synth is not None:
+			self._transientFailures += 1
+			if self._transientFailures < MAX_TRANSIENT_FAILURES:
+				log.warning(f"ElevenLabs: {reason} The navigation synthesizer speaks this instead.")
+				return
 		self._fellBack = True
+		import ui
+		navigation = self._navigation.synth
+		if navigation is not None:
+			log.error(
+				f"ElevenLabs: {reason} Say all uses {navigation.name} until ElevenLabs is selected again, "
+				f"a new API key is set, or voices are checked again."
+			)
+
+			def announce():
+				# Translators: spoken when ElevenLabs stops working and the synthesizer chosen
+				# for navigation reads say all instead, e.g. "...say all will use eSpeak NG."
+				ui.message(_("ElevenLabs is unavailable; say all will use {synth}.").format(
+					synth=navigation.description
+				))
+
+			queueHandler.queueFunction(queueHandler.eventQueue, announce)
+			return
 		log.error(f"ElevenLabs: {reason} Switching to eSpeak until ElevenLabs is selected again.")
 
 		def switch():
 			if getSynth() is not self:
 				return
 			import synthDriverHandler
-			import ui
 			if synthDriverHandler.setSynth(FALLBACK_SYNTH, isFallback=True):
 				# Translators: spoken when NVDA switches to eSpeak.
 				ui.message(_("ElevenLabs is unavailable."))
@@ -1641,16 +2213,17 @@ class SynthDriver(BaseSynthDriver):
 	def _onSynthesisSucceeded(self):
 		"""Records the format that worked, so it isn't worked out again."""
 		self._loggedErrors.clear()
+		self._transientFailures = 0
 		if self._recordedFormat == self.outputFormat:
 			# Nothing new, so the settings file isn't touched for every utterance.
 			return
-		if _readSettings().get("output_format") != self.outputFormat:
-			_writeSetting("output_format", self.outputFormat)
+		with _settings.editing() as settings:
+			settings["outputFormat"] = self.outputFormat
 		self._recordedFormat = self.outputFormat
 
 	def _loadOutputFormat(self):
 		"""Restores the audio format worked out in an earlier session."""
-		savedFormat = _readSettings().get("output_format")
+		savedFormat = _settings.get("outputFormat")
 		for index, (formatName, sampleRate) in enumerate(OUTPUT_FORMATS):
 			if formatName == savedFormat:
 				self._formatIndex = index
@@ -1658,7 +2231,9 @@ class SynthDriver(BaseSynthDriver):
 				break
 		else:
 			if savedFormat:
-				log.warning(f"ElevenLabs: ignoring unknown output_format {savedFormat!r} in {SETTINGS_FILENAME}")
+				log.warning(
+					f"ElevenLabs: ignoring unknown outputFormat {savedFormat!r} in {_settings.SETTINGS_FILENAME}"
+				)
 
 	# --- Voices ---
 	# Only voices this account can generate with are listed. Voices stay on an
@@ -1669,10 +2244,9 @@ class SynthDriver(BaseSynthDriver):
 		"""Checks the account and builds the voice list; raises if unusable."""
 		key = self._getApiKey()
 		if not key:
-			path = _ensureSettingsFile()
 			raise ElevenLabsUnavailable(
-				f"No ElevenLabs API key yet. Open {path} and put your key after the equals "
-				"sign on the api_key line, then select the synthesizer again."
+				f"No ElevenLabs API key is set. Set one in {KEY_LOCATION}, then select "
+				"the synthesizer again."
 			)
 		data = _fetchJson(f"{API_BASE}/v1/voices", key, INIT_TIMEOUT)
 		voices = OrderedDict()
@@ -1717,29 +2291,28 @@ class SynthDriver(BaseSynthDriver):
 
 	def _loadUnusableVoices(self):
 		"""Restores the chosen model's checked result, if it still applies."""
-		settings = _readSettings()
-		unusableKey, checkKey = _voiceCheckKeys(self._modelId)
-		if settings.get(checkKey) != self._accountFingerprint():
+		check = _settings.get("voiceChecks", {}).get(self._modelId) or {}
+		if check.get("fingerprint") != self._accountFingerprint():
 			# The plan or the voice list changed, so the old result means nothing.
 			self._unusableVoices = set()
 			self._voicesChecked = False
 			return
-		saved = settings.get(unusableKey, "")
-		self._unusableVoices = {v.strip() for v in saved.split(",") if v.strip()}
+		self._unusableVoices = {v for v in check.get("unusable", ()) if isinstance(v, str)}
 		# A result is only recorded once every voice has an answer, so a matching
 		# fingerprint means the whole list is already known good.
 		self._voicesChecked = True
 
 	def _saveUnusableVoices(self):
-		unusableKey, checkKey = _voiceCheckKeys(self._modelId)
-		_writeSetting(unusableKey, ",".join(sorted(self._unusableVoices)))
-		# The fingerprint says every voice is known, so only then is it written.
-		if self._voicesChecked or self._voiceCheckDisabled():
-			_writeSetting(checkKey, self._accountFingerprint())
+		with _settings.editing() as settings:
+			check = settings.setdefault("voiceChecks", {}).setdefault(self._modelId, {})
+			check["unusable"] = sorted(self._unusableVoices)
+			# The fingerprint says every voice is known, so only then is it written.
+			if self._voicesChecked or self._voiceCheckDisabled():
+				check["fingerprint"] = self._accountFingerprint()
 
 	@staticmethod
 	def _voiceCheckDisabled():
-		return _readSettings().get("check_voices", "").lower() in ("no", "false", "0", "off")
+		return _settings.get("checkVoices", True) is False
 
 	def _rebuildVoiceList(self):
 		"""Rebuilds the list NVDA sees, leaving out voices known to be unusable."""
@@ -1760,8 +2333,8 @@ class SynthDriver(BaseSynthDriver):
 		if not self._voicesCache:
 			raise ElevenLabsUnavailable(
 				"None of the voices on this ElevenLabs account can be used with the current "
-				f"plan. Remove the unusable_voices line from {SETTINGS_FILENAME} to check "
-				"them again, or upgrade the plan."
+				"plan. Select another synthesizer and press NVDA+Shift+V to check them "
+				"again, or upgrade the plan."
 			)
 		# The chosen voice is checked first, since that request also proves the
 		# key, the plan and the audio format work end to end.
@@ -1769,7 +2342,7 @@ class SynthDriver(BaseSynthDriver):
 		if self._voicesChecked:
 			return
 		if self._voiceCheckDisabled():
-			log.debug(f"ElevenLabs: the voice check is switched off in {SETTINGS_FILENAME}.")
+			log.debug(f"ElevenLabs: the voice check is switched off in {_settings.SETTINGS_FILENAME}.")
 			return
 		pending = [v for v in self._voicesCache if v != self._voiceId]
 		if pending:
@@ -1887,6 +2460,8 @@ class SynthDriver(BaseSynthDriver):
 		"""
 		if self._probeThread is not None and self._probeThread.is_alive():
 			return False
+		# Asked for by the user, so worth trying ElevenLabs again if it was given up.
+		self.retryAfterFallBack()
 		# Off the main thread, so NVDA doesn't freeze while the user works.
 		self._probeThread = threading.Thread(
 			target=self._recheckNow,
@@ -2006,7 +2581,7 @@ class SynthDriver(BaseSynthDriver):
 				if settleFormat and e.code == 403 and _isOutputFormatRejection(detail) \
 						and self._useNextOutputFormat():
 					continue
-				if _isRefusal(e.code) and self._refuseFields(modelId, detail):
+				if _isRefusal(e.code) and self._refuseFields(modelId, detail, body):
 					continue
 				return _classifyRefusal(e.code, detail), detail.strip()
 			except (URLError, OSError) as e:
@@ -2100,44 +2675,56 @@ class SynthDriver(BaseSynthDriver):
 		except ElevenLabsUnavailable as e:
 			log.debugWarning(f"ElevenLabs: could not read the model list; using the built-in one. {e}")
 			data = None
-		names = OrderedDict()
+		listed = OrderedDict()
 		for model in data if isinstance(data, list) else ():
 			if isinstance(model, dict) and model.get("can_do_text_to_speech") and model.get("model_id"):
-				names[model["model_id"]] = model.get("name") or model["model_id"]
+				listed[model["model_id"]] = model
 		_offeredModels.clear()
-		if not names:
+		if not listed:
 			_offeredModels.update(MODELS)
 			return
 		# Release order: older unknown ones, MODELS, then new ones, likely newer.
 		known = list(_EARLIER_MODELS) + list(MODELS)
-		order = [m for m in known if m in names or m == DEFAULT_MODEL]
-		order += [m for m in names if m not in known]
+		order = [m for m in known if m in listed or m == DEFAULT_MODEL]
+		order += [m for m in listed if m not in known]
 		for modelId in order:
-			_offeredModels[modelId] = MODELS.get(modelId) or ModelInfo(
-				names[modelId], True, _ALL_SETTINGS, realtime=False
-			)
+			model = listed.get(modelId, {})
+			info = MODELS.get(modelId)
+			if info is None:
+				languages = [lang.get("language_id") for lang in model.get("languages") or () if isinstance(lang, dict)]
+				info = ModelInfo(
+					model.get("name") or modelId, True, _ALL_SETTINGS, realtime=False,
+					englishOnly=languages == ["en"],
+				)
+			_offeredModels[modelId] = info._replace(settings=_withoutDeclined(info.settings, model))
 
 	def _loadRefusedFields(self):
 		"""Restores the fields each model has refused."""
 		_refused.clear()
-		for name, value in _readSettings().items():
-			if name.startswith("refused_"):
-				fields = {f.strip() for f in value.split(",") if f.strip() in _LEARNABLE_FIELDS}
-				if fields:
-					_refused[name[len("refused_"):]] = fields
+		for modelId, saved in (_settings.get("refusedFields") or {}).items():
+			fields = {f for f in saved if f in _LEARNABLE_FIELDS} if isinstance(saved, list) else set()
+			if fields:
+				_refused[modelId] = fields
 
-	def _refuseFields(self, modelId, detail):
-		"""Records fields a refusal names for a model; True if any are new.
+	def _refuseFields(self, modelId, detail, body):
+		"""Records fields a refusal of body names for a model; True if any are new.
 
 		They are left out of later requests, and their settings hidden."""
 		info = _modelInfo(modelId)
 		sent = set(info.settings) | ({"language_code"} if info.languageCode else set())
+		sent |= {f for f in _CONTEXT_FIELDS if f in body}
 		new = {f for f in sent if re.search(rf"\b{f}\b", detail.lower())}
+		if "apply_text_normalization" in new and body.get("apply_text_normalization") == "on":
+			# Only the value was refused, so just "on" is left out of the box.
+			new.discard("apply_text_normalization")
+			new.add(_NORMALIZATION_ON_REFUSED)
+		new -= _refused.get(modelId, set())
 		if not new:
 			return False
 		fields = _refused.setdefault(modelId, set())
 		fields.update(new)
-		_writeSetting(f"refused_{modelId}", ",".join(sorted(fields)))
+		with _settings.editing() as settings:
+			settings.setdefault("refusedFields", {})[modelId] = sorted(fields)
 		log.warning(
 			f"ElevenLabs: {info.name} does not take {', '.join(sorted(new))}, so it is left out "
 			f"from now on. {detail.strip()[:300]}"
@@ -2153,11 +2740,11 @@ class SynthDriver(BaseSynthDriver):
 
 	def _loadModelCheck(self):
 		"""Restores the cached model check; False if there is none for this account state."""
-		settings = _readSettings()
-		if settings.get("model_check") != self._modelFingerprint():
+		check = _settings.get("modelCheck") or {}
+		if check.get("fingerprint") != self._modelFingerprint():
 			self._modelsChecked = False
 			return False
-		saved = (m.strip() for m in settings.get("unusable_models", "").split(","))
+		saved = check.get("unusable", ())
 		self._unusableModels = {m for m in saved if m in _offeredModels and m != DEFAULT_MODEL}
 		self._modelsChecked = True
 		return True
@@ -2179,8 +2766,8 @@ class SynthDriver(BaseSynthDriver):
 		# The default model has already spoken, so it needs no check.
 		pending = [m for m in _offeredModels if m != DEFAULT_MODEL]
 		# Learned again from scratch; the default model's on first refusal.
-		for modelId in list(_refused):
-			_writeSetting(f"refused_{modelId}", "")
+		with _settings.editing() as settings:
+			settings.pop("refusedFields", None)
 		_refused.clear()
 		voiceId = self._modelProbeVoice()
 		unusable, unanswered, succeeded, lastReason, accountFailure = self._probeAll(
@@ -2219,8 +2806,11 @@ class SynthDriver(BaseSynthDriver):
 				"run again next time the synthesizer is loaded."
 			)
 			return
-		_writeSetting("unusable_models", ",".join(sorted(self._unusableModels)))
-		_writeSetting("model_check", self._modelFingerprint())
+		with _settings.editing() as settings:
+			settings["modelCheck"] = {
+				"fingerprint": self._modelFingerprint(),
+				"unusable": sorted(self._unusableModels),
+			}
 		self._modelsChecked = True
 
 	def _probeModel(self, voiceId, modelId):
@@ -2249,7 +2839,8 @@ class SynthDriver(BaseSynthDriver):
 		if "apply_text_normalization" in info.settings:
 			if probe:
 				body["apply_text_normalization"] = "auto"
-			elif not plain and self._normalization != "auto":
+			elif not plain and self._normalization != "auto" \
+					and self._normalization in self._normalizationsFor(modelId):
 				body["apply_text_normalization"] = self._normalization
 		body["voice_settings"] = self._voiceSettings(modelId, plain, probe)
 		return body
@@ -2273,8 +2864,11 @@ class SynthDriver(BaseSynthDriver):
 				"speed": self._apiSpeed(modelId),
 			}
 		if modelId in self._presetStabilityModels:
-			stability = values["stability"]
-			values["stability"] = min(STABILITY_PRESETS, key=lambda preset: abs(preset - stability))
+			if plain or probe:
+				stability = values["stability"]
+				values["stability"] = min(STABILITY_PRESETS, key=lambda preset: abs(preset - stability))
+			else:
+				values["stability"] = STABILITY_PRESET_VALUES[self._stabilityPreset]
 		accepted = _modelInfo(modelId).settings
 		return {name: value for name, value in values.items() if name in accepted}
 
@@ -2286,7 +2880,15 @@ class SynthDriver(BaseSynthDriver):
 			return False
 		self._presetStabilityModels.add(modelId)
 		log.debug(f"ElevenLabs: {modelId} refused the stability value; using presets.")
+		if modelId == self._modelId:
+			# The box starts at the preset nearest the slider, so the voice keeps its sound.
+			self._stabilityPreset = self._nearestStabilityPreset()
+			self._refreshGui(changedSetting="model")
 		return True
+
+	def _nearestStabilityPreset(self):
+		stability = self._stability / 100.0
+		return min(STABILITY_PRESET_VALUES, key=lambda name: abs(STABILITY_PRESET_VALUES[name] - stability))
 
 	def _reportModelFailure(self, modelId, reason):
 		"""Logs that a model failed and the default one spoke, once per reason."""
@@ -2351,15 +2953,24 @@ class SynthDriver(BaseSynthDriver):
 			self._refreshGui(changedSetting="model")
 
 	# --- Text normalization ---
-	# The box is hidden for a model that refuses apply_text_normalization.
+	# The box is hidden for a model that refuses apply_text_normalization, and
+	# "on" left out for one that refused only that.
+
+	@staticmethod
+	def _normalizationsFor(modelId):
+		refused = _NORMALIZATION_ON_REFUSED in _refused.get(modelId, ())
+		return [mode for mode in NORMALIZATIONS if not (refused and mode == "on")]
 
 	def _get_availableNormalizations(self):
 		return OrderedDict(
-			(mode, StringParameterInfo(mode, name))
-			for mode, name in NORMALIZATIONS.items()
+			(mode, StringParameterInfo(mode, NORMALIZATIONS[mode]))
+			for mode in self._normalizationsFor(self._modelId)
 		)
 
 	def _get_normalization(self):
+		# Shows what the model gets; the saved choice is kept for other models.
+		if not self._configuring and self._normalization not in self._normalizationsFor(self._modelId):
+			return DEFAULT_NORMALIZATION
 		return self._normalization
 
 	def _set_normalization(self, value):
@@ -2393,8 +3004,11 @@ class SynthDriver(BaseSynthDriver):
 
 	def _get_language(self):
 		# Reported to NVDA so symbol pronunciation follows the chosen language.
-		# None means "no opinion", so NVDA keeps using its own language.
-		return None if self._language == "auto" else self._language
+		# None means "no opinion", so NVDA keeps using its own language; also for a
+		# model without language_code.
+		if self._language == "auto" or not _modelInfo(self._modelId).languageCode:
+			return None
+		return self._language
 
 	def _get_availableLanguages(self):
 		return {langId for langId in LANGUAGES if langId != "auto"}
@@ -2421,6 +3035,22 @@ class SynthDriver(BaseSynthDriver):
 
 	def _set_stability(self, value):
 		self._stability = max(0, min(100, int(value)))
+
+	def _get_availableStabilitypresets(self):
+		return OrderedDict(
+			(preset, StringParameterInfo(preset, name))
+			for preset, name in STABILITY_PRESET_NAMES.items()
+		)
+
+	def _get_stabilityPreset(self):
+		return self._stabilityPreset
+
+	def _set_stabilityPreset(self, value):
+		if value in STABILITY_PRESET_NAMES:
+			self._stabilityPreset = value
+		else:
+			log.warning(f"ElevenLabs: unknown stability {value!r}; using natural.")
+			self._stabilityPreset = DEFAULT_STABILITY_PRESET
 
 	def _get_clarity(self):
 		return self._clarity
